@@ -1,0 +1,461 @@
+diff --git a/.gitignore b/.gitignore
+index 6cce9d11d..bf090b18b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -27,3 +27,6 @@ UnityEngine.dll
+ __pycache__
+ ModPatches/*/Assemblies/
+ .vs/
++
++# Local agent instructions are not repository content.
++AGENTS.md
+diff --git a/LoadFolders.xml b/LoadFolders.xml
+index 61ea3059b..c7bc624cb 100644
+--- a/LoadFolders.xml
++++ b/LoadFolders.xml
+@@ -449,6 +449,7 @@
+ 		<li IfModActive="AhnDemi.PanieltheAutomata">ModPatches/Paniel the Automata</li>
+ 		<li IfModActive="shauaputa.pawnboldrace">ModPatches/Pawnbold Race</li>
+ 		<li IfModActive="Mlie.CutePenguin">ModPatches/Penguin</li>
++		<li IfModActive="fearl.pigeon">ModPatches/Pigeon</li>
+ 		<li IfModActive="Sov.WarcasketWeapons">ModPatches/Persona Warcasket Weapons</li>
+ 		<li IfModActive="CAT.PlasmaPack">ModPatches/Plasma Weapons Pack</li>
+ 		<li IfModActive="Vanya.Polarisbloc.CoreLab,Vanya.Polarisbloc.CoreLab.tmp">ModPatches/Polarisbloc Core Lab</li>
+diff --git a/ModPatches/Pigeon/Patches/Pigeon/ThingDefs_Races/Pigeon.xml b/ModPatches/Pigeon/Patches/Pigeon/ThingDefs_Races/Pigeon.xml
+new file mode 100644
+index 000000000..b5b64dc5b
+--- /dev/null
++++ b/ModPatches/Pigeon/Patches/Pigeon/ThingDefs_Races/Pigeon.xml
+@@ -0,0 +1,71 @@
++<?xml version="1.0" encoding="utf-8"?>
++<Patch>
++
++	<!-- ========== Pigeon (fearl.pigeon) CE Compatibility Patch ========== -->
++	<!-- Fixes NRE in Verb_MeleeAttackCE.DamageInfosToApply caused by vanilla Tool
++	     instead of ToolCE. Converts tools to ToolCE and adds RacePropertiesExtensionCE. -->
++
++	<!-- Add RacePropertiesExtensionCE with Birdlike body shape -->
++	<Operation Class="PatchOperationAddModExtension">
++		<xpath>Defs/ThingDef[defName="Pigeon"]</xpath>
++		<value>
++			<li Class="CombatExtended.RacePropertiesExtensionCE">
++				<bodyShape>Birdlike</bodyShape>
++			</li>
++		</value>
++	</Operation>
++
++	<!-- Add melee stat bases -->
++	<Operation Class="PatchOperationAdd">
++		<xpath>Defs/ThingDef[defName="Pigeon"]/statBases</xpath>
++		<value>
++			<MeleeDodgeChance>0.15</MeleeDodgeChance>
++			<MeleeCritChance>0.01</MeleeCritChance>
++			<MeleeParryChance>0.01</MeleeParryChance>
++		</value>
++	</Operation>
++
++	<!-- Replace vanilla tools with ToolCE versions -->
++	<Operation Class="PatchOperationReplace">
++		<xpath>Defs/ThingDef[defName="Pigeon"]/tools</xpath>
++		<value>
++			<tools>
++				<li Class="CombatExtended.ToolCE">
++					<label>claws</label>
++					<capacities>
++						<li>Scratch</li>
++					</capacities>
++					<power>2</power>
++					<cooldownTime>1.5</cooldownTime>
++					<linkedBodyPartsGroup>Feet</linkedBodyPartsGroup>
++					<armorPenetrationSharp>0.06</armorPenetrationSharp>
++					<armorPenetrationBlunt>0.1</armorPenetrationBlunt>
++				</li>
++				<li Class="CombatExtended.ToolCE">
++					<label>beak</label>
++					<capacities>
++						<li>Bite</li>
++					</capacities>
++					<power>3</power>
++					<cooldownTime>2</cooldownTime>
++					<linkedBodyPartsGroup>Beak</linkedBodyPartsGroup>
++					<armorPenetrationSharp>0.01</armorPenetrationSharp>
++					<armorPenetrationBlunt>0.1</armorPenetrationBlunt>
++				</li>
++				<li Class="CombatExtended.ToolCE">
++					<label>head</label>
++					<capacities>
++						<li>Blunt</li>
++					</capacities>
++					<power>1</power>
++					<cooldownTime>1.5</cooldownTime>
++					<linkedBodyPartsGroup>HeadAttackTool</linkedBodyPartsGroup>
++					<ensureLinkedBodyPartsGroupAlwaysUsable>true</ensureLinkedBodyPartsGroupAlwaysUsable>
++					<chanceFactor>0.2</chanceFactor>
++					<armorPenetrationBlunt>0.1</armorPenetrationBlunt>
++				</li>
++			</tools>
++		</value>
++	</Operation>
++
++</Patch>
+\ No newline at end of file
+diff --git a/Source/CombatExtended/CombatExtended/AI/Comps/CompTend.cs b/Source/CombatExtended/CombatExtended/AI/Comps/CompTend.cs
+index 2b6f9b4cb..d3aa752e4 100755
+--- a/Source/CombatExtended/CombatExtended/AI/Comps/CompTend.cs
++++ b/Source/CombatExtended/CombatExtended/AI/Comps/CompTend.cs
+@@ -73,6 +73,20 @@ public class CompTend : ICompTactics
+             lastTendJobCheckedAt = GenTicks.TicksGame - COOLDOWN_TEND_JOB_CHECK / 2;
+             return SuppressionUtility.GetRunForCoverJob(SelPawn);
+         }
++        // 如果 SelPawn 已被其他 pawn 预约（如正在被 TendPatient），不要分配 TendSelf
++        // 否则会导致 TryMakePreToilReservations 中的预约冲突红字
++        var reservations = SelPawn.Map?.reservationManager?.ReservationsReadOnly;
++        if (reservations != null)
++        {
++            for (int i = 0; i < reservations.Count; i++)
++            {
++                if (reservations[i].Target == SelPawn && reservations[i].Claimant != SelPawn)
++                {
++                    lastTendJobCheckedAt = GenTicks.TicksGame;
++                    return null;
++                }
++            }
++        }
+         lastTendJobAt = GenTicks.TicksGame;
+         Job job = JobMaker.MakeJob(CE_JobDefOf.TendSelf, SelPawn);
+         job.endAfterTendedOnce = false;
+diff --git a/Source/CombatExtended/CombatExtended/Comps/BipodComp.cs b/Source/CombatExtended/CombatExtended/Comps/BipodComp.cs
+index f3cda05ee..583f29bd0 100755
+--- a/Source/CombatExtended/CombatExtended/Comps/BipodComp.cs
++++ b/Source/CombatExtended/CombatExtended/Comps/BipodComp.cs
+@@ -26,7 +26,7 @@ public class BipodComp : CompRangedGizmoGiver
+             if (Controller.settings.AutoSetUp && compFireMode != null)
+             {
+                 Pawn pawn = ((Pawn_EquipmentTracker)this.ParentHolder).pawn;
+-                return (((compFireMode.CurrentAimMode == Props.catDef.autosetMode) | (!Props.catDef.useAutoSetMode && compFireMode.CurrentAimMode != AimMode.Snapshot)) && !IsSetUpRn && !pawn.IsCarryingPawn());
++                return (ShouldSetUpint || compFireMode.CurrentAimMode == Props.catDef.autosetMode || (!Props.catDef.useAutoSetMode && compFireMode.CurrentAimMode != AimMode.Snapshot)) && !IsSetUpRn && !pawn.IsCarryingPawn();
+             }
+             return ShouldSetUpint && !IsSetUpRn;
+         }
+@@ -87,27 +87,14 @@ public class BipodComp : CompRangedGizmoGiver
+         {
+             yield break;
+         }
+-        if (Controller.settings.AutoSetUp)
++        if (Controller.settings.AutoSetUp && compFireMode != null && !ShouldSetUpint && IsSetUpRn)
+         {
+-            if (compFireMode == null)
+-            {
+-                yield return new Command_Action
+-                {
+-                    action = ShouldSetUpint ? CloseBipod : DeployUpBipod,
+-                    defaultLabel = ShouldSetUpint ? "CE_Close_Bipod".Translate() : "CE_Deploy_Bipod".Translate(),
+-                    icon = ContentFinder<Texture2D>.Get(ShouldSetUpint ? "UI/Buttons/closed_bipod" : "UI/Buttons/open_bipod")
+-                };
+-
+-            }
+-            else
++            yield return new Command_Action
+             {
+-                yield return new Command_Action
+-                {
+-                    action = delegate { },
+-                    defaultLabel = IsSetUpRn ? "CE_Bipod_Set_Up".Translate() : "CE_Bipod_Not_Set_Up".Translate(),
+-                    icon = ContentFinder<Texture2D>.Get(IsSetUpRn ? "UI/Buttons/open_bipod" : "UI/Buttons/closed_bipod")
+-                };
+-            }
++                action = delegate { },
++                defaultLabel = "CE_Bipod_Set_Up".Translate(),
++                icon = ContentFinder<Texture2D>.Get("UI/Buttons/open_bipod")
++            };
+         }
+         else
+         {
+diff --git a/Source/CombatExtended/CombatExtended/Comps/CompFragments.cs b/Source/CombatExtended/CombatExtended/Comps/CompFragments.cs
+index 1b5e06e44..accde5fd1 100755
+--- a/Source/CombatExtended/CombatExtended/Comps/CompFragments.cs
++++ b/Source/CombatExtended/CombatExtended/Comps/CompFragments.cs
+@@ -27,7 +27,7 @@ public class CompFragments : ThingComp
+ 
+     public CompProperties_Fragments PropsCE => (CompProperties_Fragments)props;
+ 
+-    public static IEnumerator FragRoutine(Vector3 pos, Map map, float height, Thing instigator, ThingDefCountClass frag, float fragSpeedFactor, float fragShadowChance, FloatRange fragAngleRange, FloatRange fragXZAngleRange, float minCollisionDistance = 0f, bool canTargetSelf = true)
++    public static IEnumerator FragRoutine(Vector3 pos, Map map, float height, Thing instigator, ThingDefCountClass frag, float fragSpeedFactor, float fragShadowChance, FloatRange fragAngleRange, FloatRange fragXZAngleRange, float minCollisionDistance = 0f, bool canTargetSelf = true, Thing fragmentSource = null)
+     {
+         if (height < 0.001f)
+         {
+@@ -63,6 +63,7 @@ public class CompFragments : ThingComp
+                 fragSpeedFactor * projectile.def.projectile.speed,
+                 projectile
+             );
++            projectile.fragmentSource = fragmentSource;
+ 
+             projectile.castShadow = (Rand.Value < fragShadowChance); // moved after Launch due to it assigning shadow
+ 
+diff --git a/Source/CombatExtended/CombatExtended/Comps/CompSuppressable.cs b/Source/CombatExtended/CombatExtended/Comps/CompSuppressable.cs
+index 990749ff6..506bb8a72 100755
+--- a/Source/CombatExtended/CombatExtended/Comps/CompSuppressable.cs
++++ b/Source/CombatExtended/CombatExtended/Comps/CompSuppressable.cs
+@@ -131,7 +131,7 @@ public class CompSuppressable : ThingComp
+                 Pawn pawn = parent as Pawn;
+                 currentSuppression = 0f;
+                 ticksHunkered = 0;
+-                if (pawn != null && pawn.CurJob.def == CE_JobDefOf.HunkerDown)
++                if (pawn != null && pawn.CurJob?.def == CE_JobDefOf.HunkerDown)
+                 {
+                     pawn.CurJob.Clear();
+                 }
+diff --git a/Source/CombatExtended/CombatExtended/Jobs/JobGiver_ManTurretsNearPointCE.cs b/Source/CombatExtended/CombatExtended/Jobs/JobGiver_ManTurretsNearPointCE.cs
+index b198fde31..14a23914b 100755
+--- a/Source/CombatExtended/CombatExtended/Jobs/JobGiver_ManTurretsNearPointCE.cs
++++ b/Source/CombatExtended/CombatExtended/Jobs/JobGiver_ManTurretsNearPointCE.cs
+@@ -2,6 +2,7 @@
+ using Verse;
+ using Verse.AI;
+ using CombatExtended.Compatibility;
++using CombatExtended.CombatExtended.Jobs.Utils;
+ 
+ 
+ // ReSharper disable CheckNamespace
+@@ -44,6 +45,12 @@ public class JobGiver_ManTurretsNearPointCE : JobGiver_ManTurretsNearPoint
+             return null;
+         }
+ 
++        Thing inventoryAmmo = JobGiverUtils_Reload.FindInventoryAmmo(pawn, turret as Building_Turret);
++        if (inventoryAmmo != null)
++        {
++            return inventoryAmmo;
++        }
++
+         return GenClosest.ClosestThingReachable(
+                    turret.Position,
+                    turret.Map,
+diff --git a/Source/CombatExtended/CombatExtended/Jobs/JobGiver_ManTurretsNearSelfCE.cs b/Source/CombatExtended/CombatExtended/Jobs/JobGiver_ManTurretsNearSelfCE.cs
+index 07a0b3d9e..890c00ae5 100755
+--- a/Source/CombatExtended/CombatExtended/Jobs/JobGiver_ManTurretsNearSelfCE.cs
++++ b/Source/CombatExtended/CombatExtended/Jobs/JobGiver_ManTurretsNearSelfCE.cs
+@@ -2,6 +2,7 @@
+ using Verse;
+ using Verse.AI;
+ using CombatExtended.Compatibility;
++using CombatExtended.CombatExtended.Jobs.Utils;
+ 
+ 
+ // ReSharper disable CheckNamespace
+@@ -44,6 +45,12 @@ public class JobGiver_ManTurretsNearSelfCE : JobGiver_ManTurretsNearSelf
+             return null;
+         }
+ 
++        Thing inventoryAmmo = JobGiverUtils_Reload.FindInventoryAmmo(pawn, turret as Building_Turret);
++        if (inventoryAmmo != null)
++        {
++            return inventoryAmmo;
++        }
++
+         return GenClosest.ClosestThingReachable(
+                    turret.Position,
+                    turret.Map,
+diff --git a/Source/CombatExtended/CombatExtended/Jobs/Utils/JobGiverUtils_Reload.cs b/Source/CombatExtended/CombatExtended/Jobs/Utils/JobGiverUtils_Reload.cs
+index e1cb1aceb..7341360b2 100755
+--- a/Source/CombatExtended/CombatExtended/Jobs/Utils/JobGiverUtils_Reload.cs
++++ b/Source/CombatExtended/CombatExtended/Jobs/Utils/JobGiverUtils_Reload.cs
+@@ -45,6 +45,18 @@ public class JobGiverUtils_Reload
+             return MakeReloadJobNoAmmo(turret);
+         }
+ 
++        Thing inventoryAmmo = FindInventoryAmmo(pawn, turret);
++        if (inventoryAmmo != null)
++        {
++            CompInventory inventory = pawn.TryGetComp<CompInventory>();
++            int dropCount = Mathf.Min(inventoryAmmo.stackCount, compAmmo.MissingToFullMagazine);
++            if (dropCount > 0 && inventory?.container != null)
++            {
++                inventory.container.TryDrop(inventoryAmmo, pawn.Position, pawn.Map, ThingPlaceMode.Direct, dropCount, out _);
++                inventory.UpdateInventory();
++            }
++        }
++
+         var ammo = FindBestAmmo(pawn, turret);
+         if (ammo == null)
+         {
+@@ -98,6 +110,39 @@ public class JobGiverUtils_Reload
+         return JobMaker.MakeJob(CE_JobDefOf.ReloadTurret, turret, null);
+     }
+ 
++    public static Thing FindInventoryAmmo(Pawn pawn, Building_Turret turret)
++    {
++        var ammoComp = turret?.GetAmmo();
++        if (ammoComp == null || !ammoComp.UseAmmo)
++        {
++            return null;
++        }
++
++        AmmoDef requestedAmmo = ammoComp.SelectedAmmo;
++        var bestAmmo = FindInventoryAmmo(pawn, requestedAmmo);
++        if (bestAmmo == null && ammoComp.EmptyMagazine && requestedAmmo.AmmoSetDefs != null && turret.Faction != Faction.OfPlayer)
++        {
++            foreach (AmmoSetDef set in requestedAmmo.AmmoSetDefs)
++            {
++                foreach (AmmoLink link in set.ammoTypes)
++                {
++                    bestAmmo = FindInventoryAmmo(pawn, link.ammo);
++                    if (bestAmmo != null)
++                    {
++                        return bestAmmo;
++                    }
++                }
++            }
++        }
++
++        return bestAmmo;
++    }
++
++    private static Thing FindInventoryAmmo(Pawn pawn, AmmoDef requestedAmmo)
++    {
++        return pawn?.TryGetComp<CompInventory>()?.container?.FirstOrDefault(thing => thing.def == requestedAmmo);
++    }
++
+     public static bool CanReload(Pawn pawn, Thing thing, bool forced = false, bool emergency = false)
+     {
+         if (pawn == null || thing == null)
+@@ -159,7 +204,7 @@ public class JobGiverUtils_Reload
+             CELogger.Message($"{pawn} could not reload {turret} because turret is manned (or was recently manned) by someone else.");
+             return false;
+         }
+-        if (compAmmo.UseAmmo && FindBestAmmo(pawn, turret) == null)
++        if (compAmmo.UseAmmo && FindInventoryAmmo(pawn, turret) == null && FindBestAmmo(pawn, turret) == null)
+         {
+             JobFailReason.Is("CE_NoAmmoAvailable".Translate());
+             return false;
+diff --git a/Source/CombatExtended/CombatExtended/Projectiles/ProjectileCE.cs b/Source/CombatExtended/CombatExtended/Projectiles/ProjectileCE.cs
+index beda2c01f..338a1ed45 100755
+--- a/Source/CombatExtended/CombatExtended/Projectiles/ProjectileCE.cs
++++ b/Source/CombatExtended/CombatExtended/Projectiles/ProjectileCE.cs
+@@ -146,6 +146,7 @@ public abstract class ProjectileCE : ThingWithComps
+ 
+     public ThingDef equipmentDef;
+     public Thing launcher;
++    public Thing fragmentSource;
+     public LocalTargetInfo intendedTarget;
+     public float minCollisionDistance;
+     public bool canTargetSelf;
+@@ -382,6 +383,7 @@ public abstract class ProjectileCE : ThingWithComps
+ 
+         Scribe_Values.Look<Vector2>(ref origin, "origin", default(Vector2), true);
+         Scribe_References.Look<Thing>(ref launcher, "launcher");
++        Scribe_References.Look<Thing>(ref fragmentSource, "fragmentSource");
+         Scribe_References.Look<Thing>(ref equipment, "equipment");
+         Scribe_Values.Look<int>(ref intTicksToImpact, "ticksToImpact", 0, true);
+         Scribe_Values.Look<float>(ref startingTicksToImpact, "startingTicksToImpact", 0, true);
+@@ -1181,6 +1183,10 @@ public abstract class ProjectileCE : ThingWithComps
+         {
+             return false;
+         }
++        if (thing == fragmentSource)
++        {
++            return false;
++        }
+         if (thing == launcher && !canTargetSelf)
+         {
+             return false;
+diff --git a/Source/CombatExtended/CombatExtended/StatParts/StatPart_NaturalArmorDurability.cs b/Source/CombatExtended/CombatExtended/StatParts/StatPart_NaturalArmorDurability.cs
+index 61b4de56f..6e456b91d 100755
+--- a/Source/CombatExtended/CombatExtended/StatParts/StatPart_NaturalArmorDurability.cs
++++ b/Source/CombatExtended/CombatExtended/StatParts/StatPart_NaturalArmorDurability.cs
+@@ -32,8 +32,6 @@ public class StatPart_NaturalArmorDurability : StatPart
+             var comp = (req.Thing?.TryGetComp<CompArmorDurability>() ?? null);
+             if (comp != null)
+             {
+-                var mech = (Pawn)req.Thing;
+-
+                 float minArmor = getMinArmor(comp, val);
+ 
+                 val -= (val - minArmor) * (1 - comp.curDurabilityPercent);
+@@ -48,8 +46,6 @@ public class StatPart_NaturalArmorDurability : StatPart
+         var comp = (req.Thing?.TryGetComp<CompArmorDurability>() ?? null);
+         if (comp != null)
+         {
+-            var mech = (Pawn)req.Thing;
+-
+             string minArmorExp = getMinArmorExplicit(comp) >= 0 ? "Minimal armor value: " + getMinArmorExplicit(comp).ToString() : "Minimal armor percentage: " + comp.durabilityProps.MinArmorPct.ToStringPercent();
+ 
+             return "Armor durability: " + comp.curDurabilityPercent.ToStringPercent() + "\n" + comp.curDurability.ToString() + "/" + comp.maxDurability.ToString() + "\n" + minArmorExp;
+diff --git a/Source/CombatExtended/CombatExtended/Things/AmmoThing.cs b/Source/CombatExtended/CombatExtended/Things/AmmoThing.cs
+index eb2588df4..54f067af8 100755
+--- a/Source/CombatExtended/CombatExtended/Things/AmmoThing.cs
++++ b/Source/CombatExtended/CombatExtended/Things/AmmoThing.cs
+@@ -55,6 +55,12 @@ public class AmmoThing : ThingWithComps
+ 
+     public override void TickInterval(int delta)
+     {
++        if (Controller.settings.EnableAmmoSystem && numToCookOff <= 0)
++        {
++            base.TickInterval(delta);
++            return;
++        }
++
+         // Self-destruct if ammo is disabled
+         if (ShouldDestroy)
+         {
+diff --git a/Source/CombatExtended/CombatExtended/Verbs/Verb_MeleeAttackCE.cs b/Source/CombatExtended/CombatExtended/Verbs/Verb_MeleeAttackCE.cs
+index d95e6cc94..c32f44e65 100755
+--- a/Source/CombatExtended/CombatExtended/Verbs/Verb_MeleeAttackCE.cs
++++ b/Source/CombatExtended/CombatExtended/Verbs/Verb_MeleeAttackCE.cs
+@@ -487,7 +487,7 @@ public class Verb_MeleeAttackCE : Verb_MeleeAttack
+         if (target.Thing is Pawn p)
+         {
+ 
+-            if (damageInfo.Def.armorCategory == DamageArmorCategoryDefOf.Sharp && this.ToolCE.capacities.Any(y => y.GetModExtension<ModExtensionMeleeToolPenetration>()?.canHitInternal ?? false))
++            if (damageInfo.Def.armorCategory == DamageArmorCategoryDefOf.Sharp && this.ToolCE?.capacities?.Any(y => y.GetModExtension<ModExtensionMeleeToolPenetration>()?.canHitInternal ?? false) == true)
+             {
+                 if (Rand.Chance(damageInfo.Def.stabChanceOfForcedInternal))
+                 {
+diff --git a/Source/CombatExtended/Compatibility/TurretRegistry.cs b/Source/CombatExtended/Compatibility/TurretRegistry.cs
+index 0ff9c05bd..94cf13e18 100755
+--- a/Source/CombatExtended/Compatibility/TurretRegistry.cs
++++ b/Source/CombatExtended/Compatibility/TurretRegistry.cs
+@@ -166,6 +166,10 @@ public static class TurretRegistry
+             return;
+         }
+         var compAmmo = turret.GetAmmo();
++        if (compAmmo == null)
++        {
++            return;
++        }
+         if ((compAmmo.CurrentAmmo == compAmmo.SelectedAmmo && (!compAmmo.HasMagazine || compAmmo.CurMagCount == compAmmo.MagSize)))
+         {
+             return;
+diff --git a/Source/CombatExtended/Harmony/Harmony_DamageWorker.cs b/Source/CombatExtended/Harmony/Harmony_DamageWorker.cs
+index 793f799cf..3cb3f2f60 100755
+--- a/Source/CombatExtended/Harmony/Harmony_DamageWorker.cs
++++ b/Source/CombatExtended/Harmony/Harmony_DamageWorker.cs
+@@ -94,7 +94,8 @@ internal static class Harmony_DamageWorker_Apply
+                                                            new FloatRange(-10f, 10f),
+                                                            frontArc,
+                                                            1f,
+-                                                           false);
++                                                           false,
++                                                           victim);
+                         while (fr.MoveNext()) { }
+                     }
+                     {
+@@ -108,7 +109,8 @@ internal static class Harmony_DamageWorker_Apply
+                                                            new FloatRange(-10f, 10f),
+                                                            backArc,
+                                                            1f,
+-                                                           false);
++                                                           false,
++                                                           victim);
+                         while (fr.MoveNext()) { }
+                     }
+ 
+@@ -125,7 +127,8 @@ internal static class Harmony_DamageWorker_Apply
+                                                        new FloatRange(-10f, 10f),
+                                                        backArc,
+                                                        1f,
+-                                                       false);
++                                                       false,
++                                                       victim);
+ 
+                     while (fr.MoveNext()) { }
+ 

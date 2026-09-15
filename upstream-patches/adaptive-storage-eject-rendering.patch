@@ -1,0 +1,88 @@
+From 7cb475af19bf4a8dbb68d781961b5c0b1e364b3e Mon Sep 17 00:00:00 2001
+From: WhiteGiverMa <noreply@github.com>
+Date: Mon, 6 Jul 2026 03:26:28 +0800
+Subject: [PATCH] Fix EjectFromStorage rendering and StoringAdaptiveStorage
+ false positives
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Two related fixes for rendering issues when items leave ASF storage:
+
+1. StoringAdaptiveStorage() (ThingExtensions.cs):
+   Previously used only SlotGroupParentAt(Position) — a purely spatial check
+   that returns true for any item whose cell happens to be inside an ASF slot
+   group zone, regardless of whether the item is actually stored in the
+   ThingCollection. This causes SectionLayer_ThingsGeneral.TakePrintFrom to
+   skip printing items that are NOT in storage but happen to land on/near ASF
+   buildings (e.g. CE ammo ejected via EjectFromStorage with Near placement,
+   then never properly cleaned up when picked up).
+
+   Fix: verify via building.StoredThings.Contains(thing) before returning the
+   building. This ensures only items genuinely held by the ThingCollection are
+   treated as stored. Applies to both spawned (Position-based) and unspawned
+   (holdingOwner-based) paths. Contains() is O(1) via thingIDNumber index, so
+   no perf regression.
+
+2. EjectFromStorage() (ThingMakerUtility.cs):
+   Previously used holdingOwner.Remove(this) (base ThingOwner.Remove) which
+   does not trigger ThingCollection.Remove's RestoreItemRendering call. Items
+   ejected with full stack (SplitOff returning original Thing) carry ASF's
+   disabled-rendering state and fail to render after GenDrop.TryDropSpawn.
+
+   Fix: call RestoreItemRendering(map) + aggressive MapMeshDirty with
+   regenAdjacentCells & regenAdjacentSections after spawn. This restores
+   dynamic draw registration, GUI overlay listing, and forces a full section
+   rebuild covering edge cases where vanilla Thing.DirtyMapMesh is
+   insufficient (observed with CE MapMeshOnly ammo ground textures
+   persisting).
+
+Symptoms fixed:
+- CE ammo ejected from ASF shelves now renders on the ground
+- CE ammo ground textures properly clear after full pickup
+- Any MapMeshOnly item placed near but not inside ASF containers no longer
+  incorrectly hidden by the SectionLayer prefix
+---
+ Source/AdaptiveStorage/Utility/ThingExtensions.cs   | 9 +++++++--
+ Source/AdaptiveStorage/Utility/ThingMakerUtility.cs | 5 +++++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/Source/AdaptiveStorage/Utility/ThingExtensions.cs b/Source/AdaptiveStorage/Utility/ThingExtensions.cs
+index 67c5d6f..576b20b 100644
+--- a/Source/AdaptiveStorage/Utility/ThingExtensions.cs
++++ b/Source/AdaptiveStorage/Utility/ThingExtensions.cs
+@@ -19,9 +19,14 @@ public static class ThingExtensions
+ 		=> thing.IsItem()
+ 			&& thing.TryGetMap() is { } map
+ 				? thing is not ISlotGroupParent
+-					? map.haulDestinationManager.SlotGroupParentAt(thing.Position) as ThingClass
++					&& map.haulDestinationManager.SlotGroupParentAt(thing.Position) is ThingClass building
++					&& building.StoredThings.Contains(thing)
++					? building
+ 					: null
+-				: thing.holdingOwner?.Owner as ThingClass;
++				: thing.holdingOwner?.Owner is ThingClass building2
++					&& building2.StoredThings.Contains(thing)
++					? building2
++					: null;
+ 
+ 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+ 	public static bool IsInAnyStorageBuilding(this Thing thing)
+diff --git a/Source/AdaptiveStorage/Utility/ThingMakerUtility.cs b/Source/AdaptiveStorage/Utility/ThingMakerUtility.cs
+index fed7173..fb13c06 100644
+--- a/Source/AdaptiveStorage/Utility/ThingMakerUtility.cs
++++ b/Source/AdaptiveStorage/Utility/ThingMakerUtility.cs
+@@ -44,6 +44,11 @@ public static Thing Make(ThingDef thingDef, int count = int.MaxValue, ThingDef?
+ 			GenSpawn.Spawn(resultingThing = item, dropCell, map);
+ 		}
+ 
++		resultingThing.RestoreItemRendering(map);
++
++		foreach (var cell in resultingThing.OccupiedRect())
++			map.mapDrawer.MapMeshDirty(cell, MapMeshFlagDefOf.Things, true, true);
++
+ 		if (forbid && resultingThing.TryGetComp<CompForbiddable>() is { } compForbiddable)
+ 			compForbiddable.Forbidden = true;
+ 
+-- 
+2.54.0.windows.1

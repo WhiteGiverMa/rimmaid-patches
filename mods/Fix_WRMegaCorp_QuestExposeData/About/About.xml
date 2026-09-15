@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Fix: WRMegaCorp Quest ExposeData NRE</name>
+	<author>Meidocho (local patch)</author>
+	<packageId>meidocho.fix_wrmegacorp_quest_exposedata</packageId>
+	<description>Fixes NullReferenceException in Quest.ExposeData when loading saves with WRMegaCorp's ChoiceLetter_CSC.
+Root cause: ChoiceLetter_CSC.ExposeData() calls both Scribe_References (via base) and Scribe_Deep on the same quest field.
+This patch removes the redundant Scribe_Deep.Look call via Harmony Transpiler.
+See docs/PATCH_Meidocho_WRMegaCorp_QuestExposeData_NRE.md for details.</description>
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+	<modDependencies>
+		<li>
+			<packageId>com.zoshsgahdnkc.WRMegaCorpEdition</packageId>
+			<displayName>Wolfein Race MegaCorp Edition</displayName>
+		</li>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>com.zoshsgahdnkc.WRMegaCorpEdition</li>
+	</loadAfter>
+</ModMetaData>

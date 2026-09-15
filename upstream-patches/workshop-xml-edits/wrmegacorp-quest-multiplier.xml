@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Recovery artifact: WRMegaCorp quest reward multiplier initialization (local edit by Meidocho).
+  Workshop item 3687841204, files under 1.6/Defs/WRMC_QuestScriptDefs/.
+
+  The upstream scripts use $questRewardMultiplier in reward math without ever
+  initializing it, causing errors. The fix inserts a QuestNode_Set node
+  (value 1) before the first use in each affected script.
+
+  Live state at archive time (2026-09-15):
+  - Script_MeatOrder.xml: local init PRESENT (before the rewardValue QuestNode_Set).
+  - Script_DepositExploitation.xml: local init PRESENT (before the QuestNode_Multiply).
+  - Script_ProjectLiquidation.xml: init ABSENT. Do NOT reapply blindly; the
+    script's reward math differs (it uses QuestNode_Multiply on $rewardValue)
+    and the original failure must be reproduced against the current file
+    before inserting anything.
+
+  Reapply by inserting the <li> block below into the script's <nodes> sequence
+  immediately before the first node that reads $questRewardMultiplier.
+-->
+<Patch>
+  <!-- Insert into the QuestScriptDef's <nodes> before the first use of $questRewardMultiplier -->
+  <li Class="QuestNode_Set">
+    <name>questRewardMultiplier</name>
+    <value>1</value>
+  </li>
+</Patch>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Conduit RoomStats Fix</name>
+  <author>Meidocho</author>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <packageId>meidocho.conduitroomstatsfix</packageId>
+  <description>Removes the RoomStats gizmo from HiddenConduit and PowerConduit. Vanilla shows room stats gizmo for all standable player buildings, but conduits don't contribute to room quality and large conduit-networked rooms can tank FPS when selected.</description>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2009463077</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+</ModMetaData>

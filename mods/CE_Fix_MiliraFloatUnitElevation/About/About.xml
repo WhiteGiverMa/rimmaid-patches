@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>CE Fix: Milira Float Unit Elevation</name>
+  <author>Meidocho (local patch)</author>
+  <packageId>meidocho.ce_fix_milira_float_unit_elevation</packageId>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>CETeam.CombatExtended</packageId>
+      <displayName>Combat Extended</displayName>
+    </li>
+    <li>
+      <packageId>Ancot.MiliraRace</packageId>
+      <displayName>Milira Race</displayName>
+    </li>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>CETeam.CombatExtended</li>
+    <li>Ancot.MiliraRace</li>
+    <li>pntfvur.RimPatches.Milira.CE</li>
+  </loadAfter>
+  <description>Raises CE collision and shooting height for Milira Float Unit pawns by the same 0.5-cell offset CE applies to native flying pawns. Adds a configurable auto-target policy to control whether automatic weapon selection may pick float units. Does not alter plants, weapons, damage, or manual targeting.</description>
+</ModMetaData>

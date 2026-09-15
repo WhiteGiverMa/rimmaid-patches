@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>BossgroupConcurrentSummons</AssemblyName>
+    <RootNamespace>Meidocho.BossgroupConcurrentSummons</RootNamespace>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OutputPath>bin\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GameRoot>A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <PatchRoot>$(MSBuildProjectDirectory)\..\..\</PatchRoot>
+    <DeployRoot>A:\SteamLibrary\steamapps\common\RimWorld\Mods\BossgroupConcurrentSummons</DeployRoot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameRoot)\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(GameRoot)\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GameRoot)\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>A:\SteamLibrary\steamapps\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="DeployLocalPatch" AfterTargets="Build" Condition="'$(DeployLocal)'=='true'">
+    <MakeDir Directories="$(DeployRoot)\About;$(DeployRoot)\1.6\Assemblies" />
+    <Copy SourceFiles="$(PatchRoot)About\About.xml" DestinationFolder="$(DeployRoot)\About" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DeployRoot)\1.6\Assemblies" />
+  </Target>
+</Project>

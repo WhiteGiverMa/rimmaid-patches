@@ -1,0 +1,99 @@
+From 1ec3785bc8c4a28fafef825bfded5ed3711dbf52 Mon Sep 17 00:00:00 2001
+From: WhiteGiverMa <noreply@github.com>
+Date: Sun, 12 Jul 2026 14:06:51 +0800
+Subject: [PATCH] Prevent building fragments from hitting their source
+
+---
+ .../CombatExtended/CombatExtended/Comps/CompFragments.cs | 3 ++-
+ .../CombatExtended/Projectiles/ProjectileCE.cs           | 6 ++++++
+ Source/CombatExtended/Harmony/Harmony_DamageWorker.cs    | 9 ++++++---
+ 3 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/Source/CombatExtended/CombatExtended/Comps/CompFragments.cs b/Source/CombatExtended/CombatExtended/Comps/CompFragments.cs
+index 1b5e06e44..accde5fd1 100755
+--- a/Source/CombatExtended/CombatExtended/Comps/CompFragments.cs
++++ b/Source/CombatExtended/CombatExtended/Comps/CompFragments.cs
+@@ -27,7 +27,7 @@ public class CompFragments : ThingComp
+ 
+     public CompProperties_Fragments PropsCE => (CompProperties_Fragments)props;
+ 
+-    public static IEnumerator FragRoutine(Vector3 pos, Map map, float height, Thing instigator, ThingDefCountClass frag, float fragSpeedFactor, float fragShadowChance, FloatRange fragAngleRange, FloatRange fragXZAngleRange, float minCollisionDistance = 0f, bool canTargetSelf = true)
++    public static IEnumerator FragRoutine(Vector3 pos, Map map, float height, Thing instigator, ThingDefCountClass frag, float fragSpeedFactor, float fragShadowChance, FloatRange fragAngleRange, FloatRange fragXZAngleRange, float minCollisionDistance = 0f, bool canTargetSelf = true, Thing fragmentSource = null)
+     {
+         if (height < 0.001f)
+         {
+@@ -63,6 +63,7 @@ public class CompFragments : ThingComp
+                 fragSpeedFactor * projectile.def.projectile.speed,
+                 projectile
+             );
++            projectile.fragmentSource = fragmentSource;
+ 
+             projectile.castShadow = (Rand.Value < fragShadowChance); // moved after Launch due to it assigning shadow
+ 
+diff --git a/Source/CombatExtended/CombatExtended/Projectiles/ProjectileCE.cs b/Source/CombatExtended/CombatExtended/Projectiles/ProjectileCE.cs
+index beda2c01f..338a1ed45 100755
+--- a/Source/CombatExtended/CombatExtended/Projectiles/ProjectileCE.cs
++++ b/Source/CombatExtended/CombatExtended/Projectiles/ProjectileCE.cs
+@@ -146,6 +146,7 @@ public abstract class ProjectileCE : ThingWithComps
+ 
+     public ThingDef equipmentDef;
+     public Thing launcher;
++    public Thing fragmentSource;
+     public LocalTargetInfo intendedTarget;
+     public float minCollisionDistance;
+     public bool canTargetSelf;
+@@ -382,6 +383,7 @@ public abstract class ProjectileCE : ThingWithComps
+ 
+         Scribe_Values.Look<Vector2>(ref origin, "origin", default(Vector2), true);
+         Scribe_References.Look<Thing>(ref launcher, "launcher");
++        Scribe_References.Look<Thing>(ref fragmentSource, "fragmentSource");
+         Scribe_References.Look<Thing>(ref equipment, "equipment");
+         Scribe_Values.Look<int>(ref intTicksToImpact, "ticksToImpact", 0, true);
+         Scribe_Values.Look<float>(ref startingTicksToImpact, "startingTicksToImpact", 0, true);
+@@ -1181,6 +1183,10 @@ public abstract class ProjectileCE : ThingWithComps
+         {
+             return false;
+         }
++        if (thing == fragmentSource)
++        {
++            return false;
++        }
+         if (thing == launcher && !canTargetSelf)
+         {
+             return false;
+diff --git a/Source/CombatExtended/Harmony/Harmony_DamageWorker.cs b/Source/CombatExtended/Harmony/Harmony_DamageWorker.cs
+index 793f799cf..3cb3f2f60 100755
+--- a/Source/CombatExtended/Harmony/Harmony_DamageWorker.cs
++++ b/Source/CombatExtended/Harmony/Harmony_DamageWorker.cs
+@@ -94,7 +94,8 @@ internal static class Harmony_DamageWorker_Apply
+                                                            new FloatRange(-10f, 10f),
+                                                            frontArc,
+                                                            1f,
+-                                                           false);
++                                                           false,
++                                                           victim);
+                         while (fr.MoveNext()) { }
+                     }
+                     {
+@@ -108,7 +109,8 @@ internal static class Harmony_DamageWorker_Apply
+                                                            new FloatRange(-10f, 10f),
+                                                            backArc,
+                                                            1f,
+-                                                           false);
++                                                           false,
++                                                           victim);
+                         while (fr.MoveNext()) { }
+                     }
+ 
+@@ -125,7 +127,8 @@ internal static class Harmony_DamageWorker_Apply
+                                                        new FloatRange(-10f, 10f),
+                                                        backArc,
+                                                        1f,
+-                                                       false);
++                                                       false,
++                                                       victim);
+ 
+                     while (fr.MoveNext()) { }
+ 
+-- 
+2.54.0.windows.1

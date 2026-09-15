@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<!-- AimingDelayFactor: CE clamps the output curve to 50%-150%. Let elite shooters reach 1% warmup factor. -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/StatDef[defName="AimingDelayFactor"]/postProcessCurve</xpath>
+		<value>
+			<postProcessCurve>
+				<points>
+					<li>(0.01, 0.01)</li>
+					<li>(0.25, 0.25)</li>
+					<li>(0.75, 0.75)</li>
+					<li>(1.0, 1.0)</li>
+					<li>(1.25, 1.25)</li>
+					<li>(2.0, 1.5)</li>
+				</points>
+			</postProcessCurve>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/StatDef[defName="RangedCooldownFactor"]/parts</xpath>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/StatDef[defName="RangedCooldownFactor"]/parts</xpath>
+			<value>
+				<li Class="CEEliteCombatTweaks.StatPart_EliteRangedCooldownOffset" />
+			</value>
+		</match>
+		<nomatch Class="PatchOperationAdd">
+			<xpath>Defs/StatDef[defName="RangedCooldownFactor"]</xpath>
+			<value>
+				<parts>
+					<li Class="CEEliteCombatTweaks.StatPart_EliteRangedCooldownOffset" />
+				</parts>
+			</value>
+		</nomatch>
+	</Operation>
+</Patch>

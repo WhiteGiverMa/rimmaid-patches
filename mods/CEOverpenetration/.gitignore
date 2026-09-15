@@ -1,0 +1,18 @@
+# Build artifacts
+Source/**/obj/
+Source/**/bin/
+Assemblies/*.pdb
+Assemblies/*.xml
+
+# IDE
+.vs/
+*.user
+*.suo
+
+# Local handoff docs
+.agents/handoff/
+
+# Local agent/research scratch
+.ce_temp/
+.omo/
+.codegraph/

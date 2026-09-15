@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>Fix_CeleTech_DuplicateEquippableComps</AssemblyName>
+    <RootNamespace>Meidocho.CeleTechDuplicateEquippableFix</RootNamespace>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OutputPath>bin\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GameRoot>A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <DeployRoot>A:\SteamLibrary\steamapps\common\RimWorld\Mods\Fix_CeleTech_DuplicateEquippableComps</DeployRoot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameRoot)\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>A:\SteamLibrary\steamapps\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- RimWorld scans Assemblies/ recursively (ModContentPack.GetAllFilesForModPreserveOrder
+       uses SearchOption.AllDirectories); AppendTargetFrameworkToOutputPath=false keeps a
+       single DLL directly in Assemblies/ so the same assembly is not loaded twice. -->
+</Project>

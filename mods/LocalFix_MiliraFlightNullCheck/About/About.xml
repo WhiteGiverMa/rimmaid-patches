@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Local Fix - Milira Flight NullCheck</name>
+  <author>Meidocho (Local Patch)</author>
+  <packageId>local.meidocho.MiliraFlightNullCheckFix</packageId>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>Ancot.MiliraRace</packageId>
+      <displayName>Milira Race</displayName>
+    </li>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>Ancot.MiliraRace</li>
+    <li>brrainz.harmony</li>
+  </loadAfter>
+  <description>Fixes a NullReferenceException in Milira Race's Harmony patch on Pawn_FlightTracker.Notify_JobStarted where CompFlightControl.TryGetComp can return null.</description>
+</ModMetaData>

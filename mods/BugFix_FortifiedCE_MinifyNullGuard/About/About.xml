@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>BugFix - FortifiedCE Minify NullGuard</name>
+	<author>Meidocho (Local Fix)</author>
+	<supportedVersions>
+		<li>1.5</li>
+		<li>1.6</li>
+	</supportedVersions>
+	<packageId>local.meidocho.fortifiedce_minifynullguard</packageId>
+	<description>历史备份，不建议安装。该 Prefix 对不可 minify 的物品跳过原方法并返回 null，但 Harmony Postfix 仍会运行，因此不能阻止 FortifiedCE 的 null Postfix 异常。迁移仅保留旧源码与 DLL，不代表该问题已修复。</description>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+		</li>
+		<li>
+			<packageId>AOBA.Framework</packageId>
+			<displayName>Fortified Features Framework</displayName>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>brrainz.harmony</li>
+		<li>AOBA.Framework</li>
+	</loadAfter>
+</ModMetaData>

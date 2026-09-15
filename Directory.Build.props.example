@@ -1,0 +1,25 @@
+<Project>
+  <!--
+    Machine-local build settings. Copy this file to `Directory.Build.props`
+    (gitignored) and adjust the paths for your machine. Every property here
+    can also be overridden per build on the command line, e.g.:
+
+        dotnet build -p:GameRoot=D:\Games\RimWorld mods/...
+
+    Defaults below match the original author machine (A: drive) and are safe
+    to leave as-is on that machine; other machines must override.
+  -->
+  <PropertyGroup>
+    <!-- RimWorld install root (contains RimWorldWin64_Data) -->
+    <GameRoot Condition="'$(GameRoot)'==''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <!-- Steam Workshop content root for RimWorld (appid 294100) -->
+    <WorkshopRoot Condition="'$(WorkshopRoot)'==''">A:\SteamLibrary\steamapps\workshop\content\294100</WorkshopRoot>
+    <!-- Compiled CombatExtended.dll used as an external reference by CE addons.
+         Never copied into this repository or into mod output. -->
+    <CombatExtendedDll Condition="'$(CombatExtendedDll)'==''">A:\SteamLibrary\steamapps\common\RimWorld\Mods\CombatExtendedLocal\Assemblies\CombatExtended.dll</CombatExtendedDll>
+    <!-- Harmony library used by projects that reference it directly -->
+    <HarmonyDll Condition="'$(HarmonyDll)'==''">$(WorkshopRoot)\2009463077\Current\Assemblies\0Harmony.dll</HarmonyDll>
+    <!-- Opt-in deployment into the live game. Default builds NEVER deploy. -->
+    <DeployLocal Condition="'$(DeployLocal)'==''">false</DeployLocal>
+  </PropertyGroup>
+</Project>

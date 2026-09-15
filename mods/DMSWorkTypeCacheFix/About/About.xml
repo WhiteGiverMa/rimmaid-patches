@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMS Mech Work-Type Cache Fix</name>
+  <author>Meidocho (local fix)</author>
+  <packageId>meidocho.dms.worktypecachefix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>Aoba.DeadManSwitch.Core</packageId>
+      <displayName>The Dead Man's Switch</displayName>
+    </li>
+    <li>
+      <packageId>AOBA.Framework</packageId>
+      <displayName>Fortified Features Framework</displayName>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>AOBA.Framework</li>
+    <li>Aoba.DeadManSwitch.Core</li>
+  </loadAfter>
+</ModMetaData>

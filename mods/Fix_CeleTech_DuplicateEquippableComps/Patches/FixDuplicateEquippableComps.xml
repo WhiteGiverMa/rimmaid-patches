@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<!-- Pattern A: these defs inherit TOT_Weapons_WithGizmo, which already declares
+	     CompProperties_PawnEquipmentGizmo (WeaponBase.xml, comps Inherit="False").
+	     The child re-declaration appends a SECOND CompPawnEquipmentGizmo comp
+	     (XML inheritance appends list items), producing two verbTracker owners
+	     with identical verb loadIDs. Remove the redundant child declaration. -->
+	<Operation Class="PatchOperationRemove">
+		<xpath>Defs/*[defName="QBZ71_QS" or defName="QTS9_OICW" or defName="W85XWJ" or defName="QBZS85XWJ" or defName="QBZ_eightfiveAR"]/comps/li[@Class="CeleTech.Base.CompProperties_PawnEquipmentGizmo"]</xpath>
+	</Operation>
+
+	<!-- Pattern B: TangDaoPersona / CMC_EMPsword_sevenstars inherit TOT_Weapons
+	     (vanilla BaseWeapon chain: Forbiddable, CompEquippable, Styleable, Art, CompQuality)
+	     and add CompProperties_LegendaryWeapons (CompLegendaryWeapons : CompEquippable).
+	     Two CompEquippable-derived comps -> duplicate verbTracker / verb loadIDs.
+	     Cut the inherited comps (same Inherit="False" pattern CeleTech itself uses in
+	     TOT_Weapons_WithGizmo), keep the def's own comps, and re-add the inherited
+	     non-equippable comps. CompLegendaryWeapons remains the single verb owner and
+	     still satisfies every GetComp/TryGetComp<CompEquippable> consumer. -->
+	<Operation Class="PatchOperationAttributeSet">
+		<xpath>Defs/*[defName="TangDaoPersona" or defName="CMC_EMPsword_sevenstars"]/comps</xpath>
+		<name>Inherit</name>
+		<value>False</value>
+	</Operation>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/*[defName="TangDaoPersona" or defName="CMC_EMPsword_sevenstars"]/comps</xpath>
+		<value>
+			<li Class="CompProperties_Forbiddable"/>
+			<li Class="CompProperties_Styleable"/>
+			<li>
+				<compClass>CompQuality</compClass>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- Pattern B art grammar: before the fix these defs had TWO CompArt comps
+	     (inherited from BaseGun with Gun grammar, plus the child's own Melee grammar).
+	     ThingWithComps.GetComp<CompArt> returns the FIRST match, so the inherited
+	     Gun-grammar comp was the active one. Cutting inheritance would have silently
+	     switched art naming/descriptions to Melee grammar; replace the child's Art
+	     node contents with the exact inherited Gun-grammar values to preserve the
+	     previous behavior. -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/*[defName="TangDaoPersona" or defName="CMC_EMPsword_sevenstars"]/comps/li[@Class="CompProperties_Art"]</xpath>
+		<value>
+			<li Class="CompProperties_Art">
+				<nameMaker>NamerArtWeaponGun</nameMaker>
+				<descriptionMaker>ArtDescription_WeaponGun</descriptionMaker>
+				<minQualityForArtistic>Excellent</minQualityForArtistic>
+			</li>
+		</value>
+	</Operation>
+</Patch>

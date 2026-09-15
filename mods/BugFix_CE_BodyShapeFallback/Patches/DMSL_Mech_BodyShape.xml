@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<!-- 
+		为 DMSL 中型机械体补充 RacePropertiesExtensionCE.bodyShape，
+		避免 CE 报 "CE returning BodyType Undefined"。
+		这些 humanoid 机械体缺失 bodyShape 是因为 DMS Legion CE patch 漏掉了。
+	-->
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/ThingDef[
+			defName="DMSL_Mech_Engineer" or
+			defName="DMSL_Mech_Commander" or
+			defName="DMSL_Mech_Commandos" or
+			defName="DMSL_Mech_DesignatedMarksman" or
+			defName="DMSL_Mech_Guardian" or
+			defName="DMSL_Mech_Scout" or
+			defName="DMSL_Mech_Shaman" or
+			defName="DMSL_Mech_SpecialPolice" or
+			defName="DMSL_Mech_Terra" or
+			defName="DMSL_Mech_AgriculturalFrame" or
+			defName="DMSL_Mech_DoctorFrame" or
+			defName="DMSL_Mech_DrillingBarge" or
+			defName="DMSL_Mech_SupportFrame" or
+			defName="DMSL_Mech_ArmoredGrenadiers" or
+			defName="DMSL_Mech_Arsonist"
+			]</xpath>
+		<value>
+			<li Class="CombatExtended.RacePropertiesExtensionCE">
+				<bodyShape>Humanoid</bodyShape>
+			</li>
+		</value>
+	</Operation>
+</Patch>

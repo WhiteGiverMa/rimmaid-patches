@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Recovery artifact: Wolfein Race empty numeric field removal (local edit by Meidocho).
+  Workshop item 3473140562, file 1.6/Defs/ThingDefs_Weapon/Melee_Industrial.xml.
+
+  The original local edit removed empty <relicChance></relicChance> and
+  <equippedAngleOffset></equippedAngleOffset> elements directly from the file
+  (five occurrences each; the pre-edit state is preserved in the Workshop
+  directory as Melee_Industrial.xml.bak). Missing elements fall back to the
+  intended zero defaults, while empty strings fail float parsing.
+
+  The live file is currently clean (verified 2026-09-15). The same defect has
+  returned after Workshop updates before, so inspect the current XML first.
+  The artifact below is an equivalent PatchOperationRemove form so the fix can
+  be reapplied as a patch instead of a direct file edit. The xpath predicate
+  matches only elements with no content at all, so populated fields are safe.
+-->
+<Patch>
+  <Operation Class="PatchOperationRemove">
+    <xpath>Defs/ThingDef/relicChance[not(node())]</xpath>
+  </Operation>
+  <Operation Class="PatchOperationRemove">
+    <xpath>Defs/ThingDef/equippedAngleOffset[not(node())]</xpath>
+  </Operation>
+</Patch>

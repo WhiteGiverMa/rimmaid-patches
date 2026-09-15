@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>BugFix - CE Misc Fixes</name>
+	<author>Meidocho (Local Fix)</author>
+	<supportedVersions>
+		<li>1.5</li>
+		<li>1.6</li>
+	</supportedVersions>
+	<packageId>local.meidocho.ce_miscfixes</packageId>
+	<description>修复 Combat Extended 三个边界情况红字：
+1. "CE returning BodyType Undefined" - bodyShape 缺失时用 BodySize fallback
+2. "penAmount or armorAmount are zero for Blunt" - 武器格挡时护甲零值误报
+3. 为 DMS Legion 15 个机械体补充 bodyShape (Humanoid)</description>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+		</li>
+		<li>
+			<packageId>ceteam.combatextended</packageId>
+			<displayName>Combat Extended</displayName>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>brrainz.harmony</li>
+		<li>ceteam.combatextended</li>
+	</loadAfter>
+</ModMetaData>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>CeleTech Duplicate Equippable Comp Fix (Local Patch)</name>
+	<author>meidocho</author>
+	<packageId>meidocho.celetech.duplicateequippablecompsfix</packageId>
+	<modVersion>1.1.0</modVersion>
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+		</li>
+		<li>
+			<packageId>TOT.CeleTech.MKIII</packageId>
+			<displayName>CeleTech Arsenal MKIII</displayName>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>tot.celetech.mkiii</li>
+		<li>tot.celetech.sub.fbs</li>
+	</loadAfter>
+	<description>Local patch for CeleTech Arsenal MKIII (3446237098), RimWorld 1.6 only.
+
+Root cause: several CeleTech weapon defs end up with two comps deriving from vanilla CompEquippable on the same weapon. Every CompEquippable-derived comp saves its own verbTracker node into the thing's save data, and IVerbOwner.UniqueVerbOwnerID() is "CompEquippable_" + ThingID for all of them, so both trackers write verbs with identical loadIDs. Saving reports duplicate verb IDs (DebugLoadIDsSavingErrorsChecker) and loading fails with duplicate registration errors.
+
+Two duplicate patterns fixed (weapon defs only, no save edits):
+1. Child defs inheriting TOT_Weapons_WithGizmo re-declare CompProperties_PawnEquipmentGizmo that the abstract parent already provides: QBZ71_QS, QTS9_OICW, W85XWJ, QBZS85XWJ, QBZ_eightfiveAR. Fix: remove the redundant child declaration; the parent's comp stays.
+2. Defs inheriting TOT_Weapons (vanilla BaseWeapon chain provides CompEquippable) that add CompProperties_LegendaryWeapons: TangDaoPersona, CMC_EMPsword_sevenstars. Fix: set Inherit="False" on the def's comps node (same pattern CeleTech itself uses in TOT_Weapons_WithGizmo), keep the def's own comps, re-add the inherited non-equippable comps (Forbiddable, Styleable, CompQuality), and replace the child's Art node with the exact inherited Gun-grammar values (the inherited Gun-grammar CompArt was the active one before the fix; this preserves art naming/description behavior). CompLegendaryWeapons derives from CompEquippable, so it remains the single verb owner and all GetComp/TryGetComp&lt;CompEquippable&gt; consumers keep working.
+
+Known behavior gap handled by the included Harmony patch: CompLegendaryWeapons.Notify_Unequipped overrides without calling base, so once it is the sole equippable comp the CompEquippable verb-loss callbacks (Verb.Notify_EquipmentLost: cancels warmup stance / AttackStatic job) would stop firing. The patch adds a scoped prefix on CompLegendaryWeapons.Notify_Unequipped that fires Notify_EquipmentLost once per verb for TangDaoPersona and CMC_EMPsword_sevenstars only, before the original ability removal. It resolves the target by reflection (no compile dependency on CeleTech) and deliberately does not invoke the base method (virtual dispatch would recurse).
+
+Special functions preserved: equipment gizmos (CompPawnEquipmentGizmo), legendary abilities/biocoding (CompLegendaryWeapons), quality/forbiddable/styleable behavior, and the pre-fix art grammar. Not covered: 1.5 (the 1.5 def set has no WithGizmo duplicate; only 1.6 is advertised), other mods' weapons, save files.</description>
+</ModMetaData>

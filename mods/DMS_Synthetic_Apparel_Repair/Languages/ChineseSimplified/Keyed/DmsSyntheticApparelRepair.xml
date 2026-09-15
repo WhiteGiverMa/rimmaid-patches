@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<DMS_SyntheticApparelRepair_SettingsCategory>DMS 合成体装备维修</DMS_SyntheticApparelRepair_SettingsCategory>
+	<DMS_SyntheticApparelRepair_SettingsHeader>维修设置</DMS_SyntheticApparelRepair_SettingsHeader>
+	<DMS_SyntheticApparelRepair_EnableApparelRepair>启用衣物维修</DMS_SyntheticApparelRepair_EnableApparelRepair>
+	<DMS_SyntheticApparelRepair_EnableApparelRepairDesc>允许符合条件的合成体维修身上的受损衣物。身体损伤维修不受影响。</DMS_SyntheticApparelRepair_EnableApparelRepairDesc>
+	<DMS_SyntheticApparelRepair_ApparelEnergyFraction>衣物维修能量消耗：{0}</DMS_SyntheticApparelRepair_ApparelEnergyFraction>
+	<DMS_SyntheticApparelRepair_ApparelEnergyFractionDesc>每修复一点衣物耐久所消耗的能量倍率，相对于 MechEnergyLossPerHP。0 为免费，默认值 10%。</DMS_SyntheticApparelRepair_ApparelEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_EnableWeaponRepair>启用武器维修</DMS_SyntheticApparelRepair_EnableWeaponRepair>
+	<DMS_SyntheticApparelRepair_EnableWeaponRepairDesc>允许符合条件的 DMS 及联动武器机兵维修装备中的受损武器。身体损伤维修不受影响。</DMS_SyntheticApparelRepair_EnableWeaponRepairDesc>
+	<DMS_SyntheticApparelRepair_WeaponEnergyFraction>武器维修能量消耗：{0}</DMS_SyntheticApparelRepair_WeaponEnergyFraction>
+	<DMS_SyntheticApparelRepair_WeaponEnergyFractionDesc>每修复一点非制式武器耐久所消耗的能量倍率，相对于 MechEnergyLossPerHP。0 为免费，默认值 10%。</DMS_SyntheticApparelRepair_WeaponEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_StandardWeaponEnergyFraction>制式武器维修能量消耗：{0}</DMS_SyntheticApparelRepair_StandardWeaponEnergyFraction>
+	<DMS_SyntheticApparelRepair_StandardWeaponEnergyFractionDesc>每修复一点 AutomatroidWeapon 耐久所消耗的能量倍率，相对于 MechEnergyLossPerHP。0 为免费，也是默认值。</DMS_SyntheticApparelRepair_StandardWeaponEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_SettingsNote>能量从维修机兵自身扣除。Milira 原生维修的能量规则保持不变。未安装 DMS Synthetic 时，仅启用武器维修。</DMS_SyntheticApparelRepair_SettingsNote>
+	<DMS_SyntheticApparelRepair_ResetToDefaults>恢复默认值</DMS_SyntheticApparelRepair_ResetToDefaults>
+</LanguageData>

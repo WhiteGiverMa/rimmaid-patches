@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>CeleTechEquippableHarness</AssemblyName>
+    <RootNamespace>Meidocho.CeleTechEquippableHarness</RootNamespace>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GameRoot>A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <WorkshopRoot>A:\SteamLibrary\steamapps\workshop\content\294100</WorkshopRoot>
+    <PatchRoot>$(MSBuildProjectDirectory)\..\..\</PatchRoot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameRoot)\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GameRoot)\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(WorkshopRoot)\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="CeleTech.Base">
+      <HintPath>$(WorkshopRoot)\3446237098\1.6\Assemblies\CeleTech.Base.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Fix_CeleTech_DuplicateEquippableComps">
+      <HintPath>$(PatchRoot)1.6\Assemblies\Fix_CeleTech_DuplicateEquippableComps.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

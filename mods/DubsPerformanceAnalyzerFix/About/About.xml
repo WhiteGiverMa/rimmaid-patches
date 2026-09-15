@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Dubs Performance Analyzer Null-Def Fix</name>
+  <author>Meidocho</author>
+  <packageId>meidocho.dubsperformanceanalyzer.nulldeffix</packageId>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Dubwise.DubsPerformanceAnalyzer.steam</packageId>
+      <displayName>Dubs Performance Analyzer</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2038874626</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>Dubwise.DubsPerformanceAnalyzer.steam</li>
+  </loadAfter>
+  <description>Prevents Dubs Performance Analyzer from crashing on malformed Tick Things entries with no ThingDef runtime class, logs their Def provenance once, and guards truly def-less ticks.</description>
+</ModMetaData>

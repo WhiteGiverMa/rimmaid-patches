@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  This XML patch ensures the mod folder is recognized by RimWorld's mod loader.
+  The actual fix is in the compiled DLL (1.6/Assemblies/).
+-->
+<Patch />

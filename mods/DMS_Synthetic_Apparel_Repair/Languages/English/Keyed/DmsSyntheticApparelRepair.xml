@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<DMS_SyntheticApparelRepair_SettingsCategory>DMS Synthetic Apparel Repair</DMS_SyntheticApparelRepair_SettingsCategory>
+	<DMS_SyntheticApparelRepair_SettingsHeader>Repair settings</DMS_SyntheticApparelRepair_SettingsHeader>
+	<DMS_SyntheticApparelRepair_EnableApparelRepair>Enable apparel repair</DMS_SyntheticApparelRepair_EnableApparelRepair>
+	<DMS_SyntheticApparelRepair_EnableApparelRepairDesc>Allow eligible synthetic mechs to repair worn apparel. Body damage repair is unaffected.</DMS_SyntheticApparelRepair_EnableApparelRepairDesc>
+	<DMS_SyntheticApparelRepair_ApparelEnergyFraction>Apparel energy cost: {0}</DMS_SyntheticApparelRepair_ApparelEnergyFraction>
+	<DMS_SyntheticApparelRepair_ApparelEnergyFractionDesc>Energy multiplier per apparel hit point repaired, relative to MechEnergyLossPerHP. Zero is free; 10% is the default.</DMS_SyntheticApparelRepair_ApparelEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_EnableWeaponRepair>Enable weapon repair</DMS_SyntheticApparelRepair_EnableWeaponRepair>
+	<DMS_SyntheticApparelRepair_EnableWeaponRepairDesc>Allow eligible DMS and integrated weapon-capable mechs to repair equipped weapons. Body damage repair is unaffected.</DMS_SyntheticApparelRepair_EnableWeaponRepairDesc>
+	<DMS_SyntheticApparelRepair_WeaponEnergyFraction>Weapon energy cost: {0}</DMS_SyntheticApparelRepair_WeaponEnergyFraction>
+	<DMS_SyntheticApparelRepair_WeaponEnergyFractionDesc>Energy multiplier per non-standard weapon hit point repaired, relative to MechEnergyLossPerHP. Zero is free; 10% is the default.</DMS_SyntheticApparelRepair_WeaponEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_StandardWeaponEnergyFraction>Standard weapon energy cost: {0}</DMS_SyntheticApparelRepair_StandardWeaponEnergyFraction>
+	<DMS_SyntheticApparelRepair_StandardWeaponEnergyFractionDesc>Energy multiplier per AutomatroidWeapon hit point repaired, relative to MechEnergyLossPerHP. Zero is free and the default.</DMS_SyntheticApparelRepair_StandardWeaponEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_SettingsNote>Costs are paid from the repairing mech's energy. Milira's native repair energy rules remain unchanged. If DMS Synthetic is not installed, only weapon repair is active.</DMS_SyntheticApparelRepair_SettingsNote>
+	<DMS_SyntheticApparelRepair_ResetToDefaults>Reset to defaults</DMS_SyntheticApparelRepair_ResetToDefaults>
+</LanguageData>

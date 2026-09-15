@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Recovery artifact: Wolfein CE alloy sabre weaponTags fix (local edit by Meidocho).
+  Workshop item 3485371294, file 1.6/Patches/ThingDefs_Weapon/W_Weapon_Melee.xml.
+
+  The upstream PatchOperationAdd targeting Defs/ThingDef[defName="W_Weapon_Melee_AlloySabre"]/weaponTags
+  must have a value that directly contains <li>CE_OneHandedWeapon</li>. A Workshop
+  update previously reintroduced a nested <weaponTags> wrapper inside the value,
+  which produces an invalid nested tag list. Recovered verbatim from the live
+  corrected file at archive time (2026-09-15); the live file currently carries
+  the correct form.
+
+  Reapply by replacing the AlloySabre weaponTags operation's <value> with the
+  block below after a Workshop update reintroduces the nesting defect.
+-->
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="W_Weapon_Melee_AlloySabre"]/weaponTags</xpath>
+    <value>
+      <li>CE_OneHandedWeapon</li>
+    </value>
+  </Operation>
+</Patch>

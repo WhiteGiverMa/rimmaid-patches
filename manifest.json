@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "importedAt": "2026-09-15",
+  "gameVersion": "RimWorld 1.6",
+  "mods": [
+    { "directory": "CEOverpenetration", "packageId": "WhiteGiverMa.CEOverpenetration", "status": "active", "source": "WhiteGiverMa/CombatExtended-Overpenetration@2e7cc6a602491dce8b46cb44b01c61189e4ca086" },
+    { "directory": "CEEliteCombatTweaks", "packageId": "WhiteGiverMa.CEEliteCombatTweaks", "status": "active", "source": "WhiteGiverMa/CombatExtended-EliteCombatTweaks@18141725cd0207c5259b890cde9340e5c5ac0000" },
+    { "directory": "CEBreachingFix", "packageId": "WhiteGiverMa.CEBreachingFix", "status": "active", "source": "WhiteGiverMa/CombatExtended-BreachingFix@0b88bc736d50fdd0016efb3f40a459c38dffe9cd" },
+    { "directory": "DMS_Synthetic_Apparel_Repair", "packageId": "whitegiverma.dmssyntheticapparelrepair", "status": "active", "source": "WhiteGiverMa/DMS-ApparelRepair@ce5daaedbe06f4d617316cd4355dc5abbb92ccfa" },
+    { "directory": "Fix_ExosuitDummyMeat", "packageId": "meidocho.exosuit.dummymeatfix", "status": "active", "source": "WhiteGiverMa/Fix_ExosuitDummyMeat@82f4063f17e562a8e480d88231ee3284a503be4c" },
+    { "directory": "BossgroupConcurrentSummons", "packageId": "meidocho.bossgroupconcurrentsummons", "status": "active", "source": "local canonical source" },
+    { "directory": "DMSWorkTypeCacheFix", "packageId": "meidocho.dms.worktypecachefix", "status": "active", "source": "local canonical source" },
+    { "directory": "KeyzAllowUtilitiesFinishOffFix", "packageId": "meidocho.keyzallowutilities.finishofffix", "status": "active", "source": "local canonical source" },
+    { "directory": "WVC_CE_CompatPatch", "packageId": "meidocho.wvc.ce.compat", "status": "active-legacy", "source": "original DLL retained; original source unavailable, reconstructed source included and build-checked, not proven byte-equivalent" },
+    { "directory": "DubsPerformanceAnalyzerFix", "packageId": "meidocho.dubsperformanceanalyzer.nulldeffix", "status": "active", "source": "local canonical source plus deployed About.xml and assembly" },
+    { "directory": "BugFix_CE_BodyShapeFallback", "packageId": "local.meidocho.ce_miscfixes", "status": "active", "source": "deployed self-contained mod" },
+    { "directory": "BugFix_FortifiedCE_MinifyNullGuard", "packageId": "local.meidocho.fortifiedce_minifynullguard", "status": "historical-known-ineffective", "enabledAtImport": true, "source": "original deployed DLL retained; prefix does not skip postfixes, not recommended for installation" },
+    { "directory": "CE_Fix_IsHunkering_NRE", "packageId": "meidocho.ce_fix_ishunkering_nre", "status": "active", "source": "deployed self-contained mod" },
+    { "directory": "CE_Fix_MiliraFloatUnitElevation", "packageId": "meidocho.ce_fix_milira_float_unit_elevation", "status": "active", "source": "deployed self-contained mod" },
+    { "directory": "Fix_CeleTech_DuplicateEquippableComps", "packageId": "meidocho.celetech.duplicateequippablecompsfix", "status": "active", "source": "deployed self-contained mod" },
+    { "directory": "Fix_DMS_BookGrammarAndHeavyShield", "packageId": "meidocho.dms.bookgrammarheavyshieldfix", "status": "active", "source": "deployed XML mod" },
+    { "directory": "Fix_WRMegaCorp_QuestExposeData", "packageId": "meidocho.fix_wrmegacorp_quest_exposedata", "status": "active", "source": "deployed self-contained mod" },
+    { "directory": "LocalFix_MiliraFlightNullCheck", "packageId": "local.meidocho.MiliraFlightNullCheckFix", "status": "active", "source": "deployed self-contained mod" }
+  ],
+  "excluded": [
+    { "name": "CombatExtendedLocal", "reason": "full upstream fork/mirror; maintained in WhiteGiverMa/CombatExtended" },
+    { "name": "KillFeedLocal", "reason": "full third-party mirror with a local binary patch; inactive" },
+    { "name": "Adaptive-Storage-Framework", "reason": "full upstream fork; maintained separately" },
+    { "name": "ConduitRoomStatsFix", "reason": "inactive experiment documented as ineffective; recovered source retained under archive/" },
+    { "name": "GizmoDiag", "reason": "temporary inactive diagnostic tool; recovered source retained under tools/" }
+  ]
+}

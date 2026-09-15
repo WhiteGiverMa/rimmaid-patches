@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Fix Exosuit Dummy Meat</name>
+  <author>Meidocho</author>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <packageId>meidocho.exosuit.dummymeatfix</packageId>
+  <description>Exosuit Framework's internal Dummy pawn (ParentName="Human") inherits all Human race properties, causing RimWorld's ThingDefGenerator_Meat to auto-generate a "Meat_Dummy" item that shows up as an ugly "Human肉" in game. This patch adds useMeatFrom=Human to the Dummy's race, so the engine reuses vanilla human meat instead of generating a duplicate.</description>
+  <modDependencies>
+    <li>
+      <packageId>Aoba.Exosuit.Framework</packageId>
+      <displayName>Exosuit Framework</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=3352894993</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>Aoba.Exosuit.Framework</li>
+  </loadAfter>
+</ModMetaData>

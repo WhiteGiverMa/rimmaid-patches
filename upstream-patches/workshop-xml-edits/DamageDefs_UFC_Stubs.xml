@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Meidocho: Stub DamageDefs for UFPC CE patch cross-reference noise suppression.
+     These DamageDefs are referenced by UFPC weapons in the CE patch but UFPC is not installed.
+     Adding stubs prevents "Could not resolve cross-reference" red errors in the log.
+     These defs are never used in gameplay without UFPC. -->
+<Defs>
+  <DamageDef>
+    <defName>UFC_Bullet_50P</defName>
+    <label>50% Penetration Bullet</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <armorCategory>Sharp</armorCategory>
+    <buildingDamageFactor>0.15</buildingDamageFactor>
+    <plantDamageFactor>0.1</plantDamageFactor>
+  </DamageDef>
+
+  <DamageDef>
+    <defName>UFC_Bullet_100P</defName>
+    <label>100% Penetration Bullet</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <armorCategory>Sharp</armorCategory>
+    <buildingDamageFactor>0.15</buildingDamageFactor>
+    <plantDamageFactor>0.1</plantDamageFactor>
+  </DamageDef>
+
+  <DamageDef>
+    <defName>UFC_Bomb_Buildingkiller</defName>
+    <label>Structure Killer Bomb</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <armorCategory>Sharp</armorCategory>
+    <buildingDamageFactor>2.0</buildingDamageFactor>
+    <plantDamageFactor>2.0</plantDamageFactor>
+  </DamageDef>
+</Defs>

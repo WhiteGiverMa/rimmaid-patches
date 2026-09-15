@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+
+  <!-- Exosuit Framework 1.6 creates a Dummy pawn (ParentName="Human") purely for
+       its custom PawnRenderTreeDef. RimWorld's ThingDefGenerator_Meat sees this as
+       a flesh pawn with hasMeat/hasCorpse=true and no useMeatFrom, so it auto-generates
+       Meat_Dummy — a duplicate "Human肉" that clutters the item database.
+
+       Fix: add useMeatFrom=Human so the engine reuses the vanilla Meat_Human def
+       and skips generating Meat_Dummy entirely. -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="Dummy"]/race</xpath>
+    <value>
+      <useMeatFrom>Human</useMeatFrom>
+    </value>
+  </Operation>
+
+</Patch>

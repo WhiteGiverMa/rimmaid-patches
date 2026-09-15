@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!-- DMS_Schematic selects these DMS_Tab projects. Empty generalRules cannot resolve
+	     the subject root in Book.AppendDoerRules during trader stock generation. -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ResearchProjectDef[(defName="DMS_Autofacturer" or defName="DMSE_VacuumMaterial" or defName="DMSE_OrbitalDynamics") and generalRules[not(rulesStrings/li)]]/generalRules</xpath>
+		<value>
+			<generalRules>
+				<rulesStrings>
+					<li>subject->technical innovation</li>
+					<li>subject_story->documented advances in applied technology</li>
+					<li>subject_gerund->researching a new technical discipline</li>
+				</rulesStrings>
+			</generalRules>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ResearchProjectDef[not(generalRules) and (defName="DMS_EquipmentBasis" or defName="DMS_EquipmentAdvanced" or defName="DMS_EquipmentElite" or defName="DMS_EquipmentHeavy" or defName="DMS_BattleFrame" or defName="DMS_Hybrid" or defName="DMS_Bionics" or defName="DMS_OrganSurgery" or defName="DMS_HeavyAutomatroid" or defName="DMS_HumanoidEngineering" or defName="DMS_Ronin" or defName="DMS_Synthroid" or defName="DMSE_Carbohydrate" or defName="DMSE_Microgravity" or defName="DMSE_Aerospace")]</xpath>
+		<value>
+			<generalRules>
+				<rulesStrings>
+					<li>subject->technical innovation</li>
+					<li>subject_story->documented advances in applied technology</li>
+					<li>subject_gerund->researching a new technical discipline</li>
+				</rulesStrings>
+			</generalRules>
+		</value>
+	</Operation>
+
+	<!-- DMS boss groups equip Apparel_HeavyShield, which requires a Torso body-part group.
+	     The DMS_Bipedal core is the chassis equivalent and must advertise that group. -->
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/BodyDef[defName="DMS_Bipedal"]/corePart/groups/li[text()="Torso"]</xpath>
+		<nomatch Class="PatchOperationAdd">
+			<xpath>Defs/BodyDef[defName="DMS_Bipedal"]/corePart/groups</xpath>
+			<value>
+				<li>Torso</li>
+			</value>
+		</nomatch>
+	</Operation>
+
+</Patch>

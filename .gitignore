@@ -1,0 +1,44 @@
+# Local agent state and private maintenance notes
+.agents/
+.omo/
+.codegraph/
+.debug-journal.md
+.env
+.env.*
+STATUS.md
+**/STATUS.md
+**/handoff/
+**/handoffs/
+
+# RimWorld runtime data
+*.rws
+Player.log
+Player-prev.log
+ModsConfig.xml
+Prefs.xml
+
+# Local build state
+**/bin/
+**/obj/
+**/.vs/
+**/.idea/
+**/.vscode/
+*.user
+*.suo
+*.pdb
+
+# Temporary and backup files
+*.bak
+*.old
+*.prev
+*.tmp
+*.orig
+*.rej
+*.log
+nul
+
+# Nested repositories must never be copied into the monorepo
+**/.git/
+
+# Machine-specific reference paths in local MSBuild projects
+Directory.Build.props

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Recovery artifact: DMS MobileDragoon CE armor durability (local edit by Meidocho).
+  Workshop item 3377130226, files 1.5/CE/Patches/CE_Frames.xml and 1.6/CE/Patches/CE_Frames.xml.
+  Recovered verbatim from the live 1.6 file; the 1.5 copy carries the identical five
+  operations (verified by diff at archive time, 2026-09-15).
+
+  These five PatchOperationAdd operations are the locally added portion of
+  CE_Frames.xml. The rest of that file is upstream DMS content and is not
+  reproduced here. Reapply by inserting these operations into the current
+  CE_Frames.xml (both version folders) after a Workshop update.
+
+  Pair with the local CE fork change that removes the unsafe Pawn cast in
+  StatPart_NaturalArmorDurability (see combat-extended-local.patch); keep both
+  sides together while apparel uses this component.
+-->
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="DMS_Apparel_AT34_Core"]/comps</xpath>
+    <value>
+      <li Class="CombatExtended.CompProperties_ArmorDurability">
+        <Durability>2000</Durability>
+        <Regenerates>false</Regenerates>
+        <Repairable>true</Repairable>
+        <RepairIngredients>
+          <Steel>10</Steel>
+        </RepairIngredients>
+        <RepairTime>300</RepairTime>
+        <RepairValue>200</RepairValue>
+        <MinArmorPct>0.6</MinArmorPct>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="DMS_Apparel_PV8_Core"]/comps</xpath>
+    <value>
+      <li Class="CombatExtended.CompProperties_ArmorDurability">
+        <Durability>4400</Durability>
+        <Regenerates>false</Regenerates>
+        <Repairable>true</Repairable>
+        <RepairIngredients>
+          <Steel>10</Steel>
+        </RepairIngredients>
+        <RepairTime>300</RepairTime>
+        <RepairValue>200</RepairValue>
+        <MinArmorPct>0.6</MinArmorPct>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="DMS_Apparel_PF3_Core"]/comps</xpath>
+    <value>
+      <li Class="CombatExtended.CompProperties_ArmorDurability">
+        <Durability>1400</Durability>
+        <Regenerates>false</Regenerates>
+        <Repairable>true</Repairable>
+        <RepairIngredients>
+          <Steel>10</Steel>
+        </RepairIngredients>
+        <RepairTime>300</RepairTime>
+        <RepairValue>200</RepairValue>
+        <MinArmorPct>0.6</MinArmorPct>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="DMS_Apparel_FA47_Core"]/comps</xpath>
+    <value>
+      <li Class="CombatExtended.CompProperties_ArmorDurability">
+        <Durability>3000</Durability>
+        <Regenerates>false</Regenerates>
+        <Repairable>true</Repairable>
+        <RepairIngredients>
+          <Steel>10</Steel>
+        </RepairIngredients>
+        <RepairTime>300</RepairTime>
+        <RepairValue>200</RepairValue>
+        <MinArmorPct>0.6</MinArmorPct>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="DMS_Apparel_PV4_Core"]/comps</xpath>
+    <value>
+      <li Class="CombatExtended.CompProperties_ArmorDurability">
+        <Durability>4200</Durability>
+        <Regenerates>false</Regenerates>
+        <Repairable>true</Repairable>
+        <RepairIngredients>
+          <Steel>10</Steel>
+        </RepairIngredients>
+        <RepairTime>300</RepairTime>
+        <RepairValue>200</RepairValue>
+        <MinArmorPct>0.6</MinArmorPct>
+      </li>
+    </value>
+  </Operation>
+</Patch>

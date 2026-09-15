@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Fix - DMS Book Grammar and Heavy Shield</name>
+	<author>Meidocho (local patch)</author>
+	<packageId>meidocho.dms.bookgrammarheavyshieldfix</packageId>
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+	<description>Fixes DMS schematic books selecting research projects without book subject grammar, which breaks trader stock generation. Also marks the DMS Bipedal heavy chassis as a torso so Tarbosaurus can wear its intended heavy shield unit.</description>
+	<modDependencies>
+		<li>
+			<packageId>ceteam.combatextended</packageId>
+			<displayName>Combat Extended</displayName>
+		</li>
+		<li>
+			<packageId>Aoba.DeadManSwitch.Core</packageId>
+			<displayName>The Dead Man's Switch</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/3121742525</steamWorkshopUrl>
+		</li>
+		<li>
+			<packageId>Aoba.DeadManSwitch.Expedition</packageId>
+			<displayName>The Dead Man's Switch - Expedition</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/3689879335</steamWorkshopUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>ceteam.combatextended</li>
+		<li>Aoba.DeadManSwitch.Core</li>
+		<li>Aoba.DeadManSwitch.Expedition</li>
+	</loadAfter>
+</ModMetaData>
