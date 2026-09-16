@@ -2,11 +2,14 @@
 # Emulates RimWorld XML inheritance for the <comps> node chain and applies the patch
 # operations, then asserts the number of CompEquippable-derived comps per weapon def.
 # BEFORE: 2 (duplicate verbTracker owners)  AFTER: 1
+param(
+  [string]$PatchPath = (Join-Path $PSScriptRoot '..\Patches\FixDuplicateEquippableComps.xml')
+)
 $ErrorActionPreference = 'Stop'
 
 $vanilla = 'A:\SteamLibrary\steamapps\common\RimWorld\Data\Core\Defs\ThingDefs_Misc\Weapons\BaseWeapons.xml'
 $cele    = 'A:\SteamLibrary\steamapps\workshop\content\294100\3446237098\1.6\Defs\Weapons'
-$patch   = 'A:\SteamLibrary\steamapps\common\RimWorld\Mods\Fix_CeleTech_DuplicateEquippableComps\Patches\FixDuplicateEquippableComps.xml'
+$patch   = $PatchPath
 
 # CompEquippable-derived comp classes (compClass resolution incl. CompProperties -> compClass)
 $equippableClasses = @('CompEquippable','CeleTech.Base.CompPawnEquipmentGizmo','CeleTech.Base.CompLegendaryWeapons','CeleTech.Base.CompAppWeaTransferEquippableBridge')
@@ -99,7 +102,8 @@ foreach ($op in $patchDoc.SelectNodes('/Patch/Operation')) {
       foreach ($n in $matched) { [void]$n.ParentNode.RemoveChild($n) }
     }
     'PatchOperationAttributeSet' {
-      $name = $op.SelectSingleNode('name').InnerText
+      $name = $op.SelectSingleNode('attribute').InnerText
+      if (-not $name) { throw 'PatchOperationAttributeSet requires <attribute>, not <name>' }
       $val = $op.SelectSingleNode('value').InnerText
       if ($matched.Count -ne 2) { Write-Host 'FAIL: expected exactly 2 comps nodes'; exit 1 }
       foreach ($n in $matched) { $n.SetAttribute($name, $val) }

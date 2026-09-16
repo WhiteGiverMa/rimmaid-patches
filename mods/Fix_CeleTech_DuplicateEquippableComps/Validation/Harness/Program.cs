@@ -64,10 +64,19 @@ public static class Program
         }
     }
 
-    public static int Main()
+    public static int Main(string[] args)
     {
         try
         {
+            if (args.Length == 2 && args[0] == "--xml")
+            {
+                return XmlValidation.Run(args[1]);
+            }
+            if (args.Length != 0)
+            {
+                Console.WriteLine("Usage: CeleTechEquippableHarness.exe [--xml <patch.xml>]");
+                return args.Length == 1 && args[0] == "--help" ? 0 : 2;
+            }
             return Run();
         }
         catch (Exception ex)

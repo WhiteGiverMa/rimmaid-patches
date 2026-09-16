@@ -3,7 +3,7 @@
 	<name>CeleTech Duplicate Equippable Comp Fix (Local Patch)</name>
 	<author>meidocho</author>
 	<packageId>meidocho.celetech.duplicateequippablecompsfix</packageId>
-	<modVersion>1.1.0</modVersion>
+	<modVersion>1.1.1</modVersion>
 	<supportedVersions>
 		<li>1.6</li>
 	</supportedVersions>
@@ -22,6 +22,8 @@
 		<li>tot.celetech.sub.fbs</li>
 	</loadAfter>
 	<description>Local patch for CeleTech Arsenal MKIII (3446237098), RimWorld 1.6 only.
+
+1.1.1: Corrected the XML attribute-set field so the legendary weapons' inherited comps are actually removed. Earlier versions left duplicate verb owners and added duplicate style/quality comps. Validated with the installed game's XML parser, patch operations and inheritance resolver; requires a game restart.
 
 Root cause: several CeleTech weapon defs end up with two comps deriving from vanilla CompEquippable on the same weapon. Every CompEquippable-derived comp saves its own verbTracker node into the thing's save data, and IVerbOwner.UniqueVerbOwnerID() is "CompEquippable_" + ThingID for all of them, so both trackers write verbs with identical loadIDs. Saving reports duplicate verb IDs (DebugLoadIDsSavingErrorsChecker) and loading fails with duplicate registration errors.
 

@@ -19,7 +19,7 @@
 	     still satisfies every GetComp/TryGetComp<CompEquippable> consumer. -->
 	<Operation Class="PatchOperationAttributeSet">
 		<xpath>Defs/*[defName="TangDaoPersona" or defName="CMC_EMPsword_sevenstars"]/comps</xpath>
-		<name>Inherit</name>
+		<attribute>Inherit</attribute>
 		<value>False</value>
 	</Operation>
 	<Operation Class="PatchOperationAdd">
