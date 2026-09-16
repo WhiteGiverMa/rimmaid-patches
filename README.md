@@ -1,10 +1,10 @@
 # Rimmaid Patches
 
-**[中文总览与安装说明](README.zh-CN.md)** · [中文维护手册](MAINTENANCE.zh-CN.md) · [中文构建说明](BUILDING.zh-CN.md)
+[中文](README.zh-CN.md) | **Engligh**
 
-Small, independently loadable RimWorld patch mods maintained by WhiteGiverMa and Meidocho.
+Small, independently loadable RimWorld patch mods maintained by WhiteGiverMa.
 
-This is a source and recovery monorepo, not a single combined RimWorld mod. Each directory under `mods/` keeps its own `About.xml`, package ID, dependencies, load order, and deployment lifecycle.
+This is a source and recovery monorepo. Each directory under `mods/` keeps its own `About.xml`, package ID, dependencies, load order, and deployment lifecycle.
 
 ## Repository policy
 

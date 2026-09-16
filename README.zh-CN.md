@@ -1,10 +1,10 @@
 # Rimmaid Patches（中文说明）
 
-[English](README.md) | 简体中文
+**中文** | [English](README.md)
 
-由 WhiteGiverMa 和 Meidocho 维护的一组小型、可独立加载的 RimWorld 补丁 mod。
+由 WhiteGiverMa 维护的一组小型、可独立加载的 RimWorld 补丁 mod。
 
-这是一个源码与恢复用的 monorepo，不是一个合并后的单一 RimWorld mod。`mods/` 下的每个目录都保留自己的 `About.xml`、package ID、依赖、加载顺序和部署生命周期。
+这是一个源码与恢复用的 monorepo。`mods/` 下的每个目录都保留自己的 `About.xml`、package ID、依赖、加载顺序和部署生命周期。
 
 ## 安装方式（重要）
 
