@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WWBCE_Category>Wolfein Weapon Box CE</WWBCE_Category>
+  <WWBCE_Intro>Adjust the CE carrying bonuses granted by each Wolfein weapon box. Vanilla carrying capacity and the item's own mass and bulk are unchanged.</WWBCE_Intro>
+  <WWBCE_Bulk>Bulk capacity bonus: +{0}</WWBCE_Bulk>
+  <WWBCE_Weight>Weight capacity bonus: +{0} kg</WWBCE_Weight>
+  <WWBCE_Note>Range: 0–1000, step 1. Changes apply immediately, including to already worn boxes. Settings are saved when this window closes. Lowering capacity may cause overload; CE may drop excess items.</WWBCE_Note>
+  <WWBCE_Inactive>Inactive: enable Combat Extended and Wolfein Race. Settings can still be saved. If both are enabled, check the startup log.</WWBCE_Inactive>
+  <WWBCE_Reset>Restore defaults (+350 bulk, +0 weight)</WWBCE_Reset>
+</LanguageData>

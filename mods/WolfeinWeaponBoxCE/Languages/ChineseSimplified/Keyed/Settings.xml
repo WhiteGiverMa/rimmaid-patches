@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WWBCE_Category>沃芬超容武器箱 CE</WWBCE_Category>
+  <WWBCE_Intro>调整每件沃芬超容武器箱提供的 CE 携带加成。原版携带能力与装备自身重量、体积不变。</WWBCE_Intro>
+  <WWBCE_Bulk>体积携带加成：+{0}</WWBCE_Bulk>
+  <WWBCE_Weight>重量携带加成：+{0} kg</WWBCE_Weight>
+  <WWBCE_Note>范围：0–1000，步长 1。修改立即生效，已穿戴的武器箱无需重穿；关闭设置窗口后保存。降低上限可能导致超载，CE 可能丢弃超限物品。</WWBCE_Note>
+  <WWBCE_Inactive>当前未生效：请启用 Combat Extended 和 Wolfein Race。设置仍可保存；若两者均已启用，请检查启动日志。</WWBCE_Inactive>
+  <WWBCE_Reset>恢复默认值（体积 +350，重量 +0）</WWBCE_Reset>
+</LanguageData>

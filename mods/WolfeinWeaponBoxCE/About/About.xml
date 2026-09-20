@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Wolfein Weapon Box CE / 沃芬超容武器箱 CE</name>
+  <author>WhiteGiverMa</author>
+  <packageId>meidocho.wolfein.weaponboxce</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.6</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>MelonDove.WolfeinRace</packageId>
+      <displayName>Wolfein Race</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3473140562</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>MelonDove.WolfeinRace</li>
+    <li>CETeam.CombatExtended</li>
+    <li>leaople.WolfeinCEPatch</li>
+  </loadAfter>
+  <description>为沃芬超容武器箱添加可调整的 Combat Extended 携带加成。
+
+默认：体积携带 +350，重量携带 +0 kg。两个加成均可在 Mod 设置中通过 0–1000 滑条即时调整，无需重启或重新穿戴。提供恢复默认值按钮。
+
+仅在启用 CE 时生效；不改原有 CarryingCapacity，也不修改装备自身重量或体积。若同时使用 Wolfein CE Patches，请把本补丁放在它之后。本补丁不替代其他沃芬 CE 兼容内容。
+
+Adds configurable CE carrying bonuses to the Wolfein weapon box. Defaults: +350 bulk capacity, +0 kg weight capacity. Both sliders apply immediately to existing equipment. No effect without Combat Extended. Load after Wolfein CE Patches if installed.</description>
+</ModMetaData>

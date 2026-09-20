@@ -20,7 +20,8 @@
     { "directory": "Fix_CeleTech_DuplicateEquippableComps", "packageId": "meidocho.celetech.duplicateequippablecompsfix", "status": "active", "source": "deployed self-contained mod" },
     { "directory": "Fix_DMS_BookGrammarAndHeavyShield", "packageId": "meidocho.dms.bookgrammarheavyshieldfix", "status": "active", "source": "deployed XML mod" },
     { "directory": "Fix_WRMegaCorp_QuestExposeData", "packageId": "meidocho.fix_wrmegacorp_quest_exposedata", "status": "active", "source": "deployed self-contained mod" },
-    { "directory": "LocalFix_MiliraFlightNullCheck", "packageId": "local.meidocho.MiliraFlightNullCheckFix", "status": "active", "source": "deployed self-contained mod" }
+    { "directory": "LocalFix_MiliraFlightNullCheck", "packageId": "local.meidocho.MiliraFlightNullCheckFix", "status": "active", "source": "deployed self-contained mod" },
+    { "directory": "WolfeinWeaponBoxCE", "packageId": "meidocho.wolfein.weaponboxce", "status": "game-qa-pending", "source": "local canonical source; added 2026-09-20" }
   ],
   "excluded": [
     { "name": "CombatExtendedLocal", "reason": "full upstream fork/mirror; maintained in WhiteGiverMa/CombatExtended" },
