@@ -18,6 +18,12 @@ Combat Extended 子 mod — 子弹穿过敌人继续飞行。
 - 后续穿深、伤害、空气阻力和重力由 CE 原生速度模型接管。
 - 命中历史和链式穿透计数会随存档保存。
 
+## 日志设置
+
+在「选项 → Mod 设置 → CE 过穿透」勾选或取消「记录过穿透详情」。默认关闭，且不受游戏的开发者模式影响；开启时每次成功过穿会打印弹种、目标、剩余速度、穿深和连锁次数。切换即时生效，关闭设置窗口时保存为全局 Mod 设置，不写入存档。初始化信息同样只在开启详情时打印。真正的过穿失败和 CE 兼容性错误始终保留，以免隐藏故障。
+
+游戏运行时旧程序集不会热加载；替换 DLL 后需重新启动游戏。之前已经写入的 `Player.log` 内容不会自动清除。
+
 ## 职责拆分
 
 - 破墙 AI / LoS / job 熔断兼容修复已拆到 `CEBreachingFix`。
@@ -36,8 +42,10 @@ Combat Extended 子 mod — 子弹穿过敌人继续飞行。
 ## 构建
 
 ```bash
-cd Source/CEOverpenetration
-dotnet build
+dotnet build Source/CEOverpenetration/CEOverpenetration.csproj -c Release
+pwsh -File Validation/validate.ps1
 ```
 
-dll 输出到 `Assemblies/CEOverpenetration.dll`。
+DLL 输出到 `Source/CEOverpenetration/bin/CEOverpenetration.dll`，**不会自动部署**。验证通过后手动更新本目录 `Assemblies/CEOverpenetration.dll`，并同步 `checksums.sha256`；本地游戏 Mod 需要另外替换其 `Assemblies/` 中的 DLL 与 `Languages/` 目录。验证驱动使用真实游戏程序集检查设置默认值、即时切换和 Scribe 存取，不替代 Unity 设置窗口或游戏内弹道浅测。
+
+本 Mod 是独立本地补丁，不会被 Steam 覆盖；Combat Extended 更新后检查 `BulletCE.Impact`、`ArmorUtilityCE.GetAfterArmorDamage`、`ProjectileCE.Impact` 等 Harmony 目标签名与弹丸状态模型，若上游提供等价过穿功能则停用本补丁。上游工坊页面：https://steamcommunity.com/sharedfiles/filedetails/?id=2890901044 。

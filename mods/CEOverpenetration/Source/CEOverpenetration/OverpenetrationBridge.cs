@@ -161,7 +161,7 @@ public static class OverpenetrationBridge
         state.skipBaseImpact = true;
         bullet.landed = false;
 
-        if (Prefs.DevMode)
+        if (CEOverpenetrationMod.LogContinuationsEnabled)
         {
             Log.Message($"[CE Overpenetration] {bullet.def.defName} continued through {pawn.LabelShortCap}; "
                 + $"retained speed {speedRetention:P0}, penetration {bullet.PenetrationAmount:F1}, chain {state.overpenCount}.");

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <CEOP_SettingsCategory>CE Overpenetration</CEOP_SettingsCategory>
+  <CEOP_LogContinuations>Log overpenetration details</CEOP_LogContinuations>
+  <CEOP_LogContinuationsDescription>Off by default. When enabled, logs each successful continuation with projectile, target, remaining speed, penetration and chain count, even without developer mode. Changes take effect immediately; errors remain visible.</CEOP_LogContinuationsDescription>
+</LanguageData>

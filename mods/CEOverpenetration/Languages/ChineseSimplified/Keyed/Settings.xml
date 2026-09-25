@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <CEOP_SettingsCategory>CE 过穿透</CEOP_SettingsCategory>
+  <CEOP_LogContinuations>记录过穿透详情</CEOP_LogContinuations>
+  <CEOP_LogContinuationsDescription>默认关闭。开启后每次成功穿透都会记录弹种、目标、剩余速度、穿深和连锁次数；无需开启开发者模式。关闭后立即停止打印详情，错误日志仍会保留。</CEOP_LogContinuationsDescription>
+</LanguageData>
