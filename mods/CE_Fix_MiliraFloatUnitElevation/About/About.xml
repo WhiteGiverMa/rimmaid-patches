@@ -25,5 +25,5 @@
     <li>Ancot.MiliraRace</li>
     <li>pntfvur.RimPatches.Milira.CE</li>
   </loadAfter>
-  <description>Raises CE collision and shooting height for Milira Float Unit pawns by the same 0.5-cell offset CE applies to native flying pawns. Adds a configurable auto-target policy to control whether automatic weapon selection may pick float units. Does not alter plants, weapons, damage, or manual targeting.</description>
+  <description>Raises CE collision and shooting height by 0.5 cells for non-flying pawns with the Milira_FloatUnit body, including Milira Race and Milian Modification float units. Adds a configurable auto-target policy for those same pawns. Native flying pawns use CE's own height rule; plants, weapons, damage, and manual targeting are unchanged.</description>
 </ModMetaData>

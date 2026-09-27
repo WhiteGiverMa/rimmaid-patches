@@ -4,7 +4,7 @@
 
 `Milian_AutonomousFloatUnit` and its sibling float units are visually airborne but have no `pawn.Flying` state. Combat Extended therefore gave them a ground-level collision range based on their tiny `drawSize=0.2` sprite.
 
-This local Harmony patch applies CE's existing native-flight offset, `+0.5`, to the collision range and shot height of every pawn whose body Def is `Milira_FloatUnit`. It leaves collision width, plants, weapon values, damage, and all non-float-unit pawns untouched.
+This local Harmony patch adds `+0.5` to the collision range and shot height of every non-flying pawn whose body Def is `Milira_FloatUnit`. It leaves collision width, plants, weapon values, damage, and all non-float-unit pawns untouched. The installed CE fork now gives native flying pawns `+1` via upstream PR #4732; these two heights are no longer identical.
 
 ## Compatibility contract
 
@@ -13,7 +13,15 @@ This local Harmony patch applies CE's existing native-flight offset, `+0.5`, to 
 - Milira Race (`Ancot.MiliraRace`)
 - Compatible with the third-party Milira CE Patch (`pntfvur.RimPatches.Milira.CE`)
 
-If a future Milira version gives float units a real `pawn.Flying` state, this patch does nothing for those pawns and CE's own flight handling applies the offset once.
+The filter is based on the **body Def**, not a hard-coded list of race or PawnKind names. The active Milian Modification (`Ancot.MilianModification`, Workshop **3496629836**) inherits `Milian_FloatUnitBase` and declares `Milira_FloatUnit` for all three of its 1.6 float-unit Pawn races:
+
+| Source in Workshop 3496629836 | Pawn ThingDef / PawnKindDef |
+| --- | --- |
+| `1.6/Defs/ThingDefs_Race/Race_MechSpecial.xml` | `Milian_FloatUnit_SmallShield`, `Milian_FloatUnit_SmallBomb`, `Milian_FloatUnit_SmallSniper` |
+
+The four base Milira Race units (`Milian_AutonomousFloatUnit`, `Milian_FloatUnit_SmallPlasma`, `Milian_FloatUnit_Shield`, `Milian_FloatUnit_MechControl`) have the same body. All **seven active** float-unit Pawn races are already covered by both elevation and auto-target policy; no separate per-race Harmony branch is needed. The separately installed but currently **inactive** Wings of Democracy (Workshop 3626456960, package `sleepycot.wingsofdemocracy`) defines Visjnoe, SmallElc, SmallLaser and, conditionally on Milian Modification, Blade; they likewise use the same body and would be covered if that mod were enabled. The elevation condition still excludes pawns with a real `pawn.Flying` state, where CE supplies the height instead. If a future expansion changes a race's body Def, it must be rechecked rather than assumed covered.
+
+If a future Milira version gives float units a real `pawn.Flying` state, this patch does nothing for those pawns and CE's own native-flight handling applies its height once.
 
 ## Automatic target policy
 
