@@ -6,7 +6,7 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>WhiteGiverMa.CEOverpenetration</packageId>
-	<description>Adds generic overpenetration (bullets passing through pawns) to Combat Extended. Eligible ballistic sharp projectiles continue automatically after a successful armor result, with CE-native damage and penetration reduced through retained velocity. No per-ammunition configuration is required.
+	<description>Adds generic overpenetration (bullets passing through pawns) to Combat Extended. Eligible sharp projectiles continue automatically after a successful armor result, with CE-native damage and penetration reduced through retained velocity. CE default (Lerped) projectiles are switched to CE's ballistic model at the moment of overpenetration so every continuation decays instead of restoring full strength. No per-ammunition configuration is required.
 
 Breaching AI fixes have been split into CE Breaching Fix. Elite combat stat tuning has been split into CE Elite Combat Tweaks.
 

@@ -19,6 +19,7 @@ public static class OverpenetrationBridge
 
     private static readonly ConditionalWeakTable<ProjectileCE, OverpenState> States = new();
     private static readonly FieldInfo DamageAmountField = AccessTools.Field(typeof(ProjectileCE), "damageAmount");
+    private static readonly FieldInfo TrajectoryWorkerField = AccessTools.Field(typeof(ProjectileCE), "forcedTrajectoryWorker");
 
     [ThreadStatic]
     private static Stack<ImpactContext> impactContexts;
@@ -110,6 +111,39 @@ public static class OverpenetrationBridge
             || projectile.GetComps<CompFragments>().Any();
     }
 
+    /// <summary>
+    /// CE's default <see cref="LerpedTrajectoryWorker"/> precomputes origin, destination and flight
+    /// time at launch and reports <see cref="ProjectileCE.RemainingSpeedPct"/> as 1, so speed lost to
+    /// penetration cannot reduce its damage or penetration. Switching the projectile onto CE's
+    /// ballistic worker at the moment of overpenetration hands it back to CE's native model:
+    /// RemainingSpeedPct/KineticEnergyPct drive damage and penetration again, and CE's own ballistic
+    /// motion carries it forward until it reaches the ground or drops below the destruction threshold.
+    /// Returns false when the projectile cannot adopt the ballistic model; the caller must then keep
+    /// the normal CE impact instead of continuing.
+    /// </summary>
+    public static bool TryAdoptBallisticContinuation(ProjectileCE projectile)
+    {
+        // RemainingSpeedPct divides by initialSpeed; without a launch speed the retained ratio cannot
+        // be expressed, so such a projectile must not be switched onto the ballistic model.
+        if (projectile.initialSpeed <= 0f) return false;
+
+        var worker = projectile.TrajectoryWorker;
+        if (worker is BallisticsTrajectoryWorker) return true;
+        if (worker is not LerpedTrajectoryWorker) return false;
+
+        if (TrajectoryWorkerField == null)
+        {
+            Log.ErrorOnce("[CE Overpenetration] Combat Extended's trajectory worker field was not found; Lerped projectiles will not continue through targets.", 1948376252);
+            return false;
+        }
+
+        TrajectoryWorkerField.SetValue(projectile, ProjectilePropertiesCE.defaultBallisticTrajectoryWorker);
+        // Keep the deprecated mirror in sync so CE's Tick() consistency check stays silent.
+        projectile.lerpPosition = false;
+        projectile.cachedPredictedPositions = null;
+        return true;
+    }
+
     private static void TryContinueProjectile(
         BulletCE bullet,
         Thing impactTarget,
@@ -149,6 +183,10 @@ public static class OverpenetrationBridge
         float speedRetention = exitPenetration / currentPenetration;
 
         if (exitPenetration <= MinimumPenetration || speedRetention < MinimumExitSpeedRetention) return;
+
+        // The retained speed only means something on CE's ballistic model; a Lerped projectile that
+        // cannot adopt it keeps the normal impact instead of continuing at undecayed damage.
+        if (!TryAdoptBallisticContinuation(bullet)) return;
 
         bullet.velocity *= speedRetention;
         bullet.shotSpeed = bullet.velocity.magnitude * GenTicks.TicksPerRealSecond;
@@ -214,6 +252,15 @@ public static class OverpenetrationBridge
                 foreach (int id in hitIds)
                     state.alreadyHitThingIds.Add(id);
             }
+        }
+
+        if (Scribe.mode == LoadSaveMode.PostLoadInit && state.continuationActive
+            && projectile.TrajectoryWorker is LerpedTrajectoryWorker)
+        {
+            // A loaded projectile derives its worker from the def again, which restores Lerped for
+            // default CE ammo; re-adopt the ballistic model so serialized in-flight shots keep
+            // their speed-driven damage, penetration and continued flight.
+            TryAdoptBallisticContinuation(projectile);
         }
     }
 }

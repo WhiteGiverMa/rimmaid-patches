@@ -6,7 +6,7 @@ Combat Extended 子 mod — 子弹穿过敌人继续飞行。
 
 ### 1. 过穿透 (Overpenetration)
 
-所有无终端载荷的普通锐伤子弹在穿透 Pawn 的护甲后都会自动判断是否继续飞行，不需要逐弹种配置。伤害和穿深由 CE 根据穿透后的实际速度继续计算。
+所有无终端载荷的普通锐伤子弹在穿透 Pawn 的护甲后都会自动判断是否继续飞行，不需要逐弹种配置。过穿后 CE 按剩余速度继续计算伤害和穿深。
 
 **行为模型：**
 - 仅处理 `BulletCE + BallisticsTrajectoryWorker/LerpedTrajectoryWorker + Sharp` 的 Pawn 命中。
@@ -14,8 +14,11 @@ Combat Extended 子 mod — 子弹穿过敌人继续飞行。
 - 终端载荷是会在命中点消耗或分解弹头的效果：爆炸半径、爆炸组件和破片组件均在首次碰撞正常结算。
 - 仅对当前命中目标追加伤害的效果不是终端载荷；例如 AP-I 的燃烧附伤会对每个被穿透 Pawn 独立结算。
 - 以 CE 护甲后伤害比重建剩余穿深，再扣除 `BodyPartSharpArmor × BodySize^(1/3)` 的身体穿越预算。若不足以保留命中时速度的 20%，弹头会留在体内；只有剩余穿深足以穿越身体时才继续飞行。
+- CE 默认弹药使用 `LerpedTrajectoryWorker`，其弹道在发射时预计算且 `RemainingSpeedPct` 恒为 1，无法表达穿透后的速度损失。因此过穿成功时会把弹丸切换到 CE 弹道模型（`BallisticsTrajectoryWorker`），后续伤害按动能、穿深按速度重新衰减，每次过穿都继续削减，不会恢复满伤。
+- 切换后由 CE 弹道运动继续飞行：水平速度保持（本机 CE 构建的 `AffectedByDrag` 未把结果写回 `projectile.velocity`，空气阻力实际不减速），垂直方向受重力下坠，直到落地、飞出地图或速度过低销毁；`ticksToImpact <= 0` 不再触发原地 `ImpactSomething`。
 - 穿透后原弹丸从命中点继续正常 Tick，不传送，因此 CE/VEF 护盾和 BlockerRegistry 仍能拦截。
-- 后续穿深、伤害、空气阻力和重力由 CE 原生速度模型接管。
+- 已保存的飞行中弹丸读取后会按存档中的过穿标记重新采用弹道模型。
+- 若 CE 未来移除了 `forcedTrajectoryWorker` 字段，过穿会被安全禁用（记录一次错误日志并保留原版命中），不会出现不衰减的连锁穿透。
 - 命中历史和链式穿透计数会随存档保存。
 
 ## 日志设置
@@ -46,6 +49,6 @@ dotnet build Source/CEOverpenetration/CEOverpenetration.csproj -c Release
 pwsh -File Validation/validate.ps1
 ```
 
-DLL 输出到 `Source/CEOverpenetration/bin/CEOverpenetration.dll`，**不会自动部署**。验证通过后手动更新本目录 `Assemblies/CEOverpenetration.dll`，并同步 `checksums.sha256`；本地游戏 Mod 需要另外替换其 `Assemblies/` 中的 DLL 与 `Languages/` 目录。验证驱动使用真实游戏程序集检查设置默认值、即时切换和 Scribe 存取，不替代 Unity 设置窗口或游戏内弹道浅测。
+DLL 输出到 `Source/CEOverpenetration/bin/CEOverpenetration.dll`，**不会自动部署**。验证通过后手动更新本目录 `Assemblies/CEOverpenetration.dll`，并同步 `checksums.sha256`；本地游戏 Mod 需要另外替换其 `Assemblies/` 中的 DLL 与 `Languages/` 目录。验证驱动使用真实游戏与 Combat Extended 程序集：检查设置默认值、即时切换与 Scribe 存取，并在真实 `BulletCE` 上验证 Lerped 缺陷、弹道模型切换、伤害/穿深衰减、连锁衰减、Ballistics 回归、无初速回退与读档修复；不替代 Unity 设置窗口或游戏内弹道浅测。`validate.ps1` 可用 `-CombatExtendedDll`、`-HarmonyDll` 覆盖参考程序集路径。
 
-本 Mod 是独立本地补丁，不会被 Steam 覆盖；Combat Extended 更新后检查 `BulletCE.Impact`、`ArmorUtilityCE.GetAfterArmorDamage`、`ProjectileCE.Impact` 等 Harmony 目标签名与弹丸状态模型，若上游提供等价过穿功能则停用本补丁。上游工坊页面：https://steamcommunity.com/sharedfiles/filedetails/?id=2890901044 。
+本 Mod 是独立本地补丁，不会被 Steam 覆盖；Combat Extended 更新后检查 `BulletCE.Impact`、`ArmorUtilityCE.GetAfterArmorDamage`、`ProjectileCE.Impact`、`ProjectileCE.forcedTrajectoryWorker`、`RemainingSpeedPct` 等 Harmony 目标签名与弹丸状态模型，若上游提供等价过穿功能则停用本补丁。上游工坊页面：https://steamcommunity.com/sharedfiles/filedetails/?id=2890901044 。
