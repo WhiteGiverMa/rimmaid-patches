@@ -3,10 +3,12 @@
 	<name>CE Fix: IsHunkering NRE</name>
 	<author>Meidocho (local patch)</author>
 	<packageId>meidocho.ce_fix_ishunkering_nre</packageId>
-	<description>Fixes two CE combat bugs:
-1) NRE in CompSuppressable.IsHunkering when pawn.CurJob is null during suppression recovery.
-2) TendSelf/TendPatient reservation conflict red errors (LogCouldNotReserveError spam in battle).
-See docs/ce_fix_ishunkering_nre.md for details.</description>
+	<description>Narrow compatibility net for Combat Extended builds that lack the upstream fixes. On CE builds that already contain them (active local fork, future upstream) both patches are inert.
+
+1) Finalizer on CompSuppressable.IsHunkering: converts a NullReferenceException from pawn.CurJob being null into "not hunkering". No CE method body is replaced.
+2) Postfix on CompTend.TryGiveTacticalJob: removes only an already-built TendSelf job when another pawn has reserved the target. The original method runs fully first, so flee-for-cover results pass through untouched and no job is ever assigned here.
+
+See docs/ce_fix_ishunkering_nre.md for validation and details.</description>
 	<supportedVersions>
 		<li>1.6</li>
 	</supportedVersions>

@@ -8,6 +8,12 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
+	<!-- Override with -p:CombatExtendedDll=... / -p:HarmonyDll=... on other machines. -->
+	<PropertyGroup>
+		<CombatExtendedDll Condition="'$(CombatExtendedDll)'==''">A:\SteamLibrary\steamapps\common\RimWorld\Mods\CombatExtendedLocal\Assemblies\CombatExtended.dll</CombatExtendedDll>
+		<HarmonyDll Condition="'$(HarmonyDll)'==''">A:\SteamLibrary\steamapps\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HarmonyDll>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<Reference Include="Assembly-CSharp">
 			<HintPath>A:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -22,11 +28,11 @@
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="CombatExtended">
-			<HintPath>A:\SteamLibrary\steamapps\workshop\content\294100\2890901044\Assemblies\CombatExtended.dll</HintPath>
+			<HintPath>$(CombatExtendedDll)</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="0Harmony">
-			<HintPath>A:\SteamLibrary\steamapps\workshop\content\294100\2009463077\1.5\Assemblies\0Harmony.dll</HintPath>
+			<HintPath>$(HarmonyDll)</HintPath>
 			<Private>false</Private>
 		</Reference>
 	</ItemGroup>
