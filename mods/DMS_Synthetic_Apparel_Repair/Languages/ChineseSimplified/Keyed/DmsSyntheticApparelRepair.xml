@@ -6,12 +6,16 @@
 	<DMS_SyntheticApparelRepair_EnableApparelRepairDesc>允许符合条件的合成体维修身上的受损衣物。身体损伤维修不受影响。</DMS_SyntheticApparelRepair_EnableApparelRepairDesc>
 	<DMS_SyntheticApparelRepair_ApparelEnergyFraction>衣物维修能量消耗：{0}</DMS_SyntheticApparelRepair_ApparelEnergyFraction>
 	<DMS_SyntheticApparelRepair_ApparelEnergyFractionDesc>每修复一点衣物耐久所消耗的能量倍率，相对于 MechEnergyLossPerHP。0 为免费，默认值 10%。</DMS_SyntheticApparelRepair_ApparelEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_ApparelSpeedMultiplier>衣物维修速度：{0}</DMS_SyntheticApparelRepair_ApparelSpeedMultiplier>
+	<DMS_SyntheticApparelRepair_ApparelSpeedMultiplierDesc>每次维修结算为每件受损衣物恢复的耐久倍率，默认 100%（每次 1 点）。低于 100% 时零头会逐次累积，长期平均速度等比例降低；0% 等于暂停衣物维修。只影响本 Mod 的衣物维修，每点耐久的能量消耗与原版本体维修速度均不变。</DMS_SyntheticApparelRepair_ApparelSpeedMultiplierDesc>
 	<DMS_SyntheticApparelRepair_EnableWeaponRepair>启用武器维修</DMS_SyntheticApparelRepair_EnableWeaponRepair>
 	<DMS_SyntheticApparelRepair_EnableWeaponRepairDesc>允许符合条件的 DMS 及联动武器机兵维修装备中的受损武器。身体损伤维修不受影响。</DMS_SyntheticApparelRepair_EnableWeaponRepairDesc>
 	<DMS_SyntheticApparelRepair_WeaponEnergyFraction>武器维修能量消耗：{0}</DMS_SyntheticApparelRepair_WeaponEnergyFraction>
 	<DMS_SyntheticApparelRepair_WeaponEnergyFractionDesc>每修复一点非制式武器耐久所消耗的能量倍率，相对于 MechEnergyLossPerHP。0 为免费，默认值 10%。</DMS_SyntheticApparelRepair_WeaponEnergyFractionDesc>
 	<DMS_SyntheticApparelRepair_StandardWeaponEnergyFraction>制式武器维修能量消耗：{0}</DMS_SyntheticApparelRepair_StandardWeaponEnergyFraction>
 	<DMS_SyntheticApparelRepair_StandardWeaponEnergyFractionDesc>每修复一点 AutomatroidWeapon 耐久所消耗的能量倍率，相对于 MechEnergyLossPerHP。0 为免费，也是默认值。</DMS_SyntheticApparelRepair_StandardWeaponEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_WeaponSpeedMultiplier>武器维修速度：{0}</DMS_SyntheticApparelRepair_WeaponSpeedMultiplier>
+	<DMS_SyntheticApparelRepair_WeaponSpeedMultiplierDesc>每次维修结算为每件受损武器（含制式武器）恢复的耐久倍率，默认 100%（每次 1 点）。低于 100% 时零头会逐次累积，长期平均速度等比例降低；0% 等于暂停武器维修。只影响本 Mod 的武器维修，每点耐久的能量消耗与原版本体维修速度均不变。</DMS_SyntheticApparelRepair_WeaponSpeedMultiplierDesc>
 	<DMS_SyntheticApparelRepair_SettingsNote>能量从维修机兵自身扣除。Milira 原生维修的能量规则保持不变。未安装 DMS Synthetic 时，仅启用武器维修。</DMS_SyntheticApparelRepair_SettingsNote>
 	<DMS_SyntheticApparelRepair_ResetToDefaults>恢复默认值</DMS_SyntheticApparelRepair_ResetToDefaults>
 </LanguageData>

@@ -6,7 +6,7 @@
     { "directory": "CEOverpenetration", "packageId": "WhiteGiverMa.CEOverpenetration", "status": "active", "source": "WhiteGiverMa/CombatExtended-Overpenetration@2e7cc6a602491dce8b46cb44b01c61189e4ca086" },
     { "directory": "CEEliteCombatTweaks", "packageId": "WhiteGiverMa.CEEliteCombatTweaks", "status": "active", "source": "WhiteGiverMa/CombatExtended-EliteCombatTweaks@18141725cd0207c5259b890cde9340e5c5ac0000" },
     { "directory": "CEBreachingFix", "packageId": "WhiteGiverMa.CEBreachingFix", "status": "active", "source": "WhiteGiverMa/CombatExtended-BreachingFix@0b88bc736d50fdd0016efb3f40a459c38dffe9cd" },
-    { "directory": "DMS_Synthetic_Apparel_Repair", "packageId": "whitegiverma.dmssyntheticapparelrepair", "status": "active", "source": "WhiteGiverMa/DMS-ApparelRepair@ce5daaedbe06f4d617316cd4355dc5abbb92ccfa" },
+    { "directory": "DMS_Synthetic_Apparel_Repair", "packageId": "whitegiverma.dmssyntheticapparelrepair", "status": "active", "source": "local canonical source" },
     { "directory": "Fix_ExosuitDummyMeat", "packageId": "meidocho.exosuit.dummymeatfix", "status": "active", "source": "WhiteGiverMa/Fix_ExosuitDummyMeat@82f4063f17e562a8e480d88231ee3284a503be4c" },
     { "directory": "BossgroupConcurrentSummons", "packageId": "meidocho.bossgroupconcurrentsummons", "status": "active", "source": "local canonical source" },
     { "directory": "DMSWorkTypeCacheFix", "packageId": "meidocho.dms.worktypecachefix", "status": "active", "source": "local canonical source" },

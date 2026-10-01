@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -18,6 +19,7 @@ public static class Patches
 	private const string MilianRepairDriverTypeName = "Milira.JobDriver_MilianRepair";
 	private const string AutomatroidWeaponCategory = "AutomatroidWeapon";
 	private static readonly MethodInfo SingleParameterRepairTick = AccessTools.Method(typeof(MechRepairUtility), nameof(MechRepairUtility.RepairTick), new[] { typeof(Pawn) });
+	private static readonly Dictionary<Thing, float> GearRepairRemainders = new();
 	private static bool gearRepairTransactionsAvailable = true;
 
 	private static readonly HashSet<string> SyntheticDefNames = new()
@@ -420,7 +422,7 @@ public static class Patches
 			return false;
 		}
 
-		if (ApparelRepairEnabled && IsSynthetic(pawn))
+		if (ApparelRepairEnabled && ApparelRepairSpeedMultiplier > 0f && IsSynthetic(pawn))
 		{
 			foreach (Apparel apparel in pawn.apparel.WornApparel)
 			{
@@ -431,7 +433,7 @@ public static class Patches
 			}
 		}
 
-		if (!WeaponRepairEnabled || !IsDmsWeaponMech(pawn))
+		if (!WeaponRepairEnabled || WeaponRepairSpeedMultiplier <= 0f || !IsDmsWeaponMech(pawn))
 		{
 			return false;
 		}
@@ -490,8 +492,8 @@ public static class Patches
 			return false;
 		}
 
-		bool repairsApparel = ApparelRepairEnabled && IsSynthetic(mech);
-		bool repairsWeapons = WeaponRepairEnabled && IsDmsWeaponMech(mech);
+		bool repairsApparel = ApparelRepairEnabled && ApparelRepairSpeedMultiplier > 0f && IsSynthetic(mech);
+		bool repairsWeapons = WeaponRepairEnabled && WeaponRepairSpeedMultiplier > 0f && IsDmsWeaponMech(mech);
 		if (!repairsApparel && !repairsWeapons)
 		{
 			return false;
@@ -505,14 +507,14 @@ public static class Patches
 		{
 			foreach (Apparel apparel in mech.apparel.WornApparel)
 			{
-				AddGearRepair(result, apparel, repairAmount, ApparelRepairEnergyFraction);
+				AddGearRepair(result, apparel, repairAmount, ApparelRepairEnergyFraction, ApparelRepairSpeedMultiplier);
 			}
 		}
 		if (repairsWeapons)
 		{
 			foreach (ThingWithComps weapon in mech.equipment.AllEquipmentListForReading)
 			{
-				AddGearRepair(result, weapon, repairAmount, IsDmsMechStandardWeapon(weapon.def) ? StandardWeaponRepairEnergyFraction : WeaponRepairEnergyFraction);
+				AddGearRepair(result, weapon, repairAmount, IsDmsMechStandardWeapon(weapon.def) ? StandardWeaponRepairEnergyFraction : WeaponRepairEnergyFraction, WeaponRepairSpeedMultiplier);
 			}
 		}
 
@@ -525,21 +527,35 @@ public static class Patches
 		return true;
 	}
 
-	private static void AddGearRepair(GearRepairPlan plan, Thing gear, int repairAmount, float repairUnitsPerHitPoint)
+	private static void AddGearRepair(GearRepairPlan plan, Thing gear, int repairAmount, float repairUnitsPerHitPoint, float speedMultiplier)
 	{
 		if (!CanRepair(gear))
 		{
+			GearRepairRemainders.Remove(gear);
 			return;
 		}
 
-		int repairedAmount = Math.Min(repairAmount, gear.MaxHitPoints - gear.HitPoints);
-		if (repairedAmount <= 0)
+		float totalRepair = repairAmount * speedMultiplier;
+		if (GearRepairRemainders.TryGetValue(gear, out float remainder))
 		{
-			return;
+			totalRepair += remainder;
 		}
 
-		plan.Repairs.Add(new GearRepair(gear, repairedAmount));
-		plan.GearRepairUnits += repairedAmount * repairUnitsPerHitPoint;
+		int repairedAmount = Math.Min(Mathf.FloorToInt(totalRepair + 0.0001f), gear.MaxHitPoints - gear.HitPoints);
+		if (repairedAmount > 0)
+		{
+			plan.Repairs.Add(new GearRepair(gear, repairedAmount));
+			plan.GearRepairUnits += repairedAmount * repairUnitsPerHitPoint;
+		}
+
+		if (gear.HitPoints + repairedAmount >= gear.MaxHitPoints)
+		{
+			GearRepairRemainders.Remove(gear);
+		}
+		else
+		{
+			GearRepairRemainders[gear] = Mathf.Clamp(totalRepair - repairedAmount, 0f, 0.9999f);
+		}
 	}
 
 	private static void RunGearRepairPlan(Pawn mech, GearRepairPlan plan, float vanillaRepairUnits, int repairAmount, bool useDeltaRepair)
@@ -585,6 +601,10 @@ public static class Patches
 	private static float WeaponRepairEnergyFraction => DmsSyntheticApparelRepairMod.Settings?.WeaponRepairEnergyFraction ?? RepairSettings.DefaultEnergyFraction;
 
 	private static float StandardWeaponRepairEnergyFraction => DmsSyntheticApparelRepairMod.Settings?.StandardWeaponRepairEnergyFraction ?? 0f;
+
+	private static float ApparelRepairSpeedMultiplier => DmsSyntheticApparelRepairMod.Settings?.ApparelRepairSpeedMultiplier ?? RepairSettings.DefaultSpeedMultiplier;
+
+	private static float WeaponRepairSpeedMultiplier => DmsSyntheticApparelRepairMod.Settings?.WeaponRepairSpeedMultiplier ?? RepairSettings.DefaultSpeedMultiplier;
 
 	private static bool CanRepair(Thing gear)
 	{

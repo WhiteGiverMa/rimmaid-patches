@@ -6,12 +6,16 @@
 	<DMS_SyntheticApparelRepair_EnableApparelRepairDesc>Allow eligible synthetic mechs to repair worn apparel. Body damage repair is unaffected.</DMS_SyntheticApparelRepair_EnableApparelRepairDesc>
 	<DMS_SyntheticApparelRepair_ApparelEnergyFraction>Apparel energy cost: {0}</DMS_SyntheticApparelRepair_ApparelEnergyFraction>
 	<DMS_SyntheticApparelRepair_ApparelEnergyFractionDesc>Energy multiplier per apparel hit point repaired, relative to MechEnergyLossPerHP. Zero is free; 10% is the default.</DMS_SyntheticApparelRepair_ApparelEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_ApparelSpeedMultiplier>Apparel repair speed: {0}</DMS_SyntheticApparelRepair_ApparelSpeedMultiplier>
+	<DMS_SyntheticApparelRepair_ApparelSpeedMultiplierDesc>Hit points restored per damaged apparel item on each repair tick. 100% is the default (1 point per tick). Below 100%, fractional progress accumulates across ticks so the long-term average slows proportionally; 0% pauses apparel repair. Only affects this mod's apparel repair: energy per hit point and vanilla body repair speed are unchanged.</DMS_SyntheticApparelRepair_ApparelSpeedMultiplierDesc>
 	<DMS_SyntheticApparelRepair_EnableWeaponRepair>Enable weapon repair</DMS_SyntheticApparelRepair_EnableWeaponRepair>
 	<DMS_SyntheticApparelRepair_EnableWeaponRepairDesc>Allow eligible DMS and integrated weapon-capable mechs to repair equipped weapons. Body damage repair is unaffected.</DMS_SyntheticApparelRepair_EnableWeaponRepairDesc>
 	<DMS_SyntheticApparelRepair_WeaponEnergyFraction>Weapon energy cost: {0}</DMS_SyntheticApparelRepair_WeaponEnergyFraction>
 	<DMS_SyntheticApparelRepair_WeaponEnergyFractionDesc>Energy multiplier per non-standard weapon hit point repaired, relative to MechEnergyLossPerHP. Zero is free; 10% is the default.</DMS_SyntheticApparelRepair_WeaponEnergyFractionDesc>
 	<DMS_SyntheticApparelRepair_StandardWeaponEnergyFraction>Standard weapon energy cost: {0}</DMS_SyntheticApparelRepair_StandardWeaponEnergyFraction>
 	<DMS_SyntheticApparelRepair_StandardWeaponEnergyFractionDesc>Energy multiplier per AutomatroidWeapon hit point repaired, relative to MechEnergyLossPerHP. Zero is free and the default.</DMS_SyntheticApparelRepair_StandardWeaponEnergyFractionDesc>
+	<DMS_SyntheticApparelRepair_WeaponSpeedMultiplier>Weapon repair speed: {0}</DMS_SyntheticApparelRepair_WeaponSpeedMultiplier>
+	<DMS_SyntheticApparelRepair_WeaponSpeedMultiplierDesc>Hit points restored per damaged weapon (including standard weapons) on each repair tick. 100% is the default (1 point per tick). Below 100%, fractional progress accumulates across ticks so the long-term average slows proportionally; 0% pauses weapon repair. Only affects this mod's weapon repair: energy per hit point and vanilla body repair speed are unchanged.</DMS_SyntheticApparelRepair_WeaponSpeedMultiplierDesc>
 	<DMS_SyntheticApparelRepair_SettingsNote>Costs are paid from the repairing mech's energy. Milira's native repair energy rules remain unchanged. If DMS Synthetic is not installed, only weapon repair is active.</DMS_SyntheticApparelRepair_SettingsNote>
 	<DMS_SyntheticApparelRepair_ResetToDefaults>Reset to defaults</DMS_SyntheticApparelRepair_ResetToDefaults>
 </LanguageData>
