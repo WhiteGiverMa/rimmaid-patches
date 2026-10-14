@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Meidocho: Targeted Description Whitespace Fix</name>
+  <author>Meidocho</author>
+  <packageId>meidocho.targeteddescriptionwhitespacefix</packageId>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
+  </modDependencies>
+  <loadAfter><li>brrainz.harmony</li><li>Ancot.KiiroRace</li><li>OARK.RatkinFaction.OberoniaAurea</li></loadAfter>
+  <description>仅清理 Techprint_Kiiro_PrototypeGun 和 OA_RK_New_Windbreaker_G 描述首尾空白。保留正文、装备数值、科技印记与全部配置错误检查。适用于 RimWorld 1.7。</description>
+</ModMetaData>

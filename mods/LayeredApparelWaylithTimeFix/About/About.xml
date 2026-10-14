@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Layered Apparel - Waylith Time Fix</name>
+  <author>Meidocho</author>
+  <packageId>meidocho.layeredapparel.waylithtimefix</packageId>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
+    <li><packageId>costel.layeredapparel</packageId><displayName>Layered Apparel</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/3632480044</steamWorkshopUrl></li>
+  </modDependencies>
+  <loadAfter><li>brrainz.harmony</li><li>costel.layeredapparel</li></loadAfter>
+  <description>Replaces the unavailable unscaledTimeAsDouble call in Layered Apparel's vacuum appearance refresh with realtimeSinceStartupAsDouble. No save data changes. Remove when the upstream mod or Waylith fixes the missing API.</description>
+</ModMetaData>

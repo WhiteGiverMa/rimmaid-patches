@@ -169,15 +169,22 @@ public static class Patches
 	private static IEnumerable<CodeInstruction> TranspileDmsLegionRepairTransaction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
 	{
 		List<CodeInstruction> code = new(instructions);
-		MethodInfo repairTick = AccessTools.Method(typeof(MechRepairUtility), nameof(MechRepairUtility.RepairTick), new[] { typeof(Pawn), typeof(int) });
+		MethodInfo repairTick = SingleParameterRepairTick;
 		int repairTickIndex = code.FindIndex(instruction => Calls(instruction, repairTick));
+		bool hasDelta = repairTickIndex < 0;
+		if (hasDelta)
+		{
+			repairTick = AccessTools.Method(typeof(MechRepairUtility), nameof(MechRepairUtility.RepairTick), new[] { typeof(Pawn), typeof(int) });
+			repairTickIndex = code.FindIndex(instruction => Calls(instruction, repairTick));
+		}
 		if (!TryFindEnergyTransactionStart(code, repairTickIndex, out int transactionStart))
 		{
 			DisableGearRepair("DMS Legion repair transaction changed.");
 			return code;
 		}
 
-		InsertTransactionGuard(code, transactionStart, repairTickIndex + 1, AccessTools.Method(typeof(Patches), nameof(TryRunDmsLegionGearTransaction)), true, generator);
+		MethodInfo transaction = AccessTools.Method(typeof(Patches), hasDelta ? nameof(TryRunDmsLegionGearTransaction) : nameof(TryRunDmsLegionSingleGearTransaction));
+		InsertTransactionGuard(code, transactionStart, repairTickIndex + 1, transaction, hasDelta, generator);
 		return code;
 	}
 
@@ -306,6 +313,17 @@ public static class Patches
 		}
 
 		return TryRunGearRepairTransaction(mech, delta, delta, true);
+	}
+
+	private static bool TryRunDmsLegionSingleGearTransaction(JobDriver_RepairMech repairJob)
+	{
+		Pawn mech = repairJob.job.GetTarget(TargetIndex.A).Thing as Pawn;
+		if (mech != null && IsMilian(mech) && TryRunMilianRepairTransaction(repairJob.pawn, mech, 1))
+		{
+			return true;
+		}
+
+		return TryRunGearRepairTransaction(mech, 1, 1f, false);
 	}
 
 	private static bool TryRunMiliraGearTransaction(JobDriver repairJob)

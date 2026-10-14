@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Wolfein Black Science - Waylith Mesh Clone Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>meidocho.wolfeinblackscience.meshclonefix</packageId>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077</steamWorkshopUrl></li>
+    <li><packageId>WolfeinExpand.BlackScience</packageId><displayName>Wolfein Black Science Expand</displayName><steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3717539116</steamWorkshopUrl></li>
+  </modDependencies>
+  <loadAfter><li>brrainz.harmony</li><li>WolfeinExpand.BlackScience</li></loadAfter>
+  <description>RimWorld 1.7: give Owl greatsword UV effects independent meshes instead of mutating MeshPool planes shared by doors and other graphics. Preserves the original weapon rendering and does not modify Workshop files or saves.</description>
+</ModMetaData>

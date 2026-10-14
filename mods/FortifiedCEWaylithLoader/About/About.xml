@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Fortified CE - Waylith Loader</name>
+  <author>Meidocho (loader metadata); AOBA (FortifiedCE assembly)</author>
+  <packageId>meidocho.fortifiedce.waylithloader</packageId>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
+    <li><packageId>AOBA.Framework</packageId><displayName>Fortified Features Framework</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/3498575851</steamWorkshopUrl></li>
+    <li><packageId>CETeam.CombatExtended</packageId><displayName>Combat Extended</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2890901044</steamWorkshopUrl></li>
+  </modDependencies>
+  <loadAfter><li>brrainz.harmony</li><li>CETeam.CombatExtended</li><li>AOBA.Framework</li></loadAfter>
+  <description>Local RimWorld 1.7 loader for the existing AOBA FortifiedCE assembly, which the current framework's 1.7 load folders omit. Restores the original CE type definitions without replacing buildings, changing saves, or modifying the framework. Remove when upstream loads a compatible FortifiedCE assembly itself. This is not a complete certification of CE gameplay on 1.7.</description>
+</ModMetaData>
