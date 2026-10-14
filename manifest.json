@@ -28,6 +28,7 @@
     { "name": "KillFeedLocal", "reason": "full third-party mirror with a local binary patch; inactive" },
     { "name": "Adaptive-Storage-Framework", "reason": "full upstream fork; maintained separately" },
     { "name": "ConduitRoomStatsFix", "reason": "inactive experiment documented as ineffective; recovered source retained under archive/" },
-    { "name": "GizmoDiag", "reason": "temporary inactive diagnostic tool; recovered source retained under tools/" }
+    { "name": "GizmoDiag", "reason": "temporary inactive diagnostic tool; recovered source retained under tools/" },
+    { "name": "FortifiedCEWaylithLoader", "reason": "historical Waylith assembly loader metadata retained under archive/; third-party DLL not distributed; not recommended for installation" }
   ]
 }
