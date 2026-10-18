@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Exosuit CE - 1.7 Compatibility Loader</name>
+  <author>Meidocho (loader); AOBA (upstream CE content)</author>
+  <packageId>meidocho.exosuit.ce17loader</packageId>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName></li>
+    <li><packageId>CETeam.CombatExtended</packageId><displayName>Combat Extended</displayName></li>
+    <li><packageId>Aoba.Exosuit.Framework</packageId><displayName>Exosuit Framework</displayName></li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>CETeam.CombatExtended</li>
+    <li>Aoba.Exosuit.Framework</li>
+    <li>Aoba.DeadManSwitch.MobileDragoon</li>
+  </loadAfter>
+  <description>为 RimWorld 1.7 恢复 Exosuit Framework 暂未加载的 CE 程序集与配套背包内容，供 MobileDragoon 的现有 CE 补丁使用。不修改工坊原件。仅供本机经过接口验证的版本组合使用；上游恢复 CE 加载后须停用本补丁，避免重复程序集和定义。安装前阅读 README.md。</description>
+</ModMetaData>
