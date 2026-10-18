@@ -22,7 +22,8 @@
     { "directory": "Fix_WRMegaCorp_QuestExposeData", "packageId": "meidocho.fix_wrmegacorp_quest_exposedata", "status": "active", "source": "deployed self-contained mod" },
     { "directory": "LocalFix_MiliraFlightNullCheck", "packageId": "local.meidocho.MiliraFlightNullCheckFix", "status": "active", "source": "deployed self-contained mod" },
     { "directory": "WolfeinWeaponBoxCE", "packageId": "meidocho.wolfein.weaponboxce", "status": "game-qa-pending", "source": "local canonical source; added 2026-09-20" },
-    { "directory": "ExosuitCE17Loader", "packageId": "meidocho.exosuit.ce17loader", "status": "game-qa-pending", "source": "loader metadata only; third-party CE content copied locally from workshop 3352894993, not distributed" }
+    { "directory": "ExosuitCE17Loader", "packageId": "meidocho.exosuit.ce17loader", "status": "game-qa-pending", "source": "loader metadata only; third-party CE content copied locally from workshop 3352894993, not distributed" },
+    { "directory": "WeaponStationPickTarget", "packageId": "meidocho.weaponstation.picktarget", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-18" }
   ],
   "excluded": [
     { "name": "CombatExtendedLocal", "reason": "full upstream fork/mirror; maintained in WhiteGiverMa/CombatExtended" },

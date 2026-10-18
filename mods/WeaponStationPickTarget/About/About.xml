@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>武器基站：左键选择安装武器</name>
+  <author>WhiteGiverMa</author>
+  <packageId>meidocho.weaponstation.picktarget</packageId>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Vortex.WeaponStation</packageId>
+      <displayName>Weapon Station</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3807251471</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Vortex.WeaponStation</li>
+    <li>CETeam.CombatExtended</li>
+  </loadAfter>
+  <description>「安装武器」左键改为原版目标选择模式：点地上的远程武器即下达安装指派；右键仍打开原武器列表。同时兼容原版与 Combat Extended 的武器基站。适用于 RimWorld 1.7。</description>
+</ModMetaData>

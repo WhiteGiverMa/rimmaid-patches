@@ -44,6 +44,7 @@ See [`manifest.json`](manifest.json) for machine-readable metadata.
 | `Fix_WRMegaCorp_QuestExposeData` | Remove duplicate quest deep serialization | Active, game QA pending |
 | `LocalFix_MiliraFlightNullCheck` | Guard Milira flight tracker without a flight component | Active, game QA pending |
 | `WolfeinWeaponBoxCE` | [Live Wolfein weapon-box CE capacity settings](mods/WolfeinWeaponBoxCE/README.md), default +350 bulk / +0 weight | Added 2026-09-20, game QA pending |
+| `WeaponStationPickTarget` | [Weapon Station left-click weapon picker](mods/WeaponStationPickTarget/README.md); right-click keeps the original list | Added 2026-10-18, game QA pending |
 
 Historical local mirrors of full upstream mods are intentionally excluded. `archive/` is reserved for retired experiments; `tools/` is reserved for diagnostics that are not gameplay patches.
 
