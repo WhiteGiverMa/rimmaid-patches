@@ -45,6 +45,7 @@ See [`manifest.json`](manifest.json) for machine-readable metadata.
 | `LocalFix_MiliraFlightNullCheck` | Guard Milira flight tracker without a flight component | Active, game QA pending |
 | `WolfeinWeaponBoxCE` | [Live Wolfein weapon-box CE capacity settings](mods/WolfeinWeaponBoxCE/README.md), default +350 bulk / +0 weight | Added 2026-09-20, game QA pending |
 | `WeaponStationPickTarget` | [Weapon Station left-click weapon picker](mods/WeaponStationPickTarget/README.md); right-click keeps the original list | Added 2026-10-18, game QA pending |
+| `WeaponStationCERecoilFix` | [Weapon Station CE recoil compatibility](mods/WeaponStationCERecoilFix/README.md); preserve special weapon attacks and normal CE animations | Added 2026-10-20, user-confirmed game QA |
 
 Historical local mirrors of full upstream mods are intentionally excluded. `archive/` is reserved for retired experiments; `tools/` is reserved for diagnostics that are not gameplay patches.
 

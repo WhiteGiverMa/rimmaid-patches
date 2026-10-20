@@ -51,6 +51,7 @@
 | `Fix_WRMegaCorp_QuestExposeData` | 移除任务数据的重复深度序列化 | 活跃，游戏内 QA 待做 |
 | `LocalFix_MiliraFlightNullCheck` | 防护没有飞行组件的 Milira 飞行追踪器 | 活跃，游戏内 QA 待做 |
 | `WolfeinWeaponBoxCE` | [沃芬超容武器箱 CE 容量滑条](mods/WolfeinWeaponBoxCE/README.md)，默认体积 +350、重量 +0 | 2026-09-20 新增，游戏内 QA 待做 |
+| `WeaponStationCERecoilFix` | [武器基站 CE 特殊武器后坐力兼容](mods/WeaponStationCERecoilFix/README.md)，不改特殊攻击，保留标准 CE 动画 | 2026-10-20 新增，用户确认游戏内验证正常 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 
