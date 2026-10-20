@@ -29,6 +29,7 @@
 | CE_Fix_IsHunkering_NRE | CE 战术作业、压制与治疗预约 | 必须分别检查两项功能；一个上游修复合入不足以证明整包可移除 |
 | CE_Fix_MiliraFloatUnitElevation | CE 碰撞高度、自动目标选择和 Retarget 锚点 | CE/Milira 改为原生支持浮游高度或更换目标选择路径 |
 | Fix_CeleTech_DuplicateEquippableComps | CeleTech 七个武器 Def 继承、传奇武器卸装回调 | 作者去掉重复组件会使 Remove 命中数变化；作者补全卸装回调后须避免重复通知 |
+| CeleTechManagedWorkTableFix | `TryConsumeGatheredMaterials()` 的唯一 `ListerThings.ThingsInGroup(ThingRequestGroup)` 调用及整堆扣料路径 | 上游改为快照/安全枚举后停用；方法签名或调用数变化须复核，拒绝应用日志代表未生效 |
 | Fix_DMS_BookGrammarAndHeavyShield | DMS 研究语法与机体 body part group | 上游补齐规则或盾牌装备条件，避免重复追加 |
 | Fix_WRMegaCorp_QuestExposeData | WRMegaCorp ChoiceLetter_CSC.ExposeData 的 IL | 上游删除重复 Scribe_Deep 调用，或 transpiler 锚点改变 |
 | LocalFix_MiliraFlightNullCheck | Milira FlightTracker 前缀 | 上游自行检查缺失飞行组件，或改用不同飞行机制 |

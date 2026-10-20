@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>天工铸造：自动化中枢材料消耗修复</name>
+  <author>WhiteGiverMa</author>
+  <packageId>meidocho.celetech.managedworktablefix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>TOT.CeleTech.MKIII</packageId>
+      <displayName>CeleTech Arsenal MKIII</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3446237098</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>TOT.CeleTech.MKIII</li>
+  </loadAfter>
+  <description>修复天工铸造自动化中枢消耗整堆材料时的 Collection was modified 异常。仅让 TryConsumeGatheredMaterials 遍历地图物资列表的快照，保留原材料筛选、扣料、配方及生产进度逻辑。不改工坊原件或存档，不返还修复前已经损失的材料。
+
+Fixes automation-hub material enumeration when consuming an entire stack. Only snapshots the map material list inside TryConsumeGatheredMaterials; original filtering, consumption and production remain unchanged. Does not edit Workshop files or saves, or refund previously lost materials.</description>
+</ModMetaData>
