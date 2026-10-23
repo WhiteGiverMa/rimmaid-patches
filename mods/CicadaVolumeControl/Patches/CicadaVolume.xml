@@ -4,7 +4,7 @@
     <xpath>Defs/SoundDef[defName="Ambient_NightInsects_Standard" or defName="Ambient_NightInsects_Jungle" or defName="Ambient_DayInsects_Jungle"]/subSounds/li[name="Main"]/paramMappings</xpath>
     <value>
       <li>
-        <inParam Class="Meidocho.CicadaVolumeControl.SoundParamSource_CicadaVolume" />
+        <inParam Class="WhiteGiver.CicadaVolumeControl.SoundParamSource_CicadaVolume" />
         <outParam Class="SoundParamTarget_Volume" />
         <paramUpdateMode>Constant</paramUpdateMode>
         <curve>

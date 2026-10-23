@@ -16,7 +16,7 @@ namespace LocalFix_MiliraFlightNullCheck
     [StaticConstructorOnStartup]
     internal static class Bootstrap
     {
-        private const string HarmonyId = "local.meidocho.MiliraFlightNullCheckFix";
+        private const string HarmonyId = "local.whitegiver.MiliraFlightNullCheckFix";
 
         static Bootstrap()
         {

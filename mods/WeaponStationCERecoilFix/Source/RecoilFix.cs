@@ -6,7 +6,7 @@ using HarmonyLib;
 using UnityEngine;
 using Verse;
 
-namespace Meidocho.WeaponStationCERecoilFix;
+namespace WhiteGiver.WeaponStationCERecoilFix;
 
 public sealed class WeaponStationCERecoilFixMod : Mod
 {
@@ -18,7 +18,7 @@ public sealed class WeaponStationCERecoilFixMod : Mod
 
 public static class RecoilFix
 {
-    public const string HarmonyId = "meidocho.weaponstation.cerecoilfix";
+    public const string HarmonyId = "whitegiver.weaponstation.cerecoilfix";
     private const string LogPrefix = "[Weapon Station CE Recoil Fix]";
 
     private delegate void RecoilDelegate(ThingDef weaponDef, Verb shootVerb, out Vector3 drawOffset,

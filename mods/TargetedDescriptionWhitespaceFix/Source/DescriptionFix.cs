@@ -1,13 +1,13 @@
 using HarmonyLib;
 using Verse;
 
-namespace Meidocho.DescriptionWhitespaceFix;
+namespace WhiteGiver.DescriptionWhitespaceFix;
 
 public sealed class DescriptionFixMod : Mod
 {
     public DescriptionFixMod(ModContentPack content) : base(content)
     {
-        new Harmony("meidocho.targeteddescriptionwhitespacefix").PatchAll(typeof(DescriptionFixMod).Assembly);
+        new Harmony("whitegiver.targeteddescriptionwhitespacefix").PatchAll(typeof(DescriptionFixMod).Assembly);
     }
 }
 

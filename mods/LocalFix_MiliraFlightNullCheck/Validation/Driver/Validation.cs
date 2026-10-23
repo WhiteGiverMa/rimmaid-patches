@@ -12,7 +12,7 @@ namespace LocalFix.MiliraFlightNullCheck.Validation
 {
     internal static class Validation
     {
-        private const string OurHarmonyId = "local.meidocho.MiliraFlightNullCheckFix";
+        private const string OurHarmonyId = "local.whitegiver.MiliraFlightNullCheckFix";
         private const string MiliraHarmonyId = "Ancot.MiliraRaceHarmonyPatch";
         private const string StubHarmonyId = "local.validation.can-ever-fly-stub";
         private const string MiliraPatchTypeName = "Milira.MilianPatch_Pawn_FlightTracker_Notify_JobStarted";

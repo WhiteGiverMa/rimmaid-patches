@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 	<name>Fix: WRMegaCorp Quest ExposeData NRE</name>
-	<author>Meidocho (local patch)</author>
-	<packageId>meidocho.fix_wrmegacorp_quest_exposedata</packageId>
+	<author>WhiteGiver (local patch)</author>
+	<packageId>whitegiver.fix_wrmegacorp_quest_exposedata</packageId>
 	<description>Fixes NullReferenceException in Quest.ExposeData when loading saves with WRMegaCorp's ChoiceLetter_CSC.
 Root cause: ChoiceLetter_CSC.ExposeData() calls both Scribe_References (via base) and Scribe_Deep on the same quest field.
 This patch removes the redundant Scribe_Deep.Look call via Harmony Transpiler.
-See docs/PATCH_Meidocho_WRMegaCorp_QuestExposeData_NRE.md for details.</description>
+See docs/PATCH_WhiteGiver_WRMegaCorp_QuestExposeData_NRE.md for details.</description>
 	<supportedVersions>
 		<li>1.6</li>
 	</supportedVersions>

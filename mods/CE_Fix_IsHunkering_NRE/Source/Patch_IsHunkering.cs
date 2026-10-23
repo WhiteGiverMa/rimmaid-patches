@@ -34,7 +34,7 @@ namespace CE_Fix_IsHunkering_NRE;
 [StaticConstructorOnStartup]
 public static class Patch_IsHunkering
 {
-    private const string HarmonyId = "meidocho.ce_fix_ishunkering_nre";
+    private const string HarmonyId = "whitegiver.ce_fix_ishunkering_nre";
     private const int NreWarningKey = 147001;
 
     private static readonly FieldInfo _lastTendJobCheckedAtField =

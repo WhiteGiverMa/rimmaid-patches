@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <AssemblyName>Fix_CeleTech_DuplicateEquippableComps</AssemblyName>
-    <RootNamespace>Meidocho.CeleTechDuplicateEquippableFix</RootNamespace>
+    <RootNamespace>WhiteGiver.CeleTechDuplicateEquippableFix</RootNamespace>
     <LangVersion>12.0</LangVersion>
     <Nullable>disable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

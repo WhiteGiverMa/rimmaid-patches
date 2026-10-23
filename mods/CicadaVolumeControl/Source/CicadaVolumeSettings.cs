@@ -1,7 +1,7 @@
 using System;
 using Verse;
 
-namespace Meidocho.CicadaVolumeControl;
+namespace WhiteGiver.CicadaVolumeControl;
 
 public sealed class CicadaVolumeSettings : ModSettings
 {

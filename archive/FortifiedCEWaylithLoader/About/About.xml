@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>Fortified CE - Waylith Loader</name>
-  <author>Meidocho (loader metadata); AOBA (FortifiedCE assembly)</author>
-  <packageId>meidocho.fortifiedce.waylithloader</packageId>
+  <author>WhiteGiver (loader metadata); AOBA (FortifiedCE assembly)</author>
+  <packageId>whitegiver.fortifiedce.waylithloader</packageId>
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>

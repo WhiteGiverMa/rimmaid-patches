@@ -3,13 +3,13 @@ using HarmonyLib;
 using RimWorld;
 using Verse;
 
-namespace Meidocho.DMSHumanlikeMechUntainted;
+namespace WhiteGiver.DMSHumanlikeMechUntainted;
 
 public sealed class DMSHumanlikeMechUntaintedMod : Mod
 {
     public DMSHumanlikeMechUntaintedMod(ModContentPack content) : base(content)
     {
-        new Harmony("meidocho.dms.humanlikemechuntainted").PatchAll(typeof(DMSHumanlikeMechUntaintedMod).Assembly);
+        new Harmony("whitegiver.dms.humanlikemechuntainted").PatchAll(typeof(DMSHumanlikeMechUntaintedMod).Assembly);
     }
 }
 

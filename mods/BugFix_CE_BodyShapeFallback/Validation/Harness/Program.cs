@@ -12,7 +12,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace Meidocho.BodyShapeFallbackHarness;
+namespace WhiteGiver.BodyShapeFallbackHarness;
 
 // Exercises the REAL compiled patch DLL against the REAL CE_Utility.GetCollisionBodyFactors
 // from the active Combat Extended assembly, without booting the game.
@@ -96,7 +96,7 @@ public static class Program
             Assembly patchAssembly = Assembly.LoadFrom(patchDll);
             Type modType = patchAssembly.GetType("BugFix_CE_BodyShapeFallback.BodyShapeFallbackPatch", throwOnError: true);
 
-            var fixtureHarmony = new Harmony("meidocho.bodyshapefallback.harness");
+            var fixtureHarmony = new Harmony("whitegiver.bodyshapefallback.harness");
             InstallFixtures(fixtureHarmony);
             SetBodyShapes();
 

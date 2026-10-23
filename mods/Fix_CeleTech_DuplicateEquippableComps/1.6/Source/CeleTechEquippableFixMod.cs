@@ -3,11 +3,11 @@ using System.Reflection;
 using HarmonyLib;
 using Verse;
 
-namespace Meidocho.CeleTechDuplicateEquippableFix;
+namespace WhiteGiver.CeleTechDuplicateEquippableFix;
 
 public sealed class CeleTechEquippableFixMod : Mod
 {
-    private const string HarmonyId = "meidocho.celetech.duplicateequippablecompsfix";
+    private const string HarmonyId = "whitegiver.celetech.duplicateequippablecompsfix";
 
     // Only the two defs whose comps node the XML patch cut from the vanilla BaseWeapon
     // chain, leaving CompLegendaryWeapons as the single equippable comp.

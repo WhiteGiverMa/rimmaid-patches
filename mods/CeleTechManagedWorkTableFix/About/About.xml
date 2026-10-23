@@ -2,7 +2,7 @@
 <ModMetaData>
   <name>天工铸造：自动化中枢材料消耗修复</name>
   <author>WhiteGiverMa</author>
-  <packageId>meidocho.celetech.managedworktablefix</packageId>
+  <packageId>whitegiver.celetech.managedworktablefix</packageId>
   <modVersion>1.0.0</modVersion>
   <supportedVersions>
     <li>1.7</li>

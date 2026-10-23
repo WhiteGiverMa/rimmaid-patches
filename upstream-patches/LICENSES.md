@@ -10,13 +10,13 @@ Applies to `combat-extended-local.patch` and `combat-extended-wall-fragment.patc
 
 - Original project and attribution: [Combat Extended and the CE Team](https://github.com/CombatExtended-Continued/CombatExtended).
 - [Upstream license declaration](https://github.com/CombatExtended-Continued/CombatExtended/blob/2d2b8d20c43c09121ef9e444bda19b219cb1fcf7/README.md#license): [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/), [legal text](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
-- Local modifications by WhiteGiverMa / Meidocho are recorded in the diffs, with minimal context from upstream; the CE-derived patches retain those terms. No upstream endorsement is implied.
+- Local modifications by WhiteGiverMa are recorded in the diffs, with minimal context from upstream; the CE-derived patches retain those terms. No upstream endorsement is implied.
 - Aggregate base: `2d2b8d20c43c09121ef9e444bda19b219cb1fcf7`. Captured working tree: fork commit `6a0bc4ed1cb2ce689441fce150047f3dc5f48351` plus five tracked modified files. The GenRadial restoration cancels an earlier local commit, so it has no hunk relative to this base.
 - Wall-fragment patch commit: `1ec3785bc8c4a28fafef825bfded5ed3711dbf52`; parent/base: `7a7ed38eb3c4736694f296491408fdc766fbd992`.
 
 ## Adaptive Storage Framework
 
-Applies to `adaptive-storage-eject-rendering.patch`. Source: [bbradson/Adaptive-Storage-Framework](https://github.com/bbradson/Adaptive-Storage-Framework); license read from its checked-out `LICENSE` at the local experiment based on `31ee88b`. Patch commit `7cb475af19bf4a8dbb68d781961b5c0b1e364b3e` is **rejected/reverted history, not an active fix**. The local modification is by WhiteGiverMa / Meidocho. Original license notice:
+Applies to `adaptive-storage-eject-rendering.patch`. Source: [bbradson/Adaptive-Storage-Framework](https://github.com/bbradson/Adaptive-Storage-Framework); license read from its checked-out `LICENSE` at the local experiment based on `31ee88b`. Patch commit `7cb475af19bf4a8dbb68d781961b5c0b1e364b3e` is **rejected/reverted history, not an active fix**. The local modification is by WhiteGiverMa. Original license notice:
 
 MIT License
 

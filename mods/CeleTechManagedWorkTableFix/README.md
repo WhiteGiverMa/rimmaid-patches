@@ -2,7 +2,7 @@
 
 独立 RimWorld **1.7 / Waylith** 兼容 Mod，依赖 Harmony 与 CeleTech Arsenal MKIII（工坊 `3446237098`）。
 
-`packageId`: `meidocho.celetech.managedworktablefix`，版本 `1.0.0`。
+`packageId`: `whitegiver.celetech.managedworktablefix`，版本 `1.0.0`。
 
 ## 修复行为
 

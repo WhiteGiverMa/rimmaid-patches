@@ -2,7 +2,7 @@
 <ModMetaData>
   <name>武器基站：左键选择安装武器</name>
   <author>WhiteGiverMa</author>
-  <packageId>meidocho.weaponstation.picktarget</packageId>
+  <packageId>whitegiver.weaponstation.picktarget</packageId>
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li>

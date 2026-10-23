@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <AssemblyName>BossgroupConcurrentSummons</AssemblyName>
-    <RootNamespace>Meidocho.BossgroupConcurrentSummons</RootNamespace>
+    <RootNamespace>WhiteGiver.BossgroupConcurrentSummons</RootNamespace>
     <LangVersion>12.0</LangVersion>
     <Nullable>disable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

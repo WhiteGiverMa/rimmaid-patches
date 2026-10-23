@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Meidocho: Stub DamageDefs for UFPC CE patch cross-reference noise suppression.
+<!-- WhiteGiver: Stub DamageDefs for UFPC CE patch cross-reference noise suppression.
      These DamageDefs are referenced by UFPC weapons in the CE patch but UFPC is not installed.
      Adding stubs prevents "Could not resolve cross-reference" red errors in the log.
      These defs are never used in gameplay without UFPC. -->

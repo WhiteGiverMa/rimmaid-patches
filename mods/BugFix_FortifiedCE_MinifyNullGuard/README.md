@@ -12,7 +12,7 @@ The reported failure involved a null `MinifiedThing` result reaching the third-p
 
 ## Contents and dependency
 
-- Package ID is unchanged: `local.meidocho.fortifiedce_minifynullguard`.
+- Package ID is unchanged: `local.whitegiver.fortifiedce_minifynullguard`.
 - `Source/MinifyNullGuard.cs` is the original runtime logic with misleading comments corrected.
 - `Assemblies/BugFix_FortifiedCE_MinifyNullGuard.dll` is the retained original binary.
 - Dependency: Harmony and Fortified Features Framework (`AOBA.Framework`, Workshop `3498575851`).

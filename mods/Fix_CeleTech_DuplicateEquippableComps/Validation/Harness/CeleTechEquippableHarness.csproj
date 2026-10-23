@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net48</TargetFramework>
     <AssemblyName>CeleTechEquippableHarness</AssemblyName>
-    <RootNamespace>Meidocho.CeleTechEquippableHarness</RootNamespace>
+    <RootNamespace>WhiteGiver.CeleTechEquippableHarness</RootNamespace>
     <LangVersion>12.0</LangVersion>
     <Nullable>disable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

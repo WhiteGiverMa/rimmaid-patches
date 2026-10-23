@@ -1,6 +1,6 @@
 # 蝉鸣音量 / Cicada Volume
 
-RimWorld **1.7** 独立小 mod，`meidocho.ambience.cicadavolume`，版本 1.0.0。无需 Harmony 或其他前置。
+RimWorld **1.7** 独立小 mod，`whitegiver.ambience.cicadavolume`，版本 1.0.0。无需 Harmony 或其他前置。
 
 ## 使用
 

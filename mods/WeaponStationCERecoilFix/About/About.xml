@@ -2,7 +2,7 @@
 <ModMetaData>
   <name>武器基站：CE 特殊武器后坐力兼容</name>
   <author>WhiteGiverMa</author>
-  <packageId>meidocho.weaponstation.cerecoilfix</packageId>
+  <packageId>whitegiver.weaponstation.cerecoilfix</packageId>
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li>

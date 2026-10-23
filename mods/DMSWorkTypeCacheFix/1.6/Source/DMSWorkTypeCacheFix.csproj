@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <AssemblyName>DMSWorkTypeCacheFix</AssemblyName>
-    <RootNamespace>Meidocho.DMSWorkTypeCacheFix</RootNamespace>
+    <RootNamespace>WhiteGiver.DMSWorkTypeCacheFix</RootNamespace>
     <LangVersion>12.0</LangVersion>
     <Nullable>disable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

@@ -101,9 +101,9 @@ internal static class Program
     private static void Absent()
     {
         Assembly patch = AssemblyLoadContext.Default.LoadFromAssemblyPath(PatchPath);
-        Type mod = patch.GetType("Meidocho.WeaponStationCERecoilFix.WeaponStationCERecoilFixMod", true)!;
+        Type mod = patch.GetType("WhiteGiver.WeaponStationCERecoilFix.WeaponStationCERecoilFixMod", true)!;
         Activator.CreateInstance(mod, new object?[] { null });
-        if (Harmony.GetAllPatchedMethods().Any(method => Harmony.GetPatchInfo(method)?.Owners.Contains("meidocho.weaponstation.cerecoilfix") == true))
+        if (Harmony.GetAllPatchedMethods().Any(method => Harmony.GetPatchInfo(method)?.Owners.Contains("whitegiver.weaponstation.cerecoilfix") == true))
             throw new InvalidOperationException("Patch registered despite absent CE weapon station.");
         Console.WriteLine("GREEN: actual Mod constructor safely skips absent CE weapon station.");
     }
@@ -111,17 +111,17 @@ internal static class Program
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static void Green()
     {
-        const string owner = "meidocho.weaponstation.cerecoilfix";
+        const string owner = "whitegiver.weaponstation.cerecoilfix";
         Assembly ce = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(BoundDirectory, "CombatExtended.dll"));
         Assembly station = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(BoundDirectory, "WeaponStation_CE.dll"));
         Assembly patch = AssemblyLoadContext.Default.LoadFromAssemblyPath(PatchPath);
-        Type fix = patch.GetType("Meidocho.WeaponStationCERecoilFix.RecoilFix", true)!;
+        Type fix = patch.GetType("WhiteGiver.WeaponStationCERecoilFix.RecoilFix", true)!;
         MethodInfo original = ce.GetType("CombatExtended.CE_Utility", true)!.GetMethod("Recoil")!;
         MethodInfo draw = station.GetType("WeaponStation_CE.Building_WeaponStationCE", true)!.GetMethod("DrawAt")!;
         MethodInfo replacement = fix.GetMethod("RecoilForStation")!;
         if (!original.GetParameters().Select(parameter => parameter.ParameterType).SequenceEqual(replacement.GetParameters().Select(parameter => parameter.ParameterType)))
             throw new InvalidOperationException("Wrapper parameter identities differ from actual CE Recoil.");
-        Type mod = patch.GetType("Meidocho.WeaponStationCERecoilFix.WeaponStationCERecoilFixMod", true)!;
+        Type mod = patch.GetType("WhiteGiver.WeaponStationCERecoilFix.WeaponStationCERecoilFixMod", true)!;
         Activator.CreateInstance(mod, new object?[] { null });
         if (Harmony.GetPatchInfo(draw)?.Transpilers.Count(p => p.owner == owner) != 1)
             throw new InvalidOperationException("The actual station DrawAt did not register exactly one transpiler.");

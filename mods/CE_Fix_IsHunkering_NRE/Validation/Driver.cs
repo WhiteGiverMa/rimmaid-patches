@@ -27,7 +27,7 @@ using Verse.AI;
 //                  that can only remove an already-built TendSelf job.
 public static class IsHunkeringPatchValidation
 {
-    private const string HarmonyId = "meidocho.ce_fix_ishunkering_nre";
+    private const string HarmonyId = "whitegiver.ce_fix_ishunkering_nre";
 
     private static int failures;
 

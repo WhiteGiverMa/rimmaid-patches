@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>WVC Work Modes - CE Compatibility Patch</name>
-  <author>Meidocho (local patch)</author>
-  <packageId>meidocho.wvc.ce.compat</packageId>
+  <author>WhiteGiver (local patch)</author>
+  <packageId>whitegiver.wvc.ce.compat</packageId>
   <description>
     Fixes "Not enough squares to get to radius 199" red error when using WVC Work Modes with Combat Extended.
     Caps the radial search radius to CE's safe maximum (118 cells).

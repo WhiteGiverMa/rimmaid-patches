@@ -3,7 +3,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 
-namespace Meidocho.CEFix.MiliraFloatUnitElevation;
+namespace WhiteGiver.CEFix.MiliraFloatUnitElevation;
 
 /// <summary>
 /// BASELINE (2026-07-15): Before this change the mod performed zero automatic-target

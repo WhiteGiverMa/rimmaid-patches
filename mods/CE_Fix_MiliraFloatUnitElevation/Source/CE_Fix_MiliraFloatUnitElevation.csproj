@@ -4,7 +4,7 @@
     <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>CE_Fix_MiliraFloatUnitElevation</AssemblyName>
-    <RootNamespace>Meidocho.CEFix.MiliraFloatUnitElevation</RootNamespace>
+    <RootNamespace>WhiteGiver.CEFix.MiliraFloatUnitElevation</RootNamespace>
     <OutputPath>bin\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

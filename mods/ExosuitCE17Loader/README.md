@@ -20,4 +20,4 @@
 
 上游 Exosuit **实际恢复**自己的 CE 程序集及定义加载后，在下一次启动前停用本补丁，避免重复程序集/定义；仅 CE 或框架宣布更新，不等于已验证可退役。核对 Exosuit 的 LoadFolders、CE 内容校验值及新日志。Exosuit、MobileDragoon、CE 或游戏更新后都需要重新检查接口和引用；不得盲目沿用旧副本。
 
-Steam 不覆盖本地 Mods，但也不会自动更新这份副本。可用 PowerShell `Get-FileHash -Algorithm SHA256` 对照本地清单检测上游变化。切到其他游戏大版本前停用并复核。撤回仅需在游戏关闭时禁用 `meidocho.exosuit.ce17loader`，原工坊文件不需恢复；加载含相关装备的存档前恢复兼容内容，不清理存档中的物品。
+Steam 不覆盖本地 Mods，但也不会自动更新这份副本。可用 PowerShell `Get-FileHash -Algorithm SHA256` 对照本地清单检测上游变化。切到其他游戏大版本前停用并复核。撤回仅需在游戏关闭时禁用 `whitegiver.exosuit.ce17loader`，原工坊文件不需恢复；加载含相关装备的存档前恢复兼容内容，不清理存档中的物品。

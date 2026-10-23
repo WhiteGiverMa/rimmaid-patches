@@ -8,7 +8,7 @@ using HarmonyLib;
 using Verse;
 using Verse.AI;
 
-namespace Meidocho.CEFix.MiliraFloatUnitElevation;
+namespace WhiteGiver.CEFix.MiliraFloatUnitElevation;
 
 /// <summary>
 /// BASELINE (2026-07-15): Verb_LaunchProjectileCE.Retarget() unconditionally
@@ -56,7 +56,7 @@ public static class RetargetFilterPatch
                 return;
             }
 
-            new Harmony("meidocho.ce_fix_milira_float_unit_retarget").Patch(
+            new Harmony("whitegiver.ce_fix_milira_float_unit_retarget").Patch(
                 retargetMethod,
                 transpiler: new HarmonyMethod(
                     typeof(RetargetFilterPatch), nameof(Transpiler)));

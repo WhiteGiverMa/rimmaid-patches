@@ -12,7 +12,7 @@
 
 ## 内容与依赖
 
-- Package ID 未变：`local.meidocho.fortifiedce_minifynullguard`。
+- Package ID 未变：`local.whitegiver.fortifiedce_minifynullguard`。
 - `Source/MinifyNullGuard.cs` 是原始运行时逻辑，其中误导性的注释已修正。
 - `Assemblies/BugFix_FortifiedCE_MinifyNullGuard.dll` 是保留的原始二进制。
 - 依赖：Harmony 和 Fortified Features Framework（`AOBA.Framework`，创意工坊 `3498575851`）。

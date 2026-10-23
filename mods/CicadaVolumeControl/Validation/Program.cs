@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using System.Xml;
-using Meidocho.CicadaVolumeControl;
+using WhiteGiver.CicadaVolumeControl;
 using Mono.Cecil;
 using UnityEngine;
 using Verse;

@@ -4,11 +4,11 @@ using System.Reflection;
 using HarmonyLib;
 using Verse;
 
-namespace Meidocho.DubsPerformanceAnalyzerFix;
+namespace WhiteGiver.DubsPerformanceAnalyzerFix;
 
 public sealed class DubsPerformanceAnalyzerFixMod : Mod
 {
-    private const string HarmonyId = "meidocho.dubsperformanceanalyzerfix";
+    private const string HarmonyId = "whitegiver.dubsperformanceanalyzerfix";
     private const string TickProfilerTypeName = "Analyzer.Profiling.H_TickListTick";
     private static readonly HashSet<int> reportedMalformedThingIds = new HashSet<int>();
 

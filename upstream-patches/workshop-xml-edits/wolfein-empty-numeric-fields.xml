@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Recovery artifact: Wolfein Race empty numeric field removal (local edit by Meidocho).
+  Recovery artifact: Wolfein Race empty numeric field removal (local edit by WhiteGiver).
   Workshop item 3473140562, file 1.6/Defs/ThingDefs_Weapon/Melee_Industrial.xml.
 
   The original local edit removed empty <relicChance></relicChance> and

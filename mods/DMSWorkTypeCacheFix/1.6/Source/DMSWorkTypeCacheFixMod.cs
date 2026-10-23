@@ -3,11 +3,11 @@ using HarmonyLib;
 using RimWorld;
 using Verse;
 
-namespace Meidocho.DMSWorkTypeCacheFix;
+namespace WhiteGiver.DMSWorkTypeCacheFix;
 
 public sealed class DMSWorkTypeCacheFixMod : Mod
 {
-    private const string HarmonyId = "meidocho.dms.worktypecachefix";
+    private const string HarmonyId = "whitegiver.dms.worktypecachefix";
 
     public DMSWorkTypeCacheFixMod(ModContentPack content) : base(content)
     {

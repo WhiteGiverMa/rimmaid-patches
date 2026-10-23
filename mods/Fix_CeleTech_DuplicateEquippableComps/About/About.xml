@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 	<name>CeleTech Duplicate Equippable Comp Fix (Local Patch)</name>
-	<author>meidocho</author>
-	<packageId>meidocho.celetech.duplicateequippablecompsfix</packageId>
+	<author>whitegiver</author>
+	<packageId>whitegiver.celetech.duplicateequippablecompsfix</packageId>
 	<modVersion>1.1.1</modVersion>
 	<supportedVersions>
 		<li>1.6</li>

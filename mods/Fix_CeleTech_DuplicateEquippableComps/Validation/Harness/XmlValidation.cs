@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml;
 using Verse;
 
-namespace Meidocho.CeleTechEquippableHarness;
+namespace WhiteGiver.CeleTechEquippableHarness;
 
 // Uses the installed game's parser, patch workers and inheritance resolver, not an emulator.
 internal static class XmlValidation

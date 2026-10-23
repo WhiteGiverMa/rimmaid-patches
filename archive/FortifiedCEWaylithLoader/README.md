@@ -12,4 +12,4 @@
 
 游戏浅测：重启后开发者快速开始，确认进入地图，并检查日志不再出现FortifiedCE类型缺失、FTC null thingClass和ReadingPolicyDatabase异常。实战功能另需观察，不能只靠开局通过宣称全兼容。
 
-时效性：FFF上游恢复兼容FortifiedCE加载后退役本模组，避免程序集重复。任何FFF/CE更新都须重新核对成员、Harmony注册与新日志；不能按旧hash直接重打。撤回：关闭游戏后从ModsConfig移除 `meidocho.fortifiedce.waylithloader`，保留目录不影响未启用状态。
+时效性：FFF上游恢复兼容FortifiedCE加载后退役本模组，避免程序集重复。任何FFF/CE更新都须重新核对成员、Harmony注册与新日志；不能按旧hash直接重打。撤回：关闭游戏后从ModsConfig移除 `whitegiver.fortifiedce.waylithloader`，保留目录不影响未启用状态。

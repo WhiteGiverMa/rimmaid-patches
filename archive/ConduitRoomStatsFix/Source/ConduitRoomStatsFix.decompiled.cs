@@ -12,7 +12,7 @@ public sealed class ConduitRoomStatsFixMod : Mod
     public ConduitRoomStatsFixMod(ModContentPack content) : base(content)
     {
         Log.Message("[ConduitRoomStatsFix] Loaded, patching...");
-        new Harmony("meidocho.conduitroomstatsfix").PatchAll();
+        new Harmony("whitegiver.conduitroomstatsfix").PatchAll();
         Log.Message("[ConduitRoomStatsFix] PatchAll done");
     }
 }

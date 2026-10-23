@@ -2,7 +2,7 @@
 <ModMetaData>
   <name>蝉鸣音量 / Cicada Volume</name>
   <author>WhiteGiverMa</author>
-  <packageId>meidocho.ambience.cicadavolume</packageId>
+  <packageId>whitegiver.ambience.cicadavolume</packageId>
   <modVersion>1.0.0</modVersion>
   <supportedVersions>
     <li>1.7</li>

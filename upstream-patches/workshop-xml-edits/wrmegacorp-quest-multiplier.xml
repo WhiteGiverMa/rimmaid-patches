@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Recovery artifact: WRMegaCorp quest reward multiplier initialization (local edit by Meidocho).
+  Recovery artifact: WRMegaCorp quest reward multiplier initialization (local edit by WhiteGiver).
   Workshop item 3687841204, files under 1.6/Defs/WRMC_QuestScriptDefs/.
 
   The upstream scripts use $questRewardMultiplier in reward math without ever

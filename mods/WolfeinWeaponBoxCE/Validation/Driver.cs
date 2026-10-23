@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml;
-using Meidocho.WolfeinWeaponBoxCE;
+using WhiteGiver.WolfeinWeaponBoxCE;
 using RimWorld;
 using Verse;
 

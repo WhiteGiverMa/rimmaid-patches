@@ -3,11 +3,11 @@ using System.Reflection;
 using HarmonyLib;
 using Verse;
 
-namespace Meidocho.KeyzAllowUtilitiesFinishOffFix;
+namespace WhiteGiver.KeyzAllowUtilitiesFinishOffFix;
 
 public sealed class KeyzAllowUtilitiesFinishOffFixMod : Mod
 {
-    private const string HarmonyId = "meidocho.keyzallowutilities.finishofffix";
+    private const string HarmonyId = "whitegiver.keyzallowutilities.finishofffix";
     private const string WorkGiverTypeName = "KeyzAllowUtilities.WorkGiver_FinishOff";
     private const string IsValidTargetMethodName = "IsValidTarget";
 

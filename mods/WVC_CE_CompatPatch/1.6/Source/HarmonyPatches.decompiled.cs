@@ -14,7 +14,7 @@ public static class HarmonyPatches
     {
         try
         {
-            var harmony = new Harmony("meidocho.wvc.ce.compatpatch");
+            var harmony = new Harmony("whitegiver.wvc.ce.compatpatch");
             MethodInfo threeParameter = AccessTools.Method(
                 typeof(GenRadial),
                 "RadialCellsAround",

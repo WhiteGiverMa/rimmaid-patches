@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using Verse;
 
-namespace Meidocho.CeleTechManagedWorkTableFix;
+namespace WhiteGiver.CeleTechManagedWorkTableFix;
 
 public sealed class CeleTechManagedWorkTableFixMod : Mod
 {
@@ -18,7 +18,7 @@ public sealed class CeleTechManagedWorkTableFixMod : Mod
 
 public static class MaterialListFix
 {
-    public const string HarmonyId = "meidocho.celetech.managedworktablefix";
+    public const string HarmonyId = "whitegiver.celetech.managedworktablefix";
     private const string LogPrefix = "[CeleTech Managed WorkTable Fix]";
     private static readonly MethodInfo Original = AccessTools.Method(typeof(ListerThings),
         nameof(ListerThings.ThingsInGroup), new[] { typeof(ThingRequestGroup) });

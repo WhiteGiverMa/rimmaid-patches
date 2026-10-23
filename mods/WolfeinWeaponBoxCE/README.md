@@ -1,6 +1,6 @@
 # 沃芬超容武器箱 CE / Wolfein Weapon Box CE
 
-RimWorld **1.6** 独立补丁，packageId：`meidocho.wolfein.weaponboxce`，版本 1.0.0。
+RimWorld **1.6** 独立补丁，packageId：`whitegiver.wolfein.weaponboxce`，版本 1.0.0。
 
 ## 功能
 

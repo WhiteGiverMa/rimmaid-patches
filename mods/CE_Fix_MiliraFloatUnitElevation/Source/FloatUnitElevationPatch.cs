@@ -4,7 +4,7 @@ using CombatExtended;
 using HarmonyLib;
 using Verse;
 
-namespace Meidocho.CEFix.MiliraFloatUnitElevation;
+namespace WhiteGiver.CEFix.MiliraFloatUnitElevation;
 
 [StaticConstructorOnStartup]
 public static class FloatUnitElevationPatch
@@ -27,7 +27,7 @@ public static class FloatUnitElevationPatch
                 return;
             }
 
-            new Harmony("meidocho.ce_fix_milira_float_unit_elevation").Patch(
+            new Harmony("whitegiver.ce_fix_milira_float_unit_elevation").Patch(
                 calculateHeightRange,
                 postfix: new HarmonyMethod(typeof(FloatUnitElevationPatch), nameof(ApplyFloatUnitElevation)));
 

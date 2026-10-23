@@ -1,7 +1,7 @@
 using System;
 using Verse;
 
-namespace Meidocho.WolfeinWeaponBoxCE;
+namespace WhiteGiver.WolfeinWeaponBoxCE;
 
 public sealed class WeaponBoxSettings : ModSettings
 {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>Local Fix - Milira Flight NullCheck</name>
-  <author>Meidocho (Local Patch)</author>
-  <packageId>local.meidocho.MiliraFlightNullCheckFix</packageId>
+  <author>WhiteGiver (Local Patch)</author>
+  <packageId>local.whitegiver.MiliraFlightNullCheckFix</packageId>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>

@@ -4,7 +4,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace Meidocho.WolfeinWeaponBoxCE;
+namespace WhiteGiver.WolfeinWeaponBoxCE;
 
 public sealed class WeaponBoxMod : Mod
 {

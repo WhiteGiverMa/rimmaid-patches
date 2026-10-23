@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
-using Meidocho.CeleTechDuplicateEquippableFix;
+using WhiteGiver.CeleTechDuplicateEquippableFix;
 using RimWorld;
 using Verse;
 
-namespace Meidocho.CeleTechEquippableHarness;
+namespace WhiteGiver.CeleTechEquippableHarness;
 
 // Exercises the REAL compiled patch DLL (Fix_CeleTech_DuplicateEquippableComps.dll) against
 // the REAL CeleTech.Base.CompLegendaryWeapons from the workshop DLL, without booting the game.
@@ -130,11 +130,11 @@ public static class Program
 
             var original = AccessTools.Method(AccessTools.TypeByName("CeleTech.Base.CompLegendaryWeapons"), "Notify_Unequipped");
             var owners = Harmony.GetPatchInfo(original)?.Owners;
-            Check(owners != null && owners.Contains("meidocho.celetech.duplicateequippablecompsfix"),
+            Check(owners != null && owners.Contains("whitegiver.celetech.duplicateequippablecompsfix"),
                 "Harmony patch registered on real CeleTech.Base.CompLegendaryWeapons.Notify_Unequipped (owners: " + string.Join(",", owners ?? (IEnumerable<string>)Array.Empty<string>()) + ")");
             // Ordering proof: postfix records its sequence after the original body would run;
             // the verb callback must carry a strictly smaller sequence.
-            var harness = new Harmony("meidocho.celetech.harness.orderproof");
+            var harness = new Harmony("whitegiver.celetech.harness.orderproof");
             var postfix = new HarmonyMethod(typeof(Program), nameof(RecordPostfixSeq));
             harness.Patch(original, postfix: postfix);
 

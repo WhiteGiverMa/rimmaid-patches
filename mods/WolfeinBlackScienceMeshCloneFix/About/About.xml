@@ -2,7 +2,7 @@
 <ModMetaData>
   <name>Wolfein Black Science - Waylith Mesh Clone Fix</name>
   <author>WhiteGiverMa</author>
-  <packageId>meidocho.wolfeinblackscience.meshclonefix</packageId>
+  <packageId>whitegiver.wolfeinblackscience.meshclonefix</packageId>
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077</steamWorkshopUrl></li>

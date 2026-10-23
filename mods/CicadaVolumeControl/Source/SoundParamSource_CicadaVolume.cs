@@ -1,7 +1,7 @@
 using Verse;
 using Verse.Sound;
 
-namespace Meidocho.CicadaVolumeControl;
+namespace WhiteGiver.CicadaVolumeControl;
 
 public sealed class SoundParamSource_CicadaVolume : SoundParamSource
 {

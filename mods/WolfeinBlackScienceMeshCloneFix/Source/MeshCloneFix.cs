@@ -6,7 +6,7 @@ using HarmonyLib;
 using UnityEngine;
 using Verse;
 
-namespace Meidocho.WolfeinBlackScienceMeshCloneFix;
+namespace WhiteGiver.WolfeinBlackScienceMeshCloneFix;
 
 public sealed class MeshCloneFix : Mod
 {
@@ -20,7 +20,7 @@ public sealed class MeshCloneFix : Mod
     {
         var target = AccessTools.Method("BlackScience.Patch_OwlGreatswordEquipmentAiming:CreateAxisFlippedMesh")
             ?? throw new MissingMethodException("BlackScience.Patch_OwlGreatswordEquipmentAiming.CreateAxisFlippedMesh");
-        new Harmony("meidocho.wolfeinblackscience.meshclonefix").Patch(target,
+        new Harmony("whitegiver.wolfeinblackscience.meshclonefix").Patch(target,
             transpiler: new HarmonyMethod(typeof(MeshCloneFix), nameof(ReplaceClone)));
     }
 

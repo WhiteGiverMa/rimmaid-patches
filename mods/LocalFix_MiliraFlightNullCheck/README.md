@@ -1,6 +1,6 @@
 # Local Fix - Milira Flight NullCheck
 
-RimWorld **1.6** 本地独立补丁，packageId：`local.meidocho.MiliraFlightNullCheckFix`。
+RimWorld **1.6** 本地独立补丁，packageId：`local.whitegiver.MiliraFlightNullCheckFix`。
 
 修复 Milira Race 在 `Pawn_FlightTracker.Notify_JobStarted` 上的原生 Harmony 前缀对
 `CompFlightControl` 空引用崩溃（NRE）的问题。补丁自注册（无需其他代码调用 `PatchAll`），
@@ -47,7 +47,7 @@ public static class MilianPatch_Pawn_FlightTracker_Notify_JobStarted
 
 1. **自注册**：`Bootstrap` 带 `[StaticConstructorOnStartup]`，由
    `Verse.StaticConstructorOnStartupUtility.CallAll()` 在启动时执行一次静态构造函数，
-   调用 `new Harmony("local.meidocho.MiliraFlightNullCheckFix").PatchAll(...)`。
+   调用 `new Harmony("local.whitegiver.MiliraFlightNullCheckFix").PatchAll(...)`。
    `[HarmonyPriority]` 只影响**已注册**补丁之间的顺序；它本身不会注册补丁——所以注册
    必须显式发生。
 2. **顺序**：前缀带 `[HarmonyPriority(Priority.HigherThanNormal)]`（500），排在 Milira

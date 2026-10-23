@@ -4,7 +4,7 @@ using HarmonyLib;
 using Verse;
 using Verse.AI;
 
-namespace Meidocho.CEFix.MiliraFloatUnitElevation;
+namespace WhiteGiver.CEFix.MiliraFloatUnitElevation;
 
 /// <summary>
 /// BASELINE (2026-07-15): Before this patch there was zero float-unit filtering
@@ -23,7 +23,7 @@ public static class FloatUnitAutoTargetPatch
 {
     static FloatUnitAutoTargetPatch()
     {
-        var harmony = new Harmony("meidocho.ce_fix_milira_float_unit_autotarget");
+        var harmony = new Harmony("whitegiver.ce_fix_milira_float_unit_autotarget");
         harmony.PatchAll();
     }
 }

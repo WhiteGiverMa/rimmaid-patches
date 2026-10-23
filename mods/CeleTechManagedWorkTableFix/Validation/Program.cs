@@ -9,7 +9,7 @@ using Verse;
 
 internal static class Program
 {
-    private const string Owner = "meidocho.celetech.managedworktablefix";
+    private const string Owner = "whitegiver.celetech.managedworktablefix";
     private static string gameRoot = "";
     private static string harmonyPath = "";
     private static string upstreamPath = "";
@@ -88,7 +88,7 @@ internal static class Program
     private static void Run(string mode)
     {
         Assembly patch = AssemblyLoadContext.Default.LoadFromAssemblyPath(patchPath);
-        Type mod = patch.GetType("Meidocho.CeleTechManagedWorkTableFix.CeleTechManagedWorkTableFixMod", true)!;
+        Type mod = patch.GetType("WhiteGiver.CeleTechManagedWorkTableFix.CeleTechManagedWorkTableFixMod", true)!;
         if (mode == "absent")
         {
             Activator.CreateInstance(mod, new object?[] { null });
@@ -129,7 +129,7 @@ internal static class Program
             "Actual Mod constructor did not register one transpiler.");
         Check(Harmony.GetAllPatchedMethods().Where(method => Harmony.GetPatchInfo(method)?.Owners.Contains(Owner) == true)
             .SequenceEqual(new[] { consume }), "Patch touched a method outside the intended target.");
-        Type fix = patch.GetType("Meidocho.CeleTechManagedWorkTableFix.MaterialListFix", true)!;
+        Type fix = patch.GetType("WhiteGiver.CeleTechManagedWorkTableFix.MaterialListFix", true)!;
         MethodInfo replacement = fix.GetMethod("SnapshotMaterials")!;
         List<CodeInstruction> current = PatchProcessor.GetCurrentInstructions(consume);
         Check(current.Count(instruction => instruction.Calls(replacement)) == 1 && !current.Any(instruction => instruction.Calls(original)),

@@ -4,11 +4,11 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace Meidocho.BossgroupConcurrentSummons;
+namespace WhiteGiver.BossgroupConcurrentSummons;
 
 public sealed class BossgroupConcurrentSummonsMod : Mod
 {
-    internal const string HarmonyId = "meidocho.bossgroupconcurrentsummons";
+    internal const string HarmonyId = "whitegiver.bossgroupconcurrentsummons";
 
     public static BossgroupConcurrentSummonsMod Instance { get; private set; }
 

@@ -14,7 +14,7 @@ public sealed class GizmoDiagMod : Mod
     public GizmoDiagMod(ModContentPack content) : base(content)
     {
         Log.Message("[GizmoDiag] Mod loaded, patching...");
-        new Harmony("meidocho.gizmodiag").PatchAll();
+        new Harmony("whitegiver.gizmodiag").PatchAll();
         Log.Message("[GizmoDiag] PatchAll done");
     }
 }

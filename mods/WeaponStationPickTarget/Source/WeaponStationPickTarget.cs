@@ -8,11 +8,11 @@ using UnityEngine;
 using Verse;
 using WeaponStation;
 
-namespace Meidocho.WeaponStationPickTarget;
+namespace WhiteGiver.WeaponStationPickTarget;
 
 public sealed class WeaponStationPickTargetMod : Mod
 {
-    public const string HarmonyId = "meidocho.weaponstation.picktarget";
+    public const string HarmonyId = "whitegiver.weaponstation.picktarget";
 
     public WeaponStationPickTargetMod(ModContentPack content) : base(content)
     {

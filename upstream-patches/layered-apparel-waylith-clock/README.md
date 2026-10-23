@@ -10,7 +10,7 @@ UnityStubs 缺少 Time.unscaledTimeAsDouble。普通 Harmony transpiler 在读�
 
 验证：原DLL用测试专用UnityEngine→UnityStubs绑定后，真实UpdateVacuumStateCore JIT复现MissingMethodException；修正版3处真实方法均JIT成功，实际替代getter调用成功。qa-bind只为标准dotnet测试主机复刻引擎重定向，部署DLL不改程序集引用。最小驱动未初始化引擎，不代表完整GUI/真空外观已实测。
 
-修后SHA256：`C93ECA2E9E9B96C0F81397CF319CC5D6B6C8910AD084F9E30AFCC8B6BB479397`。旧meidocho.layeredapparel.waylithtimefix保留历史、不启用。
+修后SHA256：`C93ECA2E9E9B96C0F81397CF319CC5D6B6C8910AD084F9E30AFCC8B6BB479397`。旧whitegiver.layeredapparel.waylithtimefix保留历史、不启用。
 
 Steam更新工坊3632480044可能覆盖DLL；hash变化后重新核对三处调用及引擎API，不盲目重打。作者消除该调用或引擎实现原getter后退役。恢复时关闭游戏后复制保存的原DLL，不启用失败sidecar。
 

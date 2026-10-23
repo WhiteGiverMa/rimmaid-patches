@@ -1,6 +1,6 @@
 # 武器基站：CE 特殊武器后坐力兼容
 
-RimWorld 1.7 独立 sidecar，package ID：`meidocho.weaponstation.cerecoilfix`。
+RimWorld 1.7 独立 sidecar，package ID：`whitegiver.weaponstation.cerecoilfix`。
 需要 Harmony、Combat Extended 与 Weapon Station（工坊 `3807251471`），排在三者之后。
 
 ## 修复行为

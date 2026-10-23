@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net48</TargetFramework>
     <AssemblyName>BodyShapeFallbackHarness</AssemblyName>
-    <RootNamespace>Meidocho.BodyShapeFallbackHarness</RootNamespace>
+    <RootNamespace>WhiteGiver.BodyShapeFallbackHarness</RootNamespace>
     <LangVersion>12.0</LangVersion>
     <Nullable>disable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

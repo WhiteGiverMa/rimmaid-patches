@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using Verse;
 
-namespace Meidocho.LayeredApparelWaylithTimeFix;
+namespace WhiteGiver.LayeredApparelWaylithTimeFix;
 
 public sealed class TimeFix : Mod
 {
@@ -14,7 +14,7 @@ public sealed class TimeFix : Mod
         var target = AccessTools.Method("LayeredApparel.CompLayeredApparel:UpdateVacuumStateCore");
         if (target == null)
             throw new MissingMethodException("LayeredApparel.CompLayeredApparel.UpdateVacuumStateCore");
-        new Harmony("meidocho.layeredapparel.waylithtimefix").Patch(target,
+        new Harmony("whitegiver.layeredapparel.waylithtimefix").Patch(target,
             transpiler: new HarmonyMethod(typeof(TimeFix), nameof(ReplaceClock)));
         Log.Message("[Layered Apparel Waylith Time Fix] Vacuum appearance clock patched.");
     }

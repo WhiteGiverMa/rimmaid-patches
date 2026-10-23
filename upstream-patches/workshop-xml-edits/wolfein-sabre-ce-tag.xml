@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Recovery artifact: Wolfein CE alloy sabre weaponTags fix (local edit by Meidocho).
+  Recovery artifact: Wolfein CE alloy sabre weaponTags fix (local edit by WhiteGiver).
   Workshop item 3485371294, file 1.6/Patches/ThingDefs_Weapon/W_Weapon_Melee.xml.
 
   The upstream PatchOperationAdd targeting Defs/ThingDef[defName="W_Weapon_Melee_AlloySabre"]/weaponTags

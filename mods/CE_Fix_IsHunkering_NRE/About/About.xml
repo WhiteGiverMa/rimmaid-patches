@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 	<name>CE Fix: IsHunkering NRE</name>
-	<author>Meidocho (local patch)</author>
-	<packageId>meidocho.ce_fix_ishunkering_nre</packageId>
+	<author>WhiteGiver (local patch)</author>
+	<packageId>whitegiver.ce_fix_ishunkering_nre</packageId>
 	<description>Narrow compatibility net for Combat Extended builds that lack the upstream fixes. On CE builds that already contain them (active local fork, future upstream) both patches are inert.
 
 1) Finalizer on CompSuppressable.IsHunkering: converts a NullReferenceException from pawn.CurJob being null into "not hunkering". No CE method body is replaced.

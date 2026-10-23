@@ -31,7 +31,7 @@ public static class Patch_QuestExposeData
 	{
 		try
 		{
-			var harmony = new Harmony("meidocho.fix_wrmegacorp_quest_exposedata");
+			var harmony = new Harmony("whitegiver.fix_wrmegacorp_quest_exposedata");
 
 			var original = AccessTools.Method(typeof(ChoiceLetter_CSC), "ExposeData");
 			var transpiler = new HarmonyMethod(typeof(Patch_QuestExposeData), nameof(Transpiler));
