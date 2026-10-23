@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Meidocho: DMS Humanlike Mech Untainted</name>
+  <author>Meidocho</author>
+  <packageId>meidocho.dms.humanlikemechuntainted</packageId>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Aoba.DeadManSwitch.Core</li>
+    <li>Aoba.DeadManSwitch.Synthetic</li>
+    <li>Srxf.DeadManSwitch.Legion</li>
+  </loadAfter>
+  <description>让失能机关（The Dead Man's Switch）系列里能穿人类衣服的机兵在死亡时不再把身上穿着的衣物标记为「死人衣服」（tainted / worn by corpse）。覆盖范围：DMS Core / Synthetic 里带 Fortified.CompMechApparel 组件的机兵（Core 的女士 Lady、蛙人 Frogman；Synthetic 的侍女 Maiden、军人 Armiman、大姐头 BigSister），以及 DMS Legion 里带 DMS_Legion.CompTerraBodyType 组件的尘世 Terra。死亡时的耐久损伤与 ThingComp.Notify_WearerDied 回调保持原样，仅跳过 wornByCorpseInt 标记。仅影响来自 aoba.deadmanswitch.core / aoba.deadmanswitch.synthetic / srxf.deadmanswitch.legion 这三个包的机兵；不改工坊原件、不改存档、不做全局副作用。上游若原生提供等价开关或修复即可退役。</description>
+</ModMetaData>

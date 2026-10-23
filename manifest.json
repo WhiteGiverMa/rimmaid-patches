@@ -26,7 +26,8 @@
     { "directory": "WeaponStationPickTarget", "packageId": "meidocho.weaponstation.picktarget", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-18" },
     { "directory": "WeaponStationCERecoilFix", "packageId": "meidocho.weaponstation.cerecoilfix", "status": "active", "source": "local canonical source; added 2026-10-20; game QA confirmed by user" },
     { "directory": "CeleTechManagedWorkTableFix", "packageId": "meidocho.celetech.managedworktablefix", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-20" },
-    { "directory": "CicadaVolumeControl", "packageId": "meidocho.ambience.cicadavolume", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-23" }
+    { "directory": "CicadaVolumeControl", "packageId": "meidocho.ambience.cicadavolume", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-23" },
+    { "directory": "DMSHumanlikeMechUntainted", "packageId": "meidocho.dms.humanlikemechuntainted", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-23" }
   ],
   "excluded": [
     { "name": "CombatExtendedLocal", "reason": "full upstream fork/mirror; maintained in WhiteGiverMa/CombatExtended" },
