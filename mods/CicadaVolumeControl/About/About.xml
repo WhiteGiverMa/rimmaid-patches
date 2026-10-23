@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>蝉鸣音量 / Cicada Volume</name>
+  <author>WhiteGiverMa</author>
+  <packageId>meidocho.ambience.cicadavolume</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <description>在模组选项中单独调整原版环境蝉鸣/虫鸣的音量，范围 0–100%，默认 100%。涵盖普通夜间及丛林昼夜三段录音，无法从混合录音中只分离某一种昆虫。不影响其他环境音、音乐或音效。不修改工坊文件或存档。
+
+Adjust vanilla cicada/insect ambience independently in Mod Settings, from 0 to 100% (default 100%). Includes standard nights and jungle days/nights; individual species cannot be separated within a mixed recording. Other ambience, music and sound effects are unaffected. Does not edit Workshop files or saves.</description>
+</ModMetaData>

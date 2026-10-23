@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <CVC_Category>Cicada Volume</CVC_Category>
+  <CVC_Intro>Adjust vanilla cicada/insect ambience (standard nights and jungle days/nights) without affecting other ambience, music or sound effects.</CVC_Intro>
+  <CVC_Volume>Cicada volume: {0}%</CVC_Volume>
+  <CVC_Note>0% mutes cicadas; 100% keeps their original volume. Changes apply immediately and are saved when this window closes.
+The game's master and ambience volume controls still apply.</CVC_Note>
+  <CVC_Reset>Restore default (100%)</CVC_Reset>
+</LanguageData>

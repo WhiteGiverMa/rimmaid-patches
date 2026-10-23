@@ -47,6 +47,7 @@ See [`manifest.json`](manifest.json) for machine-readable metadata.
 | `WeaponStationPickTarget` | [Weapon Station left-click weapon picker](mods/WeaponStationPickTarget/README.md); right-click keeps the original list | Added 2026-10-18, game QA pending |
 | `WeaponStationCERecoilFix` | [Weapon Station CE recoil compatibility](mods/WeaponStationCERecoilFix/README.md); preserve special weapon attacks and normal CE animations | Added 2026-10-20, user-confirmed game QA |
 | `CeleTechManagedWorkTableFix` | [CeleTech automation-hub material-list fix](mods/CeleTechManagedWorkTableFix/README.md); prevent live-list invalidation when consuming whole stacks | Added 2026-10-20, game QA pending |
+| `CicadaVolumeControl` | [Independent cicada/insect ambience volume](mods/CicadaVolumeControl/README.md); live 0–100% Mod Settings slider, no Harmony | Added 2026-10-23, game QA pending |
 
 Historical local mirrors of full upstream mods are intentionally excluded. `archive/` is reserved for retired experiments; `tools/` is reserved for diagnostics that are not gameplay patches.
 

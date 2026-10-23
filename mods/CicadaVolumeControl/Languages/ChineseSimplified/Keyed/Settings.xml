@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <CVC_Category>蝉鸣音量</CVC_Category>
+  <CVC_Intro>单独调整原版环境蝉鸣/虫鸣（普通夜间、丛林昼夜三种录音），不影响其他环境音、音乐和音效。</CVC_Intro>
+  <CVC_Volume>蝉鸣音量：{0}%</CVC_Volume>
+  <CVC_Note>0% 为静音，100% 为原版音量。拖动立即生效，关闭窗口自动保存。
+仍受游戏的总音量和环境音量控制。</CVC_Note>
+  <CVC_Reset>恢复默认（100%）</CVC_Reset>
+</LanguageData>

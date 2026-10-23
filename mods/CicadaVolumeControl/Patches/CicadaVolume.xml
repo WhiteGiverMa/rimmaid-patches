@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/SoundDef[defName="Ambient_NightInsects_Standard" or defName="Ambient_NightInsects_Jungle" or defName="Ambient_DayInsects_Jungle"]/subSounds/li[name="Main"]/paramMappings</xpath>
+    <value>
+      <li>
+        <inParam Class="Meidocho.CicadaVolumeControl.SoundParamSource_CicadaVolume" />
+        <outParam Class="SoundParamTarget_Volume" />
+        <paramUpdateMode>Constant</paramUpdateMode>
+        <curve>
+          <points>
+            <li><loc><x>0</x><y>0</y></loc></li>
+            <li><loc><x>1</x><y>1</y></loc></li>
+          </points>
+        </curve>
+      </li>
+    </value>
+  </Operation>
+</Patch>

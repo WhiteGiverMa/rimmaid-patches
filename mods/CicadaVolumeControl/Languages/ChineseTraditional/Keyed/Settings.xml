@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <CVC_Category>蟬鳴音量</CVC_Category>
+  <CVC_Intro>單獨調整原版環境蟬鳴/蟲鳴（一般夜間、叢林晝夜三種錄音），不影響其他環境音、音樂和音效。</CVC_Intro>
+  <CVC_Volume>蟬鳴音量：{0}%</CVC_Volume>
+  <CVC_Note>0% 為靜音，100% 為原版音量。拖曳立即生效，關閉視窗自動儲存。
+仍受遊戲的總音量和環境音量控制。</CVC_Note>
+  <CVC_Reset>恢復預設（100%）</CVC_Reset>
+</LanguageData>
