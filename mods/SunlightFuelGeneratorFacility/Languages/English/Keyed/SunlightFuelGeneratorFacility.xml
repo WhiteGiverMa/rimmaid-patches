@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SFGF_Category>Sunlight Fuel Generator Facility</SFGF_Category>
+  <SFGF_Intro>Adjust the facility's power output, fuel capacity and daily fuel consumption. Changes apply immediately to every built facility and are saved when the window closes.</SFGF_Intro>
+  <SFGF_PowerOutput>Power output (W)</SFGF_PowerOutput>
+  <SFGF_FuelCapacity>Maximum solar fuel</SFGF_FuelCapacity>
+  <SFGF_FuelConsumption>Daily consumption (solar fuel)</SFGF_FuelConsumption>
+  <SFGF_Note>Defaults: 7500 W / 400 fuel / 2.22 per day, about 3 years at full fuel (1 year = 60 days). The defaults scale the citadel chemfuel generator by the Milira solar-fuel generator's ratios relative to the vanilla chemfuel generator, then halve the derived capacity to 400; see the README in the mod folder.</SFGF_Note>
+  <SFGF_Reset>Restore defaults</SFGF_Reset>
+</LanguageData>

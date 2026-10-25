@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WhiteGiver_SunlightFuelGeneratorFacility.label>日光燃料发电设施</WhiteGiver_SunlightFuelGeneratorFacility.label>
+  <WhiteGiver_SunlightFuelGeneratorFacility.description>消耗日光燃料发电的大型永久设施。贴图与 7x3 占地沿用城塞的燃油发电设施，燃料只接受日光燃料，并带「排出燃料」gizmo。\n\n发电量、最大燃料量和每日消耗可在「选项 → Mod 设置 → 日光燃料发电设施」中调整，修改会立即应用到已建成的设施。\n\n这是永久建筑，建成后无法拆除。</WhiteGiver_SunlightFuelGeneratorFacility.description>
+</LanguageData>

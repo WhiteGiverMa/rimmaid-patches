@@ -54,6 +54,7 @@
 | `WeaponStationCERecoilFix` | [武器基站 CE 特殊武器后坐力兼容](mods/WeaponStationCERecoilFix/README.md)，不改特殊攻击，保留标准 CE 动画 | 2026-10-20 新增，用户确认游戏内验证正常 |
 | `CeleTechManagedWorkTableFix` | [天工铸造自动化中枢材料列表修复](mods/CeleTechManagedWorkTableFix/README.md)，避免消耗整堆物资时枚举失效 | 2026-10-20 新增，游戏内 QA 待做 |
 | `CicadaVolumeControl` | [蝉鸣/环境虫鸣独立音量](mods/CicadaVolumeControl/README.md)，Mod 设置实时 0–100% 滑条，无需 Harmony | 2026-10-23 新增，游戏内 QA 待做 |
+| `SunlightFuelGeneratorFacility` | [日光燃料发电设施](mods/SunlightFuelGeneratorFacility/README.md)，城塞贴图/占地 + 米莉拉日光燃料，发电量/容量/日耗可调，含排出燃料 gizmo 并为城塞燃油设施补同款按钮 | 2026-10-25 新增，用户确认游戏内验证正常 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 

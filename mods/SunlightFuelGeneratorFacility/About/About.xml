@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>日光燃料发电设施 / Sunlight Fuel Generator Facility</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.sunlightfuel.generator</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>Ancot.MiliraRace</packageId>
+      <displayName>Milira Race</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3256974620</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Aoba.Fortress.Industrial</packageId>
+      <displayName>Fortifications - Industrial</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2561619583</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Aoba.Fortress.Industrial.Citadel</packageId>
+      <displayName>Fortification Industrial - Citadel</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2887532326</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>Ancot.MiliraRace</li>
+    <li>Aoba.Fortress.Industrial</li>
+    <li>Aoba.Fortress.Industrial.Citadel</li>
+  </loadAfter>
+  <description>依赖 Milira Race 与 Fortification Industrial - Citadel 的日光燃料发电设施。贴图与 7x3 占地沿用城塞的燃油发电设施，燃料只接受日光燃料，并带「排出燃料」gizmo；城塞的燃油发电设施也会被补上同一个按钮。
+
+发电量、最大燃料量和每日消耗可在「选项 → Mod 设置 → 日光燃料发电设施」中调整，修改会立即应用到已建成的设施。默认值按城塞燃油发电设施与米莉拉日光燃料发电机相对原版化合燃料发电机的数值比例推算，容量再按实际手感从 800 减半：7500 W、400 日光燃料、每日 2.22（约 3 年）。
+
+A large permanent solar-fuel generator that reuses the citadel chemfuel generator's art and 7x3 footprint. It burns solar fuel only and includes an eject-fuel gizmo; the citadel chemfuel generator receives the same button. Power output, fuel capacity and daily fuel consumption are adjustable in Mod Settings and apply immediately to existing buildings. Defaults: 7500 W, 400 solar fuel, 2.22 per day (about 3 years).</description>
+</ModMetaData>

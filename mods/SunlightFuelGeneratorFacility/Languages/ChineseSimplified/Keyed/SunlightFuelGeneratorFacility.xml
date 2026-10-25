@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SFGF_Category>日光燃料发电设施</SFGF_Category>
+  <SFGF_Intro>调整日光燃料发电设施的发电量、最大燃料量和每日消耗。修改会立即应用到所有已建成的设施，并在关闭窗口时自动保存。</SFGF_Intro>
+  <SFGF_PowerOutput>发电量（W）</SFGF_PowerOutput>
+  <SFGF_FuelCapacity>最大日光燃料</SFGF_FuelCapacity>
+  <SFGF_FuelConsumption>每日消耗（日光燃料）</SFGF_FuelConsumption>
+  <SFGF_Note>默认值 7500 W / 400 燃料 / 每日 2.22，满燃料约 3 年（1 年 60 天）。该默认值按城塞燃油发电设施与米莉拉日光燃料发电机相对原版化合燃料发电机的数值比例推算，容量再按实际手感从 800 减半；详见 mod 目录下的 README。</SFGF_Note>
+  <SFGF_Reset>恢复默认值</SFGF_Reset>
+</LanguageData>

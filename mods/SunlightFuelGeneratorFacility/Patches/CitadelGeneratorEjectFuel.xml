@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="FT_CitadelGenerator"]/comps/li[@Class="CompProperties_Refuelable"][not(canEjectFuel)]</xpath>
+    <value>
+      <canEjectFuel>true</canEjectFuel>
+    </value>
+  </Operation>
+</Patch>
