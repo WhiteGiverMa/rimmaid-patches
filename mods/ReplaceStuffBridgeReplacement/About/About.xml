@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Replace Stuff - 桥梁原位替换 / Bridge Replacement</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.replacestuff.bridgereplacement</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Memegoddess.ReplaceStuff</packageId>
+      <displayName>Replace Stuff - Continued</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3526354009</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Memegoddess.ReplaceStuff</li>
+  </loadAfter>
+  <description>在已建成的桥梁上直接放置另一种桥梁蓝图，无需先手动拆桥。支持原版木桥、重型桥梁以及继承相同桥梁属性的模组桥，包括钢筋混凝土重型桥梁。完工后按原版拆除比例返还旧桥材料；取消施工不会消耗旧桥。
+
+Directly place a different bridge blueprint on an existing bridge without manually removing it first. Supports vanilla wooden/heavy bridges and modded foundation bridges, including Reinforced Concrete Heavy Bridge. Once construction finishes, the old bridge refunds materials at the vanilla deconstruction ratio. Cancelling construction leaves the old bridge untouched.</description>
+</ModMetaData>

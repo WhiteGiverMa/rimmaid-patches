@@ -49,6 +49,9 @@ See [`manifest.json`](manifest.json) for machine-readable metadata.
 | `CeleTechManagedWorkTableFix` | [CeleTech automation-hub material-list fix](mods/CeleTechManagedWorkTableFix/README.md); prevent live-list invalidation when consuming whole stacks | Added 2026-10-20, game QA pending |
 | `CicadaVolumeControl` | [Independent cicada/insect ambience volume](mods/CicadaVolumeControl/README.md); live 0–100% Mod Settings slider, no Harmony | Added 2026-10-23, game QA pending |
 | `SunlightFuelGeneratorFacility` | [Solar-fuel facility](mods/SunlightFuelGeneratorFacility/README.md); citadel art/footprint, Milira solar fuel, adjustable power/capacity/consumption, eject-fuel gizmo also patched onto the citadel generator | Added 2026-10-25, user-confirmed game QA |
+| `ReinforcedConcreteHeavyBridge` | [Reinforced concrete heavy bridge](mods/ReinforcedConcreteHeavyBridge/README.md); adjustable 14 concrete/cell default, steel/concrete automatic bridge choice, uninstall conversion and generated Workshop preview | Added 2026-10-25, game QA pending |
+| `ReplaceStuffBridgeReplacement` | [In-place bridge replacement](mods/ReplaceStuffBridgeReplacement/README.md); place vanilla or reinforced-concrete heavy bridge blueprints directly on existing bridges, with vanilla-ratio refunds after successful completion | Added 2026-10-25, game QA pending |
+| `MilianWeaponInteractions` | [Milian ground weapon interactions](mods/MilianWeaponInteractions/README.md); left-click weapon-cell picker, original right-click list and selected-Milian ground equip menu | Added 2026-10-26, local sidecar, game QA pending |
 
 Historical local mirrors of full upstream mods are intentionally excluded. `archive/` is reserved for retired experiments; `tools/` is reserved for diagnostics that are not gameplay patches.
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>钢筋混凝土重型桥梁 / Reinforced Concrete Heavy Bridge</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.reinforcedconcrete.heavybridge</packageId>
+  <modVersion>1.1.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Ludeon.RimWorld.Odyssey</packageId>
+      <displayName>Odyssey</displayName>
+    </li>
+    <li>
+      <packageId>Aoba.Fortress.Industrial</packageId>
+      <displayName>Fortifications - Industrial</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2561619583</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Ludeon.RimWorld.Odyssey</li>
+    <li>Aoba.Fortress.Industrial</li>
+    <li>Memegoddess.ReplaceStuff</li>
+  </loadAfter>
+  <description>研究「重型桥梁」与「混凝土」后，用钢筋混凝土建造重型桥梁。默认每格消耗14个钢筋混凝土，其他特性和贴图沿用奥德赛原版重型桥梁。
+
+选项 → Mod 设置 → 钢筋混凝土重型桥梁：可调整每格材料用量、恢复默认，并选择放置建筑时自动补原版钢铁重型桥梁或钢筋混凝土重型桥梁，材料预览同步切换。还可将当前存档所有已加载地图上的本模组桥梁转为原版重型桥梁。卸载前请先备份存档、执行转换并另存，再停用模组；其他存档需分别转换。
+
+Requires Harmony, Odyssey and Fortifications - Industrial. Research Heavy bridges and Concrete to build heavy bridges using 14 reinforced concrete per cell by default. Reuses vanilla heavy-bridge properties and textures. Material cost is adjustable in Mod Settings. Optional Replace Stuff integration lets automatic heavy bridges and their material previews use steel or reinforced concrete; existing plans are preserved. Settings also provide a confirmed conversion to vanilla heavy bridges before removal. Back up and save the converted game before disabling the mod; convert other saves separately.
+
+封面为程序化绘制的示意图，游戏内仍使用原版桥梁贴图。Preview illustration is generated from original geometric artwork; in-game bridges use vanilla textures.</description>
+</ModMetaData>

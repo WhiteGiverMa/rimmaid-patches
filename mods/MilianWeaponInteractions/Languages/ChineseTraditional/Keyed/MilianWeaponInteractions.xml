@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <MWI_WeaponSlotTip>左鍵：在地圖上選擇武器，由米莉安自行裝備。\n右鍵：開啟原武器清單，也可取消目前換裝。\n選擇武器時按 Esc 或右鍵取消。</MWI_WeaponSlotTip>
+  <MWI_SelectWeapon>為{0}選擇地面武器</MWI_SelectWeapon>
+  <MWI_NotControlled>需要一名可行動且由玩家控制的米莉安</MWI_NotControlled>
+  <MWI_WeaponNotSupported>此米莉安不支援這類武器</MWI_WeaponNotSupported>
+  <MWI_StackedWeapon>請先將武器拆分為單件</MWI_StackedWeapon>
+  <MWI_TargetUnavailable>武器已不在同一地圖的地面上</MWI_TargetUnavailable>
+  <MWI_JobUnavailable>米莉拉換裝任務介面已變更，未下達指令，請檢查模組日誌。</MWI_JobUnavailable>
+  <MWI_OrderFailed>米莉安未能接受換裝任務。</MWI_OrderFailed>
+</LanguageData>

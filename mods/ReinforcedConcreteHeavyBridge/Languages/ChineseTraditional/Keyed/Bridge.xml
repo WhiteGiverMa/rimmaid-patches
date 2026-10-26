@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RCHB_Category>鋼筋混凝土重型橋梁</RCHB_Category>
+  <RCHB_Intro>用鋼筋混凝土建造的原版重型橋梁。需要同時完成「重型橋梁」與「混凝土」研究，橋梁特性和貼圖不變。</RCHB_Intro>
+  <RCHB_Cost>每格鋼筋混凝土用量（1–10,000）</RCHB_Cost>
+  <RCHB_CostNote>預設14個。修改立即影響建造需求和拆除返還，包括既有藍圖與橋梁。已送入工地的材料不會被替換或刪除。</RCHB_CostNote>
+  <RCHB_Reset>恢復預設造價（14）</RCHB_Reset>
+  <RCHB_AutoBridge>放置建築時自動補出的重型橋梁</RCHB_AutoBridge>
+  <RCHB_AutoVanilla>自動放上原版重型橋梁（鋼鐵）</RCHB_AutoVanilla>
+  <RCHB_AutoConcrete>自動放上鋼筋混凝土重型橋梁</RCHB_AutoConcrete>
+  <RCHB_AutoNote>自動補橋由 Replace Stuff 提供，未啟用時此選項無效果。只影響新自動補出的重型橋，材料預覽同步切換，既有藍圖和木橋不變。未完成混凝土研究時仍用原版橋。</RCHB_AutoNote>
+  <RCHB_Convert>將所有鋼筋混凝土重型橋梁轉化為原版重型橋梁以便卸載模組</RCHB_Convert>
+  <RCHB_ConvertNote>請先載入要轉換的存檔。轉換會處理該存檔所有已載入地圖，不會修改磁碟上的其他存檔。先備份，轉換後另存，再停用本模組。</RCHB_ConvertNote>
+  <RCHB_LoadGame>請先載入遊戲，再轉換橋梁。</RCHB_LoadGame>
+  <RCHB_ConfirmTitle>轉換橋梁以便卸載模組？</RCHB_ConfirmTitle>
+  <RCHB_Confirm>目前遊戲內所有鋼筋混凝土重型橋梁都會轉為原版重型橋梁，包括地板下的橋梁；上方地板和下方天然地形保留。未完工的橋梁藍圖會被取消，工地按原版取消流程返還已送入的材料，不會變成需要鋼鐵的工地。
+此操作只能透過重載舊存檔復原，請先備份。轉換完成後請另存，再停用本模組；其他存檔需分別轉換。</RCHB_Confirm>
+  <RCHB_Converted>已轉換{0}格橋梁，取消{1}處未完工藍圖或工地，更新{2}處角色地形引用。請另存後再停用模組。</RCHB_Converted>
+  <RCHB_Failed>轉換未能安全完成，請勿停用本模組。請保留備份並檢查錯誤日誌，必要時重載轉換前的存檔。</RCHB_Failed>
+</LanguageData>

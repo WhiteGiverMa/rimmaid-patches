@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RCHB_Category>钢筋混凝土重型桥梁</RCHB_Category>
+  <RCHB_Intro>用钢筋混凝土建造的原版重型桥梁。需要同时完成「重型桥梁」与「混凝土」研究，桥梁特性和贴图不变。</RCHB_Intro>
+  <RCHB_Cost>每格钢筋混凝土用量（1–10,000）</RCHB_Cost>
+  <RCHB_CostNote>默认14个。修改立即影响建造需求和拆除返还，包括已有蓝图与桥梁。已送入工地的材料不会被替换或删除。</RCHB_CostNote>
+  <RCHB_Reset>恢复默认造价（14）</RCHB_Reset>
+  <RCHB_AutoBridge>放置建筑时自动补出的重型桥梁</RCHB_AutoBridge>
+  <RCHB_AutoVanilla>自动放上原版重型桥梁（钢铁）</RCHB_AutoVanilla>
+  <RCHB_AutoConcrete>自动放上钢筋混凝土重型桥梁</RCHB_AutoConcrete>
+  <RCHB_AutoNote>自动补桥由 Replace Stuff 提供，未启用时此选项无效果。只影响新自动补出的重型桥，材料预览同步切换，已有蓝图和木桥不变。未完成混凝土研究时仍用原版桥。</RCHB_AutoNote>
+  <RCHB_Convert>将所有钢筋混凝土重型桥梁转化为原版重型桥梁以便卸载模组</RCHB_Convert>
+  <RCHB_ConvertNote>请先载入要转换的存档。转换会处理该存档所有已加载地图，不会修改磁盘上的其他存档。先备份，转换后另存，再停用本模组。</RCHB_ConvertNote>
+  <RCHB_LoadGame>请先载入游戏，再转换桥梁。</RCHB_LoadGame>
+  <RCHB_ConfirmTitle>转换桥梁以便卸载模组？</RCHB_ConfirmTitle>
+  <RCHB_Confirm>当前游戏内所有钢筋混凝土重型桥梁都会转为原版重型桥梁，包括地板下的桥梁；上方地板和下方天然地形保留。未完工的桥梁蓝图会被取消，工地按原版取消流程返还已送入的材料，不会变成需要钢铁的工地。
+此操作只能通过重载旧存档撤销，请先备份。转换完成后请另存，再停用本模组；其他存档需分别转换。</RCHB_Confirm>
+  <RCHB_Converted>已转换{0}格桥梁，取消{1}处未完工蓝图或工地，更新{2}处角色地形引用。请另存后再停用模组。</RCHB_Converted>
+  <RCHB_Failed>转换未能安全完成，请勿停用本模组。请保留备份并检查错误日志，必要时重载转换前的存档。</RCHB_Failed>
+</LanguageData>

@@ -28,7 +28,10 @@
     { "directory": "CeleTechManagedWorkTableFix", "packageId": "whitegiver.celetech.managedworktablefix", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-20" },
     { "directory": "CicadaVolumeControl", "packageId": "whitegiver.ambience.cicadavolume", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-23" },
     { "directory": "DMSHumanlikeMechUntainted", "packageId": "whitegiver.dms.humanlikemechuntainted", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-23" },
-    { "directory": "SunlightFuelGeneratorFacility", "packageId": "whitegiver.sunlightfuel.generator", "status": "active", "source": "local canonical source; added 2026-10-25; game QA confirmed by user" }
+    { "directory": "SunlightFuelGeneratorFacility", "packageId": "whitegiver.sunlightfuel.generator", "status": "active", "source": "local canonical source; added 2026-10-25; game QA confirmed by user" },
+    { "directory": "ReinforcedConcreteHeavyBridge", "packageId": "whitegiver.reinforcedconcrete.heavybridge", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-25" },
+    { "directory": "ReplaceStuffBridgeReplacement", "packageId": "whitegiver.replacestuff.bridgereplacement", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-25" },
+    { "directory": "MilianWeaponInteractions", "packageId": "whitegiver.milian.weaponinteractions", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-26; not published to Workshop" }
   ],
   "excluded": [
     { "name": "CombatExtendedLocal", "reason": "full upstream fork/mirror; maintained in WhiteGiverMa/CombatExtended" },

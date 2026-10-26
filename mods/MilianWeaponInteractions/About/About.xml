@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>米莉安：地面选择武器 / Milian Weapon Interactions</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.milian.weaponinteractions</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Ancot.MiliraRace</packageId>
+      <displayName>Milira Race</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3256974620</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Ancot.AncotLibrary</li>
+    <li>Ancot.MiliraRace</li>
+    <li>Ancot.MilianModification</li>
+  </loadAfter>
+  <description>米莉安配置界面的武器格：左键进入地图选择，右键保留原来的武器列表。单独选中米莉安后，也可以右键地面武器让它自行装备。两种入口均沿用米莉拉自己的武器资格检查和换装任务，不修改原模组或武器数值，不需要 Fortified Features Framework。</description>
+</ModMetaData>

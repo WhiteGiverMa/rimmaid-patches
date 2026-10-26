@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <RCHB_Category>Reinforced Concrete Heavy Bridge</RCHB_Category>
+  <RCHB_Intro>Vanilla heavy bridges built with reinforced concrete. Requires both Heavy bridges and Concrete research; bridge properties and textures are unchanged.</RCHB_Intro>
+  <RCHB_Cost>Reinforced concrete per cell (1–10,000)</RCHB_Cost>
+  <RCHB_CostNote>Default: 14. Changes apply immediately to construction requirements and deconstruction refunds, including existing plans and bridges. Materials already delivered to a frame are not replaced or removed.</RCHB_CostNote>
+  <RCHB_Reset>Restore default cost (14)</RCHB_Reset>
+  <RCHB_AutoBridge>Heavy bridge added automatically when placing buildings</RCHB_AutoBridge>
+  <RCHB_AutoVanilla>Automatically place vanilla heavy bridges (steel)</RCHB_AutoVanilla>
+  <RCHB_AutoConcrete>Automatically place reinforced concrete heavy bridges</RCHB_AutoConcrete>
+  <RCHB_AutoNote>Requires Replace Stuff for automatic placement. Affects new heavy-bridge plans and their material preview only; existing plans and wooden bridges are unchanged. Before Concrete research is finished, vanilla bridges are still used.</RCHB_AutoNote>
+  <RCHB_Convert>Convert all reinforced concrete heavy bridges to vanilla for removal</RCHB_Convert>
+  <RCHB_ConvertNote>Load the save you wish to convert first. This affects every loaded map in that save, not other saves on disk. Back up first, convert, save under a new name, then disable this mod.</RCHB_ConvertNote>
+  <RCHB_LoadGame>Load a game before converting bridges.</RCHB_LoadGame>
+  <RCHB_ConfirmTitle>Convert bridges before removing this mod?</RCHB_ConfirmTitle>
+  <RCHB_Confirm>All reinforced concrete heavy bridges in the loaded game will become vanilla heavy bridges, including bridges beneath floors. Floors and underlying natural terrain will be preserved. Unfinished bridge plans will be cancelled and frame materials refunded; they will not become steel construction sites.
+This cannot be undone except by reloading a previous save. Back up first. After conversion, save under a new name before disabling this mod. Other saves must be converted separately.</RCHB_Confirm>
+  <RCHB_Converted>Converted {0} bridge cells; cancelled {1} unfinished plans; updated {2} stored pawn terrain references. Save under a new name, then disable the mod.</RCHB_Converted>
+  <RCHB_Failed>Conversion could not finish safely. Do NOT disable this mod. Keep the backup, review the error log, and reload the pre-conversion save if needed.</RCHB_Failed>
+</LanguageData>

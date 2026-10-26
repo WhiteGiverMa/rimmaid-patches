@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <TerrainDef ParentName="HeavyBridge">
+    <defName>WhiteGiver_ReinforcedConcreteHeavyBridge</defName>
+    <label>reinforced concrete heavy bridge</label>
+    <description>A heavy bridge built with reinforced concrete. Apart from its material cost and research requirements, its properties and appearance match the vanilla heavy bridge.</description>
+    <costList Inherit="False">
+      <FT_ReinforcedConcreteBag>14</FT_ReinforcedConcreteBag>
+    </costList>
+    <researchPrerequisites Inherit="False">
+      <li>HeavyBridges</li>
+      <li>FT_Concrete</li>
+    </researchPrerequisites>
+  </TerrainDef>
+</Defs>

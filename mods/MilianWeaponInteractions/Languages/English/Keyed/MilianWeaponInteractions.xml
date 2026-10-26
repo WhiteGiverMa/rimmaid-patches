@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <MWI_WeaponSlotTip>Left-click: select a weapon on the map for the Milian to equip.\nRight-click: open the original weapon list, including its cancel-order option.\nPress Esc or right-click while targeting to cancel selection.</MWI_WeaponSlotTip>
+  <MWI_SelectWeapon>Select a ground weapon for {0}</MWI_SelectWeapon>
+  <MWI_NotControlled>Requires an able, player-controlled Milian</MWI_NotControlled>
+  <MWI_WeaponNotSupported>This Milian cannot use this type of weapon</MWI_WeaponNotSupported>
+  <MWI_StackedWeapon>Split this weapon stack into single items first</MWI_StackedWeapon>
+  <MWI_TargetUnavailable>The weapon is no longer on the ground on the same map</MWI_TargetUnavailable>
+  <MWI_JobUnavailable>Milira's equip-job interface changed. No order was issued; check the mod log.</MWI_JobUnavailable>
+  <MWI_OrderFailed>The Milian could not accept the equip job.</MWI_OrderFailed>
+</LanguageData>

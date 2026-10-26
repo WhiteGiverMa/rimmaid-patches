@@ -32,8 +32,11 @@
 | CeleTechManagedWorkTableFix | `TryConsumeGatheredMaterials()` 的唯一 `ListerThings.ThingsInGroup(ThingRequestGroup)` 调用及整堆扣料路径 | 上游改为快照/安全枚举后停用；方法签名或调用数变化须复核，拒绝应用日志代表未生效 |
 | CicadaVolumeControl | 三个 `Ambient_*Insects_*` SoundDef 的 Main 参数映射、`SoundParamSource.ValueFor(Sample)` 与每帧参数更新 | 原版提供同等独立调节可停用；SoundDef 改名/拆分或其他声音 mod 替换映射后须重核 |
 | SunlightFuelGeneratorFacility | `FT_CitadelGenerator` 的 size/drawSize/贴图、`FTC_BasePermanentStructure` 基类、`Milira_SunLightFuel`/`Milira_SolarCrystal`、`CompProperties_Power.basePowerConsumption` 与 `UpdateDesiredPowerOutput()`、`CompProperties_Refuelable.canEjectFuel` 与 `GizmoGridDrawer` 的反向 gizmo 行为 | 上游提供可调数值的大型日光燃料发电机；城塞移除永久结构基类或自行补上排出燃料 gizmo；米莉拉移除日光燃料/日凌晶/发电机 |
+| ReinforcedConcreteHeavyBridge | Odyssey 的 `HeavyBridge`、`TerrainGrid.foundationGrid` 分层/存档、`Frame.Destroy(Cancel)`、材料/研究；Harmony3与可选 Replace Stuff `GetNeededBridge(BuildableDef,IntVec3,Map,ThingDef)` 及其预览/补桥共用调用 | 上游提供等价桥梁时先转换存档再停用；桥梁分层、资源/研究或返料变化时重核；Replace Stuff 缺席不注册，接口漂移报未应用 |
+| ReplaceStuffBridgeReplacement | 原版 `CanPlaceBlueprintAt_NewTemp` 两处 `FoundationAt`、`CanBuildOnTerrain` 的 `GetTerrain`/`GetAffordances`、`Frame.CompleteConstruction` 唯一 `SetFoundation`；Replace Stuff `CanBuildOnTerrain` transpiler 顺序 | 上游原生支持地基桥原位替换且保留持续校验/承重/返料后退役；调用数、Map local、地形分层或返料规则漂移时重核，应用失败日志代表未生效 |
 | Fix_DMS_BookGrammarAndHeavyShield | DMS 研究语法与机体 body part group | 上游补齐规则或盾牌装备条件，避免重复追加 |
 | Fix_WRMegaCorp_QuestExposeData | WRMegaCorp ChoiceLetter_CSC.ExposeData 的 IL | 上游删除重复 Scribe_Deep 调用，或 transpiler 锚点改变 |
 | LocalFix_MiliraFlightNullCheck | Milira FlightTracker 前缀 | 上游自行检查缺失飞行组件，或改用不同飞行机制 |
+| MilianWeaponInteractions | Milira 武器列 `DoCell`、原菜单、`CompTargetableWeapon.Available`、机体身份及 `Milira_EquipMilian` 两目标契约；原版表格窗口关闭、Targeter 与浮动菜单 provider | 上游原生提供两种交互后停用；签名/接缝漂移应拒绝应用而非放宽武器限制；未发布到创意工坊 |
 
 `upstream-patches/` 的直接工坊修改须结合记录的基准使用。标为历史缺失、已撤回或不建议安装的内容只留档，不因这次合仓自动重打。
