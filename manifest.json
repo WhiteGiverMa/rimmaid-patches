@@ -26,6 +26,7 @@
     { "directory": "WeaponStationPickTarget", "packageId": "whitegiver.weaponstation.picktarget", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-18" },
     { "directory": "WeaponStationCERecoilFix", "packageId": "whitegiver.weaponstation.cerecoilfix", "status": "active", "source": "local canonical source; added 2026-10-20; game QA confirmed by user" },
     { "directory": "CeleTechManagedWorkTableFix", "packageId": "whitegiver.celetech.managedworktablefix", "status": "active", "source": "local canonical source; added 2026-10-20; v1.1.0 material-list + MakeRecipeProducts fixes 2026-10-27; game QA confirmed by user" },
+    { "directory": "AutoAbilityNullTargetFix", "packageId": "whitegiver.autoability.nulltargetfix", "status": "active", "source": "local canonical source; added 2026-10-27; game QA confirmed by user" },
     { "directory": "CicadaVolumeControl", "packageId": "whitegiver.ambience.cicadavolume", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-23" },
     { "directory": "DMSHumanlikeMechUntainted", "packageId": "whitegiver.dms.humanlikemechuntainted", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-23" },
     { "directory": "SunlightFuelGeneratorFacility", "packageId": "whitegiver.sunlightfuel.generator", "status": "active", "source": "local canonical source; added 2026-10-25; game QA confirmed by user" },

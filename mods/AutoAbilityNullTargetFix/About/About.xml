@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>自动技能：空目标检查修复</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.autoability.nulltargetfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>mjcg.AutoAbility</packageId>
+      <displayName>Auto Ability</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3578731212</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>mjcg.AutoAbility</li>
+  </loadAfter>
+  <description>修复自动技能在“避免对友军使用范围技能”检查中，对没有 Pawn 的目标直接读取 Pawn 属性导致的 NullReferenceException。只把 MyValidate 中三处 Pawn 属性读取改为空安全判断，保留技能选择、距离、弹窗与其他检查。不改工坊原件或存档。
+
+Fixes the NullReferenceException in Auto Ability's friendly-fire AOE check when an affected target has no Pawn. Only the three Pawn property reads in MyValidate become null-safe; target selection, range, confirmation and other checks remain unchanged.</description>
+</ModMetaData>

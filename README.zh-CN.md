@@ -53,6 +53,7 @@
 | `WolfeinWeaponBoxCE` | [沃芬超容武器箱 CE 容量滑条](mods/WolfeinWeaponBoxCE/README.md)，默认体积 +350、重量 +0 | 2026-09-20 新增，游戏内 QA 待做 |
 | `WeaponStationCERecoilFix` | [武器基站 CE 特殊武器后坐力兼容](mods/WeaponStationCERecoilFix/README.md)，不改特殊攻击，保留标准 CE 动画 | 2026-10-20 新增，用户确认游戏内验证正常 |
 | `CeleTechManagedWorkTableFix` | [天工铸造自动化中枢修复](mods/CeleTechManagedWorkTableFix/README.md)，材料枚举快照 + 需材质产物补默认主导材料 | 2026-10-20 新增，2026-10-27 更新至 1.1.0，用户确认游戏内验证正常 |
+| `AutoAbilityNullTargetFix` | [自动技能空目标检查修复](mods/AutoAbilityNullTargetFix/README.md)，范围技能友军检查对无 Pawn 目标空安全 | 2026-10-27 新增，本地 sidecar 补丁，用户确认游戏内验证正常 |
 | `CicadaVolumeControl` | [蝉鸣/环境虫鸣独立音量](mods/CicadaVolumeControl/README.md)，Mod 设置实时 0–100% 滑条，无需 Harmony | 2026-10-23 新增，游戏内 QA 待做 |
 | `SunlightFuelGeneratorFacility` | [日光燃料发电设施](mods/SunlightFuelGeneratorFacility/README.md)，城塞贴图/占地 + 米莉拉日光燃料，发电量/容量/日耗可调，含排出燃料 gizmo 并为城塞燃油设施补同款按钮 | 2026-10-25 新增，用户确认游戏内验证正常 |
 | `ReinforcedConcreteHeavyBridge` | [钢筋混凝土重型桥梁](mods/ReinforcedConcreteHeavyBridge/README.md)，默认14钢筋混凝土/格，造价可调、自动补桥可选钢铁或钢筋混凝土，含卸载前转换与程序化工坊封面 | 2026-10-25 新增，游戏内 QA 待做 |
