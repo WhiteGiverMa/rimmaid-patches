@@ -31,7 +31,10 @@
     { "directory": "SunlightFuelGeneratorFacility", "packageId": "whitegiver.sunlightfuel.generator", "status": "active", "source": "local canonical source; added 2026-10-25; game QA confirmed by user" },
     { "directory": "ReinforcedConcreteHeavyBridge", "packageId": "whitegiver.reinforcedconcrete.heavybridge", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-25" },
     { "directory": "ReplaceStuffBridgeReplacement", "packageId": "whitegiver.replacestuff.bridgereplacement", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-25" },
-    { "directory": "MilianWeaponInteractions", "packageId": "whitegiver.milian.weaponinteractions", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-26; not published to Workshop" }
+    { "directory": "MilianWeaponInteractions", "packageId": "whitegiver.milian.weaponinteractions", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-26; not published to Workshop" },
+    { "directory": "DefaultsWorkPrioritiesLifeStageFix", "packageId": "whitegiver.defaults.workprioritieslifestagefix", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-26; not published to Workshop" },
+    { "directory": "WeaponStationFireModes", "packageId": "whitegiver.weaponstation.firemodes", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-27; not published to Workshop" },
+    { "directory": "MiliraDailyExpendRecipeFix", "packageId": "whitegiver.miliradailyexpend.recipefix", "status": "active", "source": "local canonical source; added 2026-10-27; XML-only sidecar; game QA confirmed by user" }
   ],
   "excluded": [
     { "name": "CombatExtendedLocal", "reason": "full upstream fork/mirror; maintained in WhiteGiverMa/CombatExtended" },

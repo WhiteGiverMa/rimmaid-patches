@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WSFM_AccuracyExplanation>Installed weapon: {0}\nBase shooting rating: {1}\nEquipped accuracy offset: {2}\nFire mode ({3}): {4}\nAccuracy per cell: {5}</WSFM_AccuracyExplanation>
+  <WSFM_Inspect>Fire mode: {0}\nAccuracy per cell: {1}\nAim time: {2}s; cooldown: {3}s</WSFM_Inspect>
+  <WSFM_StationModeDescription>Switch this autonomous station's fire mode. Uses the mounted weapon's Vanilla Fire Modes profile. Manned weapon mounts keep their operator-based behavior.</WSFM_StationModeDescription>
+</LanguageData>

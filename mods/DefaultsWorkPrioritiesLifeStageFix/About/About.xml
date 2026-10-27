@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Defaults：自定义儿童阶段兼容修复</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.defaults.workprioritieslifestagefix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>defaults.1trickPwnyta</packageId>
+      <displayName>1trickPwnyta's Defaults</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3285178686</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>defaults.1trickPwnyta</li>
+  </loadAfter>
+  <description>修复 Defaults 正式版在自定义儿童阶段、机械体与动物上的工作优先级和生日策略异常。仅把工作优先级与生日策略中的两个原版 HumanlikeChild 查询改为按 developmentalStage.Child() 识别；没有儿童阶段时安全跳过对应年龄分支。不改工坊 DLL、原版全局方法或存档，不返还未成功生成的产物。
+
+Fixes Defaults stable work-priority and birthday-policy errors for custom child life stages, mechanoids and animals. Replaces only two HumanlikeChild lookups with developmentalStage.Child() semantics; races without a child stage safely skip the corresponding age checks. Does not edit Workshop DLLs, global vanilla methods or saves, and does not refund failed products.</description>
+</ModMetaData>

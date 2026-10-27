@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!--
+    Milira Daily Expend: cooking recipes fall back to IngredientValueGetter_Volume
+    because none of them sets ingredientValueGetterClass. This patch:
+      1. reprices the two NeverForNutrition intermediates to their ingredient cost;
+      2. switches the 20 pure-food recipes to IngredientValueGetter_Nutrition;
+      3. rewrites every count as a nutrition value that preserves the intended item cost;
+      4. fixes the bulk soy sauce ratio and the three over-generous recipes.
+    Recipes that use inedible ingredients (SunLightFuel, SunPlateSteel) keep the
+    volume getter on purpose: IngredientValueGetter_Nutrition divides by zero for them.
+  -->
+
+  <!-- ===== intermediates: nutrition value = ingredient cost ===== -->
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="Milira_SunLightSoySauce"]/statBases/Nutrition</xpath>
+    <value>
+      <Nutrition>0.1</Nutrition>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="Milira_SunLightFruitJam"]/statBases/Nutrition</xpath>
+    <value>
+      <Nutrition>0.1</Nutrition>
+    </value>
+  </Operation>
+
+  <!-- ===== Calidor bento ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeCalidorBento"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeCalidorBento"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.25</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeCalidorBento"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.1</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeCalidorBento"]/ingredients/li[3]/count</xpath>
+    <value>
+      <count>0.25</count>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreCalidorBento"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreCalidorBento"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>1.25</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreCalidorBento"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.2</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreCalidorBento"]/ingredients/li[3]/count</xpath>
+    <value>
+      <count>1.25</count>
+    </value>
+  </Operation>
+
+  <!-- ===== Calidor eight treasure porridge ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeCalidorEightTreasurePorridge"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeCalidorEightTreasurePorridge"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.05</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeCalidorEightTreasurePorridge"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.25</count>
+    </value>
+  </Operation>
+
+  <!-- ===== ice cream ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeIceCream"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeIceCream"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.1</count>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreIceCream"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreIceCream"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.5</count>
+    </value>
+  </Operation>
+
+  <!-- ===== mashed potatoes ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMashedPotatoes"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMashedPotatoes"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.15</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMashedPotatoes"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.15</count>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreMashedPotatoes"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreMashedPotatoes"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.75</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreMashedPotatoes"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.75</count>
+    </value>
+  </Operation>
+
+  <!-- ===== rainbow candy ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMiliraRainbowCandy"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMiliraRainbowCandy"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.05</count>
+    </value>
+  </Operation>
+
+  <!-- ===== fruit beer ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_BrewSunLightFruitBeer"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_BrewSunLightFruitBeer"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.05</count>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_BrewMoreSunLightFruitBeer"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_BrewMoreSunLightFruitBeer"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.25</count>
+    </value>
+  </Operation>
+
+  <!-- ===== fruit cola ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightFruitCola"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightFruitCola"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.05</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightFruitCola"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.1</count>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightFruitCola"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightFruitCola"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.25</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightFruitCola"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.5</count>
+    </value>
+  </Operation>
+
+  <!-- ===== fruit jam ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightFruitJam"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightFruitJam"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.1</count>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightFruitJam"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightFruitJam"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.5</count>
+    </value>
+  </Operation>
+
+  <!-- ===== fruit pie ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightFruitPie"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightFruitPie"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.05</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightFruitPie"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.2</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightFruitPie"]/ingredients/li[3]/count</xpath>
+    <value>
+      <count>0.1</count>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightFruitPie"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightFruitPie"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.25</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightFruitPie"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>1.0</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightFruitPie"]/ingredients/li[3]/count</xpath>
+    <value>
+      <count>0.5</count>
+    </value>
+  </Operation>
+
+  <!-- ===== soy sauce ===== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightSoySauce"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightSoySauce"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.05</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSunLightSoySauce"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.05</count>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightSoySauce"]</xpath>
+    <value>
+      <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightSoySauce"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>0.5</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreSunLightSoySauce"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>0.5</count>
+    </value>
+  </Operation>
+
+  <!-- ===== west sky sea fishing sauce (Odyssey recipes, guarded by xpath) ===== -->
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeWestSkySeaFishinSauce"]</xpath>
+    <match Class="PatchOperationSequence">
+      <operations>
+        <li Class="PatchOperationAdd">
+          <xpath>/Defs/RecipeDef[defName="Milira_MakeWestSkySeaFishinSauce"]</xpath>
+          <value>
+            <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+          </value>
+        </li>
+        <li Class="PatchOperationReplace">
+          <xpath>/Defs/RecipeDef[defName="Milira_MakeWestSkySeaFishinSauce"]/ingredients/li[1]/count</xpath>
+          <value>
+            <count>0.1</count>
+          </value>
+        </li>
+        <li Class="PatchOperationReplace">
+          <xpath>/Defs/RecipeDef[defName="Milira_MakeWestSkySeaFishinSauce"]/ingredients/li[2]/count</xpath>
+          <value>
+            <count>0.25</count>
+          </value>
+        </li>
+        <li Class="PatchOperationAdd">
+          <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreWestSkySeaFishinSauce"]</xpath>
+          <value>
+            <ingredientValueGetterClass>IngredientValueGetter_Nutrition</ingredientValueGetterClass>
+          </value>
+        </li>
+        <li Class="PatchOperationReplace">
+          <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreWestSkySeaFishinSauce"]/ingredients/li[1]/count</xpath>
+          <value>
+            <count>0.2</count>
+          </value>
+        </li>
+        <li Class="PatchOperationReplace">
+          <xpath>/Defs/RecipeDef[defName="Milira_MakeMoreWestSkySeaFishinSauce"]/ingredients/li[2]/count</xpath>
+          <value>
+            <count>1.25</count>
+          </value>
+        </li>
+      </operations>
+    </match>
+  </Operation>
+
+  <!-- ===== grilled chicken wings: keep volume getter, drop fractional counts ===== -->
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSpecialSauceGrilledChickenWings"]/ingredients/li[1]/count</xpath>
+    <value>
+      <count>1</count>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/RecipeDef[defName="Milira_MakeSpecialSauceGrilledChickenWings"]/ingredients/li[2]/count</xpath>
+    <value>
+      <count>1</count>
+    </value>
+  </Operation>
+
+</Patch>

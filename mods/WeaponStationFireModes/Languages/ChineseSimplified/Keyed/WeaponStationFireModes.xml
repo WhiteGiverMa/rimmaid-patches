@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WSFM_AccuracyExplanation>安装武器：{0}\n基础射击评分：{1}\n装备精度偏移：{2}\n射击模式（{3}）：{4}\n每格射击精度：{5}</WSFM_AccuracyExplanation>
+  <WSFM_Inspect>射击模式：{0}\n每格射击精度：{1}\n瞄准时间：{2}秒；冷却：{3}秒</WSFM_Inspect>
+  <WSFM_StationModeDescription>切换此无人基站的射击模式，使用安装武器对应的 Vanilla Fire Modes 参数。有人武器支架保留以操作员为射手的原有行为。</WSFM_StationModeDescription>
+</LanguageData>

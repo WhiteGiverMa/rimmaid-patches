@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GameRoot Condition="'$(GameRoot)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <WorkshopRoot Condition="'$(WorkshopRoot)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100</WorkshopRoot>
+    <HarmonyPath Condition="'$(HarmonyPath)' == ''">$(WorkshopRoot)\2009463077\1.7\Assemblies\0Harmony.dll</HarmonyPath>
+    <WeaponStationPath Condition="'$(WeaponStationPath)' == ''">$(WorkshopRoot)\3807251471\Assemblies\WeaponStation.dll</WeaponStationPath>
+    <FireModesPath Condition="'$(FireModesPath)' == ''">$(WorkshopRoot)\3662471742\1.7\Assemblies\VFM_VanillaFireModes.dll</FireModesPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)\Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)\UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(HarmonyPath)</HintPath><Private>false</Private></Reference>
+    <Reference Include="WeaponStation"><HintPath>$(WeaponStationPath)</HintPath><Private>false</Private></Reference>
+    <Reference Include="VFM_VanillaFireModes"><HintPath>$(FireModesPath)</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

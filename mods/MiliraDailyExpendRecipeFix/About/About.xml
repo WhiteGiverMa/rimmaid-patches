@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Fix - Milira Daily Expend Recipes</name>
+  <author>WhiteGiver (local patch)</author>
+  <packageId>whitegiver.miliradailyexpend.recipefix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.6</li>
+    <li>1.7</li>
+  </supportedVersions>
+  <description>修正 Milira Daily Expend 烹饪配方把「营养值」当成「物品个数」计算的问题：20 个纯食材配方改用 IngredientValueGetter_Nutrition，原料数量改写为营养值；日光酱油与日光果酱的营养值改为其原料成本（0.1）；恢复批量配方的正确比例，并修掉八宝粥、土豆泥、更多土豆泥的暴利配方。含非营养原料（日光燃料、日光钢板）的配方保留数量语义。仅 XML，不修改上游文件。</description>
+  <modDependencies>
+    <li>
+      <packageId>Migua.MiliraDailyExpend</packageId>
+      <displayName>Milira Daily Expend</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3604490167</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>Migua.MiliraDailyExpend</li>
+  </loadAfter>
+</ModMetaData>

@@ -38,5 +38,8 @@
 | Fix_WRMegaCorp_QuestExposeData | WRMegaCorp ChoiceLetter_CSC.ExposeData 的 IL | 上游删除重复 Scribe_Deep 调用，或 transpiler 锚点改变 |
 | LocalFix_MiliraFlightNullCheck | Milira FlightTracker 前缀 | 上游自行检查缺失飞行组件，或改用不同飞行机制 |
 | MilianWeaponInteractions | Milira 武器列 `DoCell`、原菜单、`CompTargetableWeapon.Available`、机体身份及 `Milira_EquipMilian` 两目标契约；原版表格窗口关闭、Targeter 与浮动菜单 provider | 上游原生提供两种交互后停用；签名/接缝漂移应拒绝应用而非放宽武器限制；未发布到创意工坊 |
+| DefaultsWorkPrioritiesLifeStageFix | Defaults 两个 Postfix 的签名、各自唯一 `First<LifeStageAge>`／`LifeStageMinAge` 调用、`developmentalStage.Child()` 与 `Pawn_AgeTracker.pawn`；哨兵返回值的后续 IL 用途 | 正式版同时并入上游 `00e16b1` 两处修复后停用；任一调用、签名或返回值用途变化须整组拒用并复核，不放宽校验 |
+| WeaponStationFireModes | 无人/有人 Def 的 comps 隔离、实际预热前唯一 `turretBurstWarmupTime` 字段地址读取、WS 预热/冷却入口、VFM FireModeDB/profile 与原版精度曲线、装备偏移及 burst 生命周期 | 上游提供等价无人基站适配后避免重复应用；任一接缝、曲线或模式语义漂移须复核；有人支架维持上游操作员逻辑，CE 不支持 |
+| MiliraDailyExpendRecipeFix | 27 个 RecipeDef 的 defName 与 `ingredients/li` 顺序、20 个 getter 注入点、日光酱油/果酱 Nutrition、批量酱油 60→10+10、鸡翅/米跳墙的非营养原料边界 | 上游自行设置 `ingredientValueGetterClass` 后先删对应注入；配方 defName/li 顺序、酱油果酱营养或上游数量变化时重算 README 收支表；新增含非营养原料的烹饪配方不得套营养值 getter |
 
 `upstream-patches/` 的直接工坊修改须结合记录的基准使用。标为历史缺失、已撤回或不建议安装的内容只留档，不因这次合仓自动重打。
