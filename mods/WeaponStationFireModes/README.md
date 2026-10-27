@@ -2,6 +2,10 @@
 
 适用于 RimWorld 1.7 原版战斗管线的独立 sidecar。依赖 Harmony、Weapon Station（工坊 `3807251471`）与 Vanilla Fire Modes（工坊 `3662471742`），加载顺序在三者之后。packageId：`whitegiver.weaponstation.firemodes`。
 
+## 验证状态
+
+2026-10-27，用户确认游戏内验证通过。发布 DLL 与已安装、经用户验证的版本一致；下方保留离线验证的覆盖范围，不将此次确认扩展为所有模组组合或边缘场景均已实测。
+
 ## 范围
 
 - 只增强无人 `VortexWS_WeaponStation`；有人 `VortexWS_WeaponMount` 继续使用上游的操作员精度、技能经验及射击循环，不添加本补丁组件或模式按钮。
@@ -63,7 +67,7 @@ pwsh -File Validation/validate.ps1 -PatchPath path/to/deployed/WeaponStationFire
 | 全真 | XML PatchOperation、基站/枪 Def 解析、真实 Harmony 3 注册与幂等、StatWorker/精度曲线/装备偏移、VFM 参数及 profile、基站预热/冷却 getter、模式 gizmo 的 action、模式与自动开关的 Scribe 文件往返、真实基站检查栏文本及 StatsReport prefix/finalizer 临时换 Def 期间的数值 |
 | 全真调用链 | 首轮 `TryStartShootSomething` 经过强制目标或寻敌分支，自动选模后进入真实 `TryStartCastOn → WarmupComplete`；覆盖立即连射与常规预热。真实 burst getter/状态/清理和单发、一次性排除均参与 |
 | 测试替身 | QA 专用副本只重绑 Unity 引用，禁用真实配置与静态贴图/材质初始化；只种本题 StatDef，DLC 条件节点不加载；枪的弹丸引用用测试 Def。目标可命中判定、寻敌结果、最终发射/FX 和战斗日志为边界替身；操作员属性值隔离，操作员转接和 1.2 倍加成使用上游真实代码 |
-| 未覆盖 | 游戏窗口绘制、鼠标命中、弹丸飞行/伤害、完整地图 AI、完整旧档加载。离线绿色不等于这些游戏内 QA 已通过 |
+| 离线驱动未覆盖 | 游戏窗口绘制、鼠标命中、弹丸飞行/伤害、完整地图 AI、完整旧档加载。用户游戏验证结论见上方，离线驱动本身不覆盖这些使用面 |
 
 负向覆盖包括空基站、两个基站模式互不影响、换枪后属性即时变化、空/有人操作的武器支架不改、NPC 禁用模式时连自定义 Default 倍率也不应用、CE 启用时补丁与组件回调均不生效。
 
