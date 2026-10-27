@@ -13,6 +13,7 @@ public sealed class CeleTechManagedWorkTableFixMod : Mod
     public CeleTechManagedWorkTableFixMod(ModContentPack content) : base(content)
     {
         MaterialListFix.Apply();
+        MakeRecipeProductsFix.Apply();
     }
 }
 

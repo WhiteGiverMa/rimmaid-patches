@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-  <name>天工铸造：自动化中枢材料消耗修复</name>
+  <name>天工铸造：自动化中枢修复</name>
   <author>WhiteGiverMa</author>
   <packageId>whitegiver.celetech.managedworktablefix</packageId>
-  <modVersion>1.0.0</modVersion>
+  <modVersion>1.1.0</modVersion>
   <supportedVersions>
     <li>1.7</li>
   </supportedVersions>
@@ -23,7 +23,7 @@
     <li>brrainz.harmony</li>
     <li>TOT.CeleTech.MKIII</li>
   </loadAfter>
-  <description>修复天工铸造自动化中枢消耗整堆材料时的 Collection was modified 异常。仅让 TryConsumeGatheredMaterials 遍历地图物资列表的快照，保留原材料筛选、扣料、配方及生产进度逻辑。不改工坊原件或存档，不返还修复前已经损失的材料。
+  <description>修复天工铸造自动化中枢的两条生产中断：消耗整堆材料时的 Collection was modified，以及产物需要材质时 MakeRecipeProducts 的空主导材料 NullReferenceException。只修正这两条路径，保留材料筛选、扣料数量、配方、品质与进度规则。不改工坊原件或存档，不返还修复前已经损失的材料；产物使用游戏默认材质。
 
-Fixes automation-hub material enumeration when consuming an entire stack. Only snapshots the map material list inside TryConsumeGatheredMaterials; original filtering, consumption and production remain unchanged. Does not edit Workshop files or saves, or refund previously lost materials.</description>
+Fixes two automation-hub production failures: material-list invalidation when consuming whole stacks, and a null dominant ingredient inside MakeRecipeProducts for stuff-based products. Only these two paths are changed; filtering, consumption, recipes, quality and progress remain unchanged. Does not edit Workshop files or saves, or refund previously lost materials; products use the game's default stuff.</description>
 </ModMetaData>

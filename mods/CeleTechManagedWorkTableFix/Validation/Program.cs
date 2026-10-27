@@ -23,7 +23,7 @@ internal static class Program
             Console.WriteLine("Usage: Validation bind|red|green|absent GAME_ROOT HARMONY_DLL CELETECH_DLL PATCH_DLL");
             return 0;
         }
-        if (args.Length != 5 || args[0] is not ("bind" or "red" or "green" or "absent"))
+        if (args.Length != 5 || args[0] is not ("bind" or "red" or "green" or "absent" or "products"))
         {
             Console.Error.WriteLine("Expected a validation mode and four assembly paths; use --help.");
             return 1;
@@ -97,6 +97,11 @@ internal static class Program
             Console.WriteLine("PASS: actual Mod constructor skips absent CeleTech without registering patches.");
             return;
         }
+        if (mode == "products")
+        {
+            RunProducts(mod, patch);
+            return;
+        }
 
         Assembly upstream = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(BoundDirectory, "CeleTech.Base.dll"));
         Type hub = upstream.GetType("CeleTech.Base.Building_ManagedWorkTable", true)!;
@@ -127,8 +132,10 @@ internal static class Program
         Activator.CreateInstance(mod, new object?[] { null });
         Check(Harmony.GetPatchInfo(consume)?.Transpilers.Count(patchInfo => patchInfo.owner == Owner) == 1,
             "Actual Mod constructor did not register one transpiler.");
+        MethodInfo? makeProducts = AccessTools.Method(typeof(GenRecipe), nameof(GenRecipe.MakeRecipeProducts));
+        if (makeProducts == null) throw new InvalidOperationException("GenRecipe.MakeRecipeProducts is missing.");
         Check(Harmony.GetAllPatchedMethods().Where(method => Harmony.GetPatchInfo(method)?.Owners.Contains(Owner) == true)
-            .SequenceEqual(new[] { consume }), "Patch touched a method outside the intended target.");
+            .ToHashSet().SetEquals(new[] { consume, makeProducts }), "Patch touched a method outside the intended targets.");
         Type fix = patch.GetType("WhiteGiver.CeleTechManagedWorkTableFix.MaterialListFix", true)!;
         MethodInfo replacement = fix.GetMethod("SnapshotMaterials")!;
         List<CodeInstruction> current = PatchProcessor.GetCurrentInstructions(consume);
@@ -161,6 +168,87 @@ internal static class Program
         Check(Progress(empty) == 0, "Null bill changed progress.");
         Console.WriteLine("GREEN: ingredient-free recipe and null-bill boundaries preserved; actual Mod/Harmony3 registration passed.");
     }
+
+    private static void RunProducts(Type mod, Assembly patch)
+    {
+        Current.ProgramState = ProgramState.Entry;
+        Current.Game = (Game)RuntimeHelpers.GetUninitializedObject(typeof(Game));
+        AccessTools.Field(typeof(Game), "maps").SetValue(Current.Game, new List<Map>());
+        AccessTools.Field(typeof(Game), "tickManager").SetValue(Current.Game, new TickManager());
+        AccessTools.Field(typeof(Game), "uniqueIDsManager").SetValue(Current.Game, new UniqueIDsManager());
+        Assembly upstream = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(BoundDirectory, "CeleTech.Base.dll"));
+        Type hubType = upstream.GetType("CeleTech.Base.Building_ManagedWorkTable", true)!;
+        MethodInfo? maybeMake = AccessTools.Method(typeof(GenRecipe), nameof(GenRecipe.MakeRecipeProducts));
+        if (maybeMake == null) throw new InvalidOperationException("GenRecipe.MakeRecipeProducts is missing.");
+        MethodInfo make = maybeMake;
+        object hub = Activator.CreateInstance(hubType)!;
+        IBillGiver billGiver = (IBillGiver)hub;
+        Pawn worker = (Pawn)RuntimeHelpers.GetUninitializedObject(typeof(Pawn));
+
+        var category = new StuffCategoryDef { defName = "ValidationStuffCategory" };
+        var stuff = new ThingDef
+        {
+            defName = "ValidationStuff", thingClass = typeof(Thing), stackLimit = 1, useHitPoints = false,
+            stuffProps = new StuffProperties { categories = new List<StuffCategoryDef> { category } }
+        };
+        Check(stuff.IsStuff, "Fixture stuff is not recognized as stuff.");
+        var product = new ThingDef
+        {
+            defName = "ValidationStuffProduct", thingClass = typeof(Thing), stackLimit = 1, useHitPoints = false,
+            stuffCategories = new List<StuffCategoryDef> { category }, defaultStuff = stuff
+        };
+        Check(product.MadeFromStuff, "Fixture product is not made from stuff.");
+        var recipe = new RecipeDef
+        {
+            defName = "ValidationStuffRecipe",
+            ingredients = new List<IngredientCount>(),
+            products = new List<ThingDefCountClass> { new() { thingDef = product, count = 1 } }
+        };
+        object?[] Args(RecipeDef def, Pawn pawn, Thing? dominant) =>
+            new object?[] { def, pawn, new List<Thing>(), dominant, billGiver, null, null, null };
+
+        bool reproduced = false;
+        try { Collect((IEnumerable<Thing>)make.Invoke(null, Args(recipe, worker, null))!); }
+        catch (NullReferenceException) { reproduced = true; }
+        Check(reproduced, "Original MakeRecipeProducts did not throw for a stuff product without a dominant ingredient.");
+
+        Activator.CreateInstance(mod, new object?[] { null });
+        Check(Harmony.GetPatchInfo(make)?.Prefixes.Count(info => info.owner == Owner) == 1,
+            "Actual Mod constructor did not register one MakeRecipeProducts prefix.");
+        List<Thing> products = Collect((IEnumerable<Thing>)make.Invoke(null, Args(recipe, worker, null))!);
+        Check(products.Count == 1 && products[0].def == product && products[0].Stuff == stuff,
+            "Patched hub call did not yield the product with default stuff.");
+
+        Thing dominant = ThingMaker.MakeThing(stuff);
+        products = Collect((IEnumerable<Thing>)make.Invoke(null, Args(recipe, worker, dominant))!);
+        Check(products.Count == 1 && products[0].Stuff == stuff, "Existing dominant ingredient was not respected.");
+
+        var plain = new ThingDef { defName = "ValidationPlainProduct", thingClass = typeof(Thing), stackLimit = 1, useHitPoints = false };
+        var plainRecipe = new RecipeDef
+        {
+            defName = "ValidationPlainRecipe",
+            ingredients = new List<IngredientCount>(),
+            products = new List<ThingDefCountClass> { new() { thingDef = plain, count = 1 } }
+        };
+        products = Collect((IEnumerable<Thing>)make.Invoke(null, Args(plainRecipe, worker, null))!);
+        Check(products.Count == 1 && products[0].Stuff == null, "Non-stuff product behavior changed.");
+
+        IBillGiver otherGiver = (IBillGiver)RuntimeHelpers.GetUninitializedObject(typeof(Building_WorkTable));
+        bool leaked = true;
+        try
+        {
+            Collect((IEnumerable<Thing>)make.Invoke(null,
+                new object?[] { recipe, worker, new List<Thing>(), null, otherGiver, null, null, null })!);
+            leaked = false;
+        }
+        catch (NullReferenceException) { }
+        Check(leaked, "MakeRecipeProducts prefix leaked to a non-CeleTech bill giver.");
+
+        Console.WriteLine("RED: actual GenRecipe.MakeRecipeProducts threw NullReferenceException for a stuff product with null dominant ingredient.");
+        Console.WriteLine("GREEN: actual Mod constructor added one prefix; hub product got default stuff, real dominant/non-stuff/other-giver paths preserved.");
+    }
+
+    private static List<Thing> Collect(IEnumerable<Thing> items) => items.ToList();
 
     private static void ValidateTranspiler(Type fix, MethodInfo consume, MethodInfo original, MethodInfo replacement)
     {

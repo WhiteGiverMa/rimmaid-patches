@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 dotnet build (Join-Path $PSScriptRoot 'Validation.csproj') -c Release --nologo "-p:GameRoot=$GameRoot" "-p:HarmonyPath=$HarmonyPath"
 if ($LASTEXITCODE -ne 0) { throw 'Validation build failed.' }
 $driver = Join-Path $PSScriptRoot 'bin\Release\net10.0\Validation.dll'
-foreach ($mode in @('bind', 'red', 'green', 'absent')) {
+foreach ($mode in @('bind', 'red', 'green', 'products', 'absent')) {
     dotnet $driver $mode $GameRoot $HarmonyPath $CeleTechPath $PatchPath
     if ($LASTEXITCODE -ne 0) { throw "Validation mode failed: $mode" }
 }
