@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!--
+    Conceptual mount for the Daedalus Wings. The vanilla Waist part shows the
+    pattern: a BodyPartGroupDef plus a conceptual BodyPartDef with coverage 0.
+    GetRandomNotMissingPart weights by coverageAbs, so this part is never hit
+    by normal damage; HasPartsToWear still sees it and the Belt layer still
+    conflicts with other apparel using the same group.
+  -->
+
+  <BodyPartGroupDef>
+    <defName>Milira_DaedalusMount</defName>
+    <label>rear hover mount</label>
+    <listOrder>60</listOrder>
+  </BodyPartGroupDef>
+
+  <BodyPartDef>
+    <defName>Milira_DaedalusMount</defName>
+    <label>rear hover mount</label>
+    <conceptual>true</conceptual>
+  </BodyPartDef>
+
+</Defs>

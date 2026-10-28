@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!--
+    Milira Daedalus Wings is a Belt-layer utility apparel, but it declares
+    bodyPartGroups = Torso. ArmorUtility.ApplyArmor damages every worn apparel
+    that covers the hit part, even when its armor rating is zero:
+
+        if (apparel.def.apparel.CoversBodyPart(part))
+            ApplyArmor(..., armorThing: apparel, ...);
+        ...
+        armorThing.TakeDamage(new DamageInfo(damageDef,
+            GenMath.RoundRandom(damAmount * 0.25f)));
+
+    So every torso hit chips 25% of the incoming damage off the wings' hit
+    points.
+
+    This patch gives Milira_Body and Human a conceptual rear mount part with
+    coverage 0 (the same trick vanilla uses for the Waist utility slot), then
+    moves the wings onto that group. The part is never selected by random hit
+    location, so the wings keep their hit points; the part still exists for
+    HasPartsToWear, and the Belt layer still blocks a second item using the
+    same group. Other Belt utility apparel keeps its own Waist/Torso group, so
+    it can still be worn together with the wings.
+
+    The part is Outside rather than Inside because ApparelProperties.
+    GetCoveredOuterPartsString only lists Outside parts in the apparel info
+    card. Coverage 0 still keeps it out of GetRandomNotMissingPart's weighted
+    hit-location roll, so Outside does not reintroduce durability loss.
+  -->
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/BodyDef[defName="Milira_Body"]/corePart/parts/li[def="Milira_DaedalusMount"]</xpath>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs/BodyDef[defName="Milira_Body"]/corePart/parts</xpath>
+      <value>
+        <li>
+          <def>Milira_DaedalusMount</def>
+          <coverage>0</coverage>
+          <depth>Outside</depth>
+          <groups>
+            <li>Milira_DaedalusMount</li>
+          </groups>
+        </li>
+      </value>
+    </nomatch>
+  </Operation>
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/BodyDef[defName="Human"]/corePart/parts/li[def="Milira_DaedalusMount"]</xpath>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs/BodyDef[defName="Human"]/corePart/parts</xpath>
+      <value>
+        <li>
+          <def>Milira_DaedalusMount</def>
+          <coverage>0</coverage>
+          <depth>Outside</depth>
+          <groups>
+            <li>Milira_DaedalusMount</li>
+          </groups>
+        </li>
+      </value>
+    </nomatch>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="Milira_DaedalusWings"]/apparel/bodyPartGroups</xpath>
+    <value>
+      <bodyPartGroups>
+        <li>Milira_DaedalusMount</li>
+      </bodyPartGroups>
+    </value>
+  </Operation>
+
+</Patch>
