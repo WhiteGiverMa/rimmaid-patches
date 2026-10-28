@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GameRoot Condition="'$(GameRoot)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <WorkshopRoot Condition="'$(WorkshopRoot)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100</WorkshopRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Source\DMSMechStorage.csproj" Private="false" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)\Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)\UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(WorkshopRoot)\2009463077\1.7\Assemblies\0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Fortified"><HintPath>$(WorkshopRoot)\3498575851\1.7\Assemblies\Fortified.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

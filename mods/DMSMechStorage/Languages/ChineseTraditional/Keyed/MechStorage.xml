@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <DMSMS_Store>封存{0}</DMSMS_Store>
+  <DMSMS_ActorUnavailable>需要一名可行動且由玩家控制的機械師。</DMSMS_ActorUnavailable>
+  <DMSMS_TargetUnavailable>需要同一地圖上已部署且存活的己方 DMS 機兵。</DMSMS_TargetUnavailable>
+  <DMSMS_Fighting>機兵正在攻擊。</DMSMS_Fighting>
+  <DMSMS_NoSpace>原地沒有足夠的可行走空地，請先將機兵移到開闊處。</DMSMS_NoSpace>
+  <DMSMS_Failed>未能完成操作，已保留原機兵。</DMSMS_Failed>
+</LanguageData>

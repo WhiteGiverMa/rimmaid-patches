@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <DMSMS_Store>Seal {0}</DMSMS_Store>
+  <DMSMS_ActorUnavailable>A mobile, player-controlled mechanitor is required.</DMSMS_ActorUnavailable>
+  <DMSMS_TargetUnavailable>The mech must be a living, deployed DMS mech on the same map.</DMSMS_TargetUnavailable>
+  <DMSMS_Fighting>The mech is attacking.</DMSMS_Fighting>
+  <DMSMS_NoSpace>Not enough clear, walkable space here. Move the mech to an open area.</DMSMS_NoSpace>
+  <DMSMS_Failed>Could not complete the operation. The mech has been retained.</DMSMS_Failed>
+</LanguageData>
