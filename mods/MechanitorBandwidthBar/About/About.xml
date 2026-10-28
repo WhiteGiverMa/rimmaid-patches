@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>机械师带宽条 / Mechanitor Bandwidth Bar</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.mechanitor.bandwidthbar</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <description>把生物技术的机械师带宽显示从「一格一单位」的格子改成容量进度条。原版在带宽较多时会不断加行并压缩格子，格子缩到几像素后渲染错位；本模组改用比例映射，任意带宽数量都不会溢出，并同时显示余量、孕育占用和超编数量。
+
+Replaces the Biotech mechanitor bandwidth gizmo with a capacity bar. Vanilla keeps adding rows and shrinking cells as bandwidth grows, which breaks down once cells are only a few pixels wide. The bar maps bandwidth proportionally, so it stays readable at any count, and it shows free capacity, gestation usage and overflow.
+
+不影响带宽数值、机械师机制、存档或其他界面。Does not change bandwidth values, mechanitor mechanics, saves or other UI.</description>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <downloadUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077</downloadUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>Ludeon.RimWorld.Biotech</li>
+    <li>brrainz.harmony</li>
+  </loadAfter>
+</ModMetaData>

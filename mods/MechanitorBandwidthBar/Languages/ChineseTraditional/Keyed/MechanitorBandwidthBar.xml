@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WhiteGiver.BandwidthBar.Free>剩餘 {0}</WhiteGiver.BandwidthBar.Free>
+  <WhiteGiver.BandwidthBar.Over>超編 {0}</WhiteGiver.BandwidthBar.Over>
+  <WhiteGiver.BandwidthBar.Gestating>孕育 {0}</WhiteGiver.BandwidthBar.Gestating>
+</LanguageData>

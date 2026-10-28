@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WhiteGiver.BandwidthBar.Free>Free: {0}</WhiteGiver.BandwidthBar.Free>
+  <WhiteGiver.BandwidthBar.Over>Over: {0}</WhiteGiver.BandwidthBar.Over>
+  <WhiteGiver.BandwidthBar.Gestating>Gestating: {0}</WhiteGiver.BandwidthBar.Gestating>
+</LanguageData>

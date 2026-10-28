@@ -35,7 +35,8 @@
     { "directory": "MilianWeaponInteractions", "packageId": "whitegiver.milian.weaponinteractions", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-26; not published to Workshop" },
     { "directory": "DefaultsWorkPrioritiesLifeStageFix", "packageId": "whitegiver.defaults.workprioritieslifestagefix", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-26; not published to Workshop" },
     { "directory": "WeaponStationFireModes", "packageId": "whitegiver.weaponstation.firemodes", "status": "active", "source": "local canonical source; added 2026-10-27; not published to Workshop; game QA confirmed by user" },
-    { "directory": "MiliraDailyExpendRecipeFix", "packageId": "whitegiver.miliradailyexpend.recipefix", "status": "active", "source": "local canonical source; added 2026-10-27; XML-only sidecar; game QA confirmed by user" }
+    { "directory": "MiliraDailyExpendRecipeFix", "packageId": "whitegiver.miliradailyexpend.recipefix", "status": "active", "source": "local canonical source; added 2026-10-27; XML-only sidecar; game QA confirmed by user" },
+    { "directory": "MechanitorBandwidthBar", "packageId": "whitegiver.mechanitor.bandwidthbar", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-27; not published to Workshop" }
   ],
   "excluded": [
     { "name": "CombatExtendedLocal", "reason": "full upstream fork/mirror; maintained in WhiteGiverMa/CombatExtended" },
