@@ -38,7 +38,7 @@
     { "directory": "MiliraDailyExpendRecipeFix", "packageId": "whitegiver.miliradailyexpend.recipefix", "status": "active", "source": "local canonical source; added 2026-10-27; XML-only sidecar; game QA confirmed by user" },
     { "directory": "MechanitorBandwidthBar", "packageId": "whitegiver.mechanitor.bandwidthbar", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-27; not published to Workshop" },
     { "directory": "DMSMechStorage", "packageId": "whitegiver.dms.mechstorage", "status": "active", "source": "local canonical source; added 2026-10-28; v1.1.4 native seal/release reuse, drafted-idle, sleeping wait, capsule posture, ground weapon and Cinders Tombstone support; game QA confirmed by user; not published to Workshop" },
-    { "directory": "MiliraDaedalusWingsWaist", "packageId": "whitegiver.milira.daedaluswingswaist", "status": "game-qa-pending", "source": "local canonical source; added 2026-10-29; XML-only sidecar; not published to Workshop" }
+    { "directory": "MiliraDaedalusWingsWaist", "packageId": "whitegiver.milira.daedaluswingswaist", "status": "active", "source": "local canonical source; added 2026-10-29; XML-only sidecar; v1.0.1 Chinese DefInjected folder/key fix and all-Waist-body coverage; game QA confirmed by user; not published to Workshop" }
   ],
   "excluded": [
     { "name": "CombatExtendedLocal", "reason": "full upstream fork/mirror; maintained in WhiteGiverMa/CombatExtended" },

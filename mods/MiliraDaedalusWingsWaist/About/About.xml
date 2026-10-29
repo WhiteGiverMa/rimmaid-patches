@@ -3,12 +3,12 @@
   <name>Fix - Milira Daedalus Wings Wear</name>
   <author>WhiteGiver (local patch)</author>
   <packageId>whitegiver.milira.daedaluswingswaist</packageId>
-  <modVersion>1.0.0</modVersion>
+  <modVersion>1.0.1</modVersion>
   <supportedVersions>
     <li>1.6</li>
     <li>1.7</li>
   </supportedVersions>
-  <description>把米莉拉「代达罗斯之翼」的覆盖部位从躯干改到为米莉拉与人类身体新增的「后方悬浮」概念部位（coverage=0）。普通攻击不会命中该部位，因此这件非防御装备受击时不再损失耐久；物品仍有耐久值，落地被爆炸等直接伤害仍可损坏。它仍占用 Belt 层：同款代达罗斯互斥，但与护盾腰带、超级计算背包等使用 Waist/Torso 组的腰带装备可以继续叠穿。部位设为 Outside 以便原版装备卡显示覆盖名称，coverage=0 仍保证不被随机命中。米莉安身体不改。仅 XML，不修改上游文件。</description>
+  <description>把米莉拉「代达罗斯之翼」的覆盖部位从躯干改到为所有带 Waist 槽的身体新增的「后方悬浮」概念部位（coverage=0）：人类、米莉拉、米莉安以及其他 humanlike 种族都会自动获得。普通攻击不会命中该部位，因此这件非防御装备受击时不再损失耐久；物品仍有耐久值，落地被爆炸等直接伤害仍可损坏。它仍占用 Belt 层：同款代达罗斯互斥，但与护盾腰带、超级计算背包等使用 Waist/Torso 组的腰带装备可以继续叠穿。部位设为 Outside 以便原版装备卡显示覆盖名称，coverage=0 仍保证不被随机命中；中文翻译位于 ChineseSimplified (简体中文) 的 DefInjected。仅 XML，不修改上游文件。</description>
   <modDependencies>
     <li>
       <packageId>Ancot.MiliraRace</packageId>

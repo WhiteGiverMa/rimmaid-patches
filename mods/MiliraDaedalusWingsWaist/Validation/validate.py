@@ -20,6 +20,7 @@ Usage:
 """
 
 import argparse
+import copy
 import os
 import sys
 import xml.etree.ElementTree as ET
@@ -98,20 +99,64 @@ def parse_step(step):
     return tag, predicate
 
 
+def split_xpath(path):
+    parts = []
+    depth = 0
+    start = 0
+    for index, char in enumerate(path):
+        if char == "[":
+            depth += 1
+        elif char == "]":
+            depth -= 1
+        elif char == "/" and depth == 0:
+            parts.append(path[start:index])
+            start = index + 1
+    parts.append(path[start:])
+    return parts
+
+
+def match_path(node, path):
+    nodes = [node]
+    for step in split_xpath(path):
+        tag, predicate = parse_step(step)
+        next_nodes = []
+        for current in nodes:
+            for child in current:
+                if child.tag != tag:
+                    continue
+                if predicate and not predicate_ok(child, predicate):
+                    continue
+                next_nodes.append(child)
+        nodes = next_nodes
+    return nodes
+
+
 def predicate_ok(node, predicate):
-    if predicate.isdigit():
-        return True
-    if '="' not in predicate:
-        raise ValueError(f"unsupported predicate: {predicate}")
-    child, value = predicate[:-1].split('="', 1)
-    return node.findtext(child) == value
+    for part in [item.strip() for item in predicate.split(" and ")]:
+        if part.isdigit():
+            continue
+        if part.startswith("not(") and part.endswith(")"):
+            if match_path(node, part[4:-1].strip()):
+                return False
+            continue
+        if '="' in part:
+            if "/" in part or "[" in part:
+                if not match_path(node, part):
+                    return False
+                continue
+            path, value = part[:-1].split('="', 1)
+            if not any(found.text == value for found in match_path(node, path)):
+                return False
+            continue
+        raise ValueError(f"unsupported predicate: {part}")
+    return True
 
 
 def resolve(tree, xpath):
     if not xpath.startswith("/Defs/"):
         raise ValueError(f"unsupported xpath: {xpath}")
     nodes = [tree]
-    for step in xpath[len("/Defs/") :].split("/"):
+    for step in split_xpath(xpath[len("/Defs/") :]):
         tag, predicate = parse_step(step)
         next_nodes = []
         for node in nodes:
@@ -143,15 +188,19 @@ def apply_operation(tree, op, applied):
     xpath = op.findtext("xpath")
     value = op.find("value")
     nodes = resolve(tree, xpath)
+    if not nodes:
+        fail(f"xpath matched no nodes: {xpath}")
+        return
+    if cls == "PatchOperationAdd":
+        for target in nodes:
+            for child in list(value):
+                target.append(copy.deepcopy(child))
+        applied.append(cls)
+        return
     if len(nodes) != 1:
         fail(f"xpath matched {len(nodes)} nodes (expected 1): {xpath}")
         return
     target = nodes[0]
-    if cls == "PatchOperationAdd":
-        for child in list(value):
-            target.append(child)
-        applied.append(cls)
-        return
     if cls == "PatchOperationReplace":
         parent = find_parent(tree, target)
         if parent is None:
@@ -287,7 +336,7 @@ def main():
     patched = load_defs([milira_defs, local_defs] + core_paths)
     applied = apply_patch(patched, args.patch)
     print(f"patch operations applied: {len(applied)} ({', '.join(applied)})")
-    check(len(applied) == 3, f"expected 3 applied operations, got {len(applied)}")
+    check(len(applied) == 4, f"expected 4 applied operations, got {len(applied)}")
     index = index_defs(patched)
 
     # Def declarations.
@@ -379,7 +428,29 @@ def main():
     milira_body = find_def(index, "BodyDef", MILIRA_BODY)
     parts = check_mount_body(MILIRA_BODY, expected_mount=True)
     human_parts = check_mount_body("Human", expected_mount=True)
-    check_mount_body("Milian_Body", expected_mount=False)
+    check_mount_body("Milian_Body", expected_mount=True)
+    check_mount_body("QuadrupedAnimalWithPaws", expected_mount=False)
+
+    # DefInjected must be in the real language folder and carry the .label key.
+    language_root = os.path.join(
+        HERE, "..", "Languages", "ChineseSimplified (简体中文)"
+    )
+    for rel in (
+        "DefInjected/BodyPartDef/DaedalusMount.xml",
+        "DefInjected/BodyPartGroupDef/DaedalusMount.xml",
+    ):
+        path = os.path.join(language_root, rel)
+        check(os.path.isfile(path), f"missing translation file: {rel}")
+        if os.path.isfile(path):
+            translated = ET.parse(path).getroot().findtext(f"{NEW_PART}.label")
+            check(
+                translated == "后方悬浮",
+                f"{rel}: {NEW_PART}.label is {translated!r}, expected '后方悬浮'",
+            )
+    check(
+        not os.path.exists(os.path.join(HERE, "..", "Languages", "ChineseSimplified")),
+        "old 'Languages/ChineseSimplified' folder still exists",
+    )
 
     # The wings now point at the new group.
     wings = find_def(index, "ThingDef", WINGS)
@@ -492,9 +563,9 @@ def main():
             print(" -", message)
         return 1
     print(
-        "\nPASS: wings moved to a conceptual coverage=0 rear mount on Milira and Human; "
-        "no hittable part shares the group; the apparel card lists the mount; "
-        "same wings conflict; Waist/Torso belts stack."
+        "\nPASS: wings moved to a conceptual coverage=0 rear mount on every Waist body "
+        "(Milira, Human, Milian and mod races); no hittable part shares the group; "
+        "the apparel card lists the mount; same wings conflict; Waist/Torso belts stack."
     )
     return 0
 

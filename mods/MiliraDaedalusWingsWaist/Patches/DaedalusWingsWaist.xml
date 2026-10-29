@@ -15,13 +15,19 @@
     So every torso hit chips 25% of the incoming damage off the wings' hit
     points.
 
-    This patch gives Milira_Body and Human a conceptual rear mount part with
-    coverage 0 (the same trick vanilla uses for the Waist utility slot), then
-    moves the wings onto that group. The part is never selected by random hit
-    location, so the wings keep their hit points; the part still exists for
-    HasPartsToWear, and the Belt layer still blocks a second item using the
-    same group. Other Belt utility apparel keeps its own Waist/Torso group, so
-    it can still be worn together with the wings.
+    This patch gives every body with a Waist slot (vanilla Human, Milira_Body,
+    Milian_Body, and any mod humanlike body that can wear a belt) a conceptual
+    rear mount part with coverage 0 (the same trick vanilla uses for the Waist
+    utility slot), then moves the wings onto that group. The part is never
+    selected by random hit location, so the wings keep their hit points; the
+    part still exists for HasPartsToWear, and the Belt layer still blocks a
+    second item using the same group. Other Belt utility apparel keeps its own
+    Waist/Torso group, so it can still be worn together with the wings.
+
+    Human and Milira get explicit conditional blocks first, then the batch block
+    covers every other Waist body without duplicating the part. The batch is
+    wrapped in a conditional so PatchOperationAdd never runs with an empty node
+    set when there are no extra humanlike races installed.
 
     The part is Outside rather than Inside because ApparelProperties.
     GetCoveredOuterPartsString only lists Outside parts in the apparel info
@@ -61,6 +67,24 @@
         </li>
       </value>
     </nomatch>
+  </Operation>
+
+  <!-- Every other race with a Waist slot: mod humanlike bodies, Milian, etc. -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/BodyDef[corePart/parts/li[def="Waist"] and not(corePart/parts/li[def="Milira_DaedalusMount"])]/corePart/parts</xpath>
+    <match Class="PatchOperationAdd">
+      <xpath>/Defs/BodyDef[corePart/parts/li[def="Waist"] and not(corePart/parts/li[def="Milira_DaedalusMount"])]/corePart/parts</xpath>
+      <value>
+        <li>
+          <def>Milira_DaedalusMount</def>
+          <coverage>0</coverage>
+          <depth>Outside</depth>
+          <groups>
+            <li>Milira_DaedalusMount</li>
+          </groups>
+        </li>
+      </value>
+    </match>
   </Operation>
 
   <Operation Class="PatchOperationReplace">
