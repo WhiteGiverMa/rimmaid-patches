@@ -42,7 +42,9 @@ public static class StoredWeaponDraw
         angle = 0f;
         Pawn? mech = capsule.Mech;
         Thing? weapon = mech?.equipment?.Primary;
-        if (mech == null || mech.Dead || weapon == null) return false;
+        // Mounted/built-in turret guns are destroyOnDrop equipment added directly to the pawn by
+        // Fortified's CompVehicleWeapon; they are already drawn as part of the mech body.
+        if (mech == null || mech.Dead || weapon == null || weapon.def.destroyOnDrop) return false;
 
         int size = Mathf.Max(capsule.def.size.x, capsule.def.size.z);
         bool large = size >= 3;

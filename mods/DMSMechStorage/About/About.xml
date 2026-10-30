@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-  <name>失能机关：机兵封存 / DMS Mech Storage</name>
+  <name>失能机关 - 机兵封存 The Dead Man's Switch - Mech Storage</name>
   <author>WhiteGiverMa</author>
   <packageId>whitegiver.dms.mechstorage</packageId>
-  <modVersion>1.1.4</modVersion>
+  <modVersion>1.1.5</modVersion>
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
@@ -24,5 +24,5 @@
     <li>dms.tritech</li>
     <li>dms.xivbattlegroup</li>
   </loadAfter>
-  <description>选中一名机械师，右键己方 DMS 机兵并选择「封存」。机械师走近后将原机兵封存为 Fortified Features Framework 的休眠机械体，释放控制带宽；保留机兵姓名、装备和状态，可卸载、搬运、重新安装后由机械师重新启用。仅识别 DMS 系列来源的机械体，不影响原版或其他模组的机械体。指挥型机兵封存后会解除下属连接，重新启用后需重新连接下属。依赖 RimWorld 1.7、Biotech、FFF 和 DMS 2。</description>
+  <description>选中一名机械师，右键己方 DMS 机兵并选择「封存」。机械师走近后将原机兵封存为 Fortified Features Framework 的休眠机械体，释放控制带宽；保留机兵姓名、装备和状态，可卸载、搬运、重新安装后由机械师重新启用。休眠建筑会显示当前装备；选中后可重命名机兵、卸下武器或选择地面武器重新配备，激活后沿用新名字与装备。仅识别 DMS 系列来源的机械体，不影响原版或其他模组的机械体。指挥型机兵封存后会解除下属连接，重新启用后需重新连接下属。依赖 RimWorld 1.7、Biotech、FFF 和 DMS 2。</description>
 </ModMetaData>

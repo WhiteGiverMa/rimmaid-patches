@@ -6,4 +6,14 @@
   <DMSMS_Fighting>The mech is attacking.</DMSMS_Fighting>
   <DMSMS_NoSpace>Not enough clear, walkable space here. Move the mech to an open area.</DMSMS_NoSpace>
   <DMSMS_Failed>Could not complete the operation. The mech has been retained.</DMSMS_Failed>
+  <DMSMS_Unequip>Unequip {0}</DMSMS_Unequip>
+  <DMSMS_EquipWeapon>Equip a weapon...</DMSMS_EquipWeapon>
+  <DMSMS_Equipped>Equipped: {0}</DMSMS_Equipped>
+  <DMSMS_EquippedBuiltIn>Built-in weapon: {0}</DMSMS_EquippedBuiltIn>
+  <DMSMS_NoWeapon>none</DMSMS_NoWeapon>
+  <DMSMS_RenameDesc>Rename the dormant {0}. The new name is kept after activation.</DMSMS_RenameDesc>
+  <DMSMS_UnequipDesc>Unequip {0} and place it on the ground beside the dormant capsule.</DMSMS_UnequipDesc>
+  <DMSMS_EquipWeaponDesc>Pick a weapon on the ground to store with the mech. Its current weapon is unequipped first.</DMSMS_EquipWeaponDesc>
+  <DMSMS_EquipFailed>Could not equip this weapon on the mech.</DMSMS_EquipFailed>
+  <DMSMS_UnequipFailed>Could not unequip the weapon: no free ground beside the capsule.</DMSMS_UnequipFailed>
 </LanguageData>

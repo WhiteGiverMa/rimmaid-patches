@@ -1,13 +1,16 @@
-# 失能机关：机兵封存 / DMS Mech Storage
+# 失能机关 - 机兵封存 / The Dead Man's Switch - Mech Storage
 
 RimWorld 1.7 / Biotech。选中一名机械师殖民者，右键己方 DMS 机兵，选择 **「封存某机兵」**。机械师走近后工作 300 tick，将原机兵装入 Fortified Features Framework 的休眠机械体建筑。
 
-版本：1.1.4。packageId：`whitegiver.dms.mechstorage`。
+版本：1.1.5。packageId：`whitegiver.dms.mechstorage`。
+
+游戏内 mod 列表与工坊标题都使用静态中英双名「失能机关 - 机兵封存 The Dead Man's Switch - Mech Storage」，所有语言下显示同一个名字；不再按语言切换。
 
 ## 功能与边界
 
 - 使用原 FFF 休眠建筑，保留原 pawn 身份、姓名、装备、物品栏和健康状态，不重新生成机兵。外观由 FFF 的机兵绘制逻辑提供；卸载后的物品也保留机兵姓名。
 - 装备中的主武器会按古代军团休眠建筑的方式画在机兵脚边；武器仍是同一件物品，不会被丢出或复制。衣物与其他装备同样原样保留。
+- 休眠建筑的信息面板会显示「当前装备」。选中建筑后可用原版重命名控件改名（作用于原机兵，激活后沿用），也可卸下当前武器或选择地面上的一件武器重新配备；已有武器会先被卸下并放到建筑旁，换装始终交换同一批物品。机兵自带、`destroyOnDrop` 的固定武器（例如 DMS 的 Mounted 炮塔枪）会标为「内置武器」，不会被画到地面，也不提供卸下。
 - 封存后解除原机械师控制关系并立即刷新带宽/控制列表。不要求由原机械师操作，也不要求封存者有空余带宽。
 - **被征召待命也可以封存**；只有正在攻击（`IsAttacking`，含近战、开火中或已锁定目标）才会拦下。目标是休眠/自停机的机兵时，等待过程保留其睡眠状态，不会打断它。
 - 可通过原版「卸载／重新安装」搬运，再由机械师右键休眠建筑，使用 FFF 原有的「控制」任务启用。
@@ -57,12 +60,14 @@ RimWorld 1.7 / Biotech。选中一名机械师殖民者，右键己方 DMS 机�
 - 释放时按 1.7 的真实所有权模型处理：`Thing.SpawnSetup` 会把已生成对象挂到 `map.spawnedThings`，因此 `holdingOwner != null` 不是错误状态；清理只针对容器所有者，Map 永不触碰。`ThingOwner.Contains` 只比较链接、不查列表，故一律用 `IndexOf` 判断真实列表：在列表里才移除（缺链接先补回），只是悬空引用则仅断链。机兵若残留“已生成”状态或仍登记在 `map.spawnedThings` 却无有效链接，先修复再在胶囊格重新生成，随后逐项校验 `Spawned/Map/Position/Destroyed/HasMech`，失败时输出具体数值与容器内容。
 - 封存/唤醒全过程的问题记录见 [排查记录](docs/troubleshooting-20261028.md)。
 - 入舱失败优先原地恢复同一机兵及原控制组；地图恢复也失败时，把装着原机兵的普通 FFF 胶囊放入机械师物品栏。失败激活保留原机兵供重试，不复制 pawn。
-- 注册六个 Harmony 目标，均带 DMS/玩家胶囊或持有者守卫，其余对象执行原逻辑：`Building_MechCapsule.CanActivate(Thing)`、`ActivateMech(Thing)`、`DynamicDrawPhaseAt`（脚边武器）、`MinifiedThing.LabelNoCount`、`PawnUtility.GetPosture`、`GenSpawn.Spawn`（仅在从 DMS 胶囊释放原机兵时保留恢复语义）。
+- 注册十个 Harmony 目标，均带 DMS/玩家胶囊或持有者守卫，其余对象执行原逻辑：`Building_MechCapsule.CanActivate(Thing)`、`ActivateMech(Thing)`、`DynamicDrawPhaseAt`（脚边武器）、`GetFloatMenuOptions`（卸下/配备）、`GetInspectString`（当前装备）、`MinifiedThing.LabelNoCount`、`PawnUtility.GetPosture`、`GenSpawn.Spawn`（仅在从 DMS 胶囊释放原机兵时保留恢复语义）、`ThingWithComps.GetGizmos`（重命名/卸下/配备按钮）、`MainTabWindow_Inspect.DoInspectPaneButtons`（原版标题栏重命名按钮）。
 - 重新部署使用 `respawningAfterLoad: true`，保留真实电池余时和机兵平台资源，不触发「首次生成」补满/重建逻辑。释放时只豁免当前胶囊自身的建筑占位，其余占地仍检查。
 
-## 验证状态（2026-10-28）
+## 验证状态（2026-10-30）
 
-**用户已确认游戏内验证正常**：封存、征召待命封存、休眠机兵封存、脚边武器、唤醒落点与正常行动。离线驱动覆盖于此前的排查轮次，详见 [排查记录](docs/troubleshooting-20261028.md)。
+**v1.1.4 已由用户确认游戏内验证正常**：封存、征召待命封存、休眠机兵封存、脚边武器、唤醒落点与正常行动。离线驱动覆盖于此前的排查轮次，详见 [排查记录](docs/troubleshooting-20261028.md)。
+
+v1.1.5 的离线驱动已覆盖休眠建筑的重命名传播、当前装备信息、右键/工具栏入口、卸下与换装（同一物品、旧武器落地、脚边绘制跟随）、内置 `destroyOnDrop` 固定武器不绘制/不提供卸下，以及非 DMS/空胶囊/非武器/`destroyOnDrop` 拒绝；**新界面的实际点击、原版改名窗口和整局读档仍需游戏内确认**。
 
 严格构建、C# 诊断及离线真实程序集驱动通过；游戏窗口像素表现与整局存读档未由离线驱动覆盖。
 
@@ -70,13 +75,13 @@ RimWorld 1.7 / Biotech。选中一名机械师殖民者，右键己方 DMS 机�
 
 | 文件 | SHA-256 |
 |---|---|
-| 发布 `DMSMechStorage.dll` | `417fb0ca96eb63c682c4076cb577b382d944f421e31abcd64055a16509555bff` |
+| 发布 `DMSMechStorage.dll` | `09cbb019987c6c2c95701374f350fb28f7a1213793f0d94b5a385ee1452b389f` |
 | FFF `Fortified.dll` | `0a6be73cd22cf4559e0afd461a5dcc48e8c39aad684d3f388b9d8f7ddd6e21a3` |
 | 游戏 `Assembly-CSharp.dll` | `4e61d57205944c113631234bc55136a1a7c1679667b26008bee5425bcffa1463` |
 
 运行 `pwsh -File Validation/validate.ps1`，可通过 `-GameRoot`、`-WorkshopRoot`、`-QaRoot`、`-ModPath` 指定位置。发布构建：`dotnet build Source/DMSMechStorage.csproj -c Release`，不会自动部署。
 
-驱动已覆盖：十个 DMS 来源包、Cinders 正反例、原版/其他模组反例；原生 provider 发现、中文菜单、失效点击、资格/寻路入口；真实预约冲突及最后 toil 重验；征召待命放行与实际攻击拦截；睡眠目标在 `WaitWith` 下保留可预约的休息格；FFF 1–5 格占地、非锚点阻挡；同 pawn 姓名/伤病/装备/物品栏往返；带宽和控制缓存；入舱/生成/移出容器后抛错的故障注入与回滚；无关系 tracker 无人机、电池余时、平台资源、觉醒和指挥机控制语义；睡眠/倒地胶囊的显示姿态与 `BodyAngle`/`GetBodyPos`；脚边武器的偏移/角度/确定性散布与不触发条件；真实 minify 和 `Blueprint_Install.MakeSolidThing` 的同对象转移及名称。
+驱动已覆盖：十个 DMS 来源包、Cinders 正反例、原版/其他模组反例；原生 provider 发现、中文菜单、失效点击、资格/寻路入口；真实预约冲突及最后 toil 重验；征召待命放行与实际攻击拦截；睡眠目标在 `WaitWith` 下保留可预约的休息格；FFF 1–5 格占地、非锚点阻挡；同 pawn 姓名/伤病/装备/物品栏往返；带宽和控制缓存；入舱/生成/移出容器后抛错的故障注入与回滚；无关系 tracker 无人机、电池余时、平台资源、觉醒和指挥机控制语义；睡眠/倒地胶囊的显示姿态与 `BodyAngle`/`GetBodyPos`；脚边武器的偏移/角度/确定性散布与不触发条件；内置 `destroyOnDrop` 固定武器不绘制、标为内置且不提供卸下；真实 minify 和 `Blueprint_Install.MakeSolidThing` 的同对象转移及名称；休眠建筑的当前装备信息、改名后的建筑/卸载物名称、右键与工具栏入口、卸下/配备/换装的同一物品与落地状态。
 
 ### 离线替身边界
 
@@ -84,7 +89,7 @@ QA-only 副本仅重绑定 FFF 的 Unity 引用，并清除游戏 `ModsConfig`�
 
 保留真实入舱、ThingOwner 所有权、GenSpawn 的占地/wipe/容器移出逻辑、关系列表、relation worker、控制组和带宽刷新、FFF 相关 `PostSpawnSetup`、minify/install 方法。显式替换地图生成/销毁的引擎注册、图形/音频/翻译查询、统计数值来源、能力计算、寻路、AI 调度和界面通知；Job 路径到达/延迟由驱动手动推进。因此**不把这些结果冒充 GUI、真实寻路、整局 Scribe 读档或任意第三方回调环境的验证**。
 
-最小游戏浅测：正常重启后，选中机械师，右键一名原本没有自封存技能的 DMS 机兵，点「封存」，观察它成为同名休眠建筑且带宽下降。卸载/搬运/重装、完整读档可在正常游玩时顺手确认，不要求为此制造复杂场景。
+最小游戏浅测：正常重启后，选中机械师，右键一名原本没有自封存技能的 DMS 机兵，点「封存」，观察它成为同名休眠建筑且带宽下降。再选中该建筑：信息面板应显示当前装备；点原版重命名改名、点「卸下」看武器落在旁边、点「为其配备武器」选一件地面武器看它被收进建筑。卸载/搬运/重装、完整读档可在正常游玩时顺手确认，不要求为此制造复杂场景。
 
 ## 更新、停用与限制
 

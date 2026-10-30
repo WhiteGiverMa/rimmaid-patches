@@ -6,4 +6,14 @@
   <DMSMS_Fighting>機兵正在攻擊。</DMSMS_Fighting>
   <DMSMS_NoSpace>原地沒有足夠的可行走空地，請先將機兵移到開闊處。</DMSMS_NoSpace>
   <DMSMS_Failed>未能完成操作，已保留原機兵。</DMSMS_Failed>
+  <DMSMS_Unequip>卸下{0}</DMSMS_Unequip>
+  <DMSMS_EquipWeapon>為其配備武器...</DMSMS_EquipWeapon>
+  <DMSMS_Equipped>目前裝備：{0}</DMSMS_Equipped>
+  <DMSMS_EquippedBuiltIn>內建武器：{0}</DMSMS_EquippedBuiltIn>
+  <DMSMS_NoWeapon>無</DMSMS_NoWeapon>
+  <DMSMS_RenameDesc>重新命名休眠中的{0}；啟用後會沿用這個名稱。</DMSMS_RenameDesc>
+  <DMSMS_UnequipDesc>將{0}卸下，放到休眠建築旁的地面上。</DMSMS_UnequipDesc>
+  <DMSMS_EquipWeaponDesc>選擇地面上的一件武器與機兵一起封存；已裝備的武器會先被卸下。</DMSMS_EquipWeaponDesc>
+  <DMSMS_EquipFailed>無法為該機兵配備這件武器。</DMSMS_EquipFailed>
+  <DMSMS_UnequipFailed>無法卸下武器：附近沒有可放置的地面。</DMSMS_UnequipFailed>
 </LanguageData>

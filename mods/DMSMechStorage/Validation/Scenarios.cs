@@ -73,9 +73,10 @@ internal static class Scenarios
         Driver.Check(Driver.Ordered == null, "Stale menu target still issued an order.");
         Driver.Check(Driver.Errors.Count == 0, string.Join("\n", Driver.Errors));
         var owned = Harmony.GetAllPatchedMethods().Where(method => Harmony.GetPatchInfo(method)?.Owners.Contains("whitegiver.dms.mechstorage") == true).ToArray();
-        Driver.Check(owned.Length == 6, "Production mod installed " + owned.Length + " patches instead of six.");
+        Driver.Check(owned.Length == 10, "Production mod installed " + owned.Length + " patches instead of ten.");
         Driver.Check(owned.All(method => method.DeclaringType == typeof(Building_MechCapsule) || method.DeclaringType == typeof(MinifiedThing)
-            || method.DeclaringType == typeof(PawnUtility) || method.DeclaringType == typeof(GenSpawn)),
+            || method.DeclaringType == typeof(PawnUtility) || method.DeclaringType == typeof(GenSpawn)
+            || method.DeclaringType == typeof(ThingWithComps) || method.DeclaringType == typeof(MainTabWindow_Inspect)),
             "Production mod installed an unexpected global patch.");
         Console.WriteLine("PASS: all ten DMS package gates; vanilla/foreign/human exclusions; native provider discovery, Chinese menu, stale/reach/manipulation gates and job ordering.");
     }

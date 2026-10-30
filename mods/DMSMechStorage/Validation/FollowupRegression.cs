@@ -95,7 +95,19 @@ internal static class FollowupRegression
         Drawn.Clear();
         StoredWeaponDraw.Prefix(foreignCapsule, DrawPhase.Draw, origin);
         Driver.Check(Drawn.Count == 0, "Weapon was drawn for a non-DMS capsule.");
-        Console.WriteLine("PASS: native DrawEquipmentAiming receives AncientCorps offsets for all rotations, deterministic scatter, phase/DMS/weapon gating; stored item untouched.");
+
+        Pawn mounted = Driver.NewPawn(at: new IntVec3(20, 0, 20));
+        ThingWithComps mountedGun = Item("MountedGun");
+        mountedGun.def.equipmentType = EquipmentType.Primary;
+        mountedGun.def.destroyOnDrop = true;
+        mounted.equipment.GetDirectlyHeldThings().TryAdd(mountedGun);
+        Driver.Check(MechStorage.Store(actor, mounted), "Mounted-gun setup could not seal the mech.");
+        var mountedCapsule = (Building_MechCapsule)mounted.holdingOwner.Owner;
+        Drawn.Clear();
+        StoredWeaponDraw.Prefix(mountedCapsule, DrawPhase.Draw, origin);
+        Driver.Check(Drawn.Count == 0 && !StoredWeaponDraw.TryGet(mountedCapsule, origin, out _, out _),
+            "A destroy-on-drop mounted weapon was drawn as ground loot.");
+        Console.WriteLine("PASS: native DrawEquipmentAiming receives AncientCorps offsets for all rotations, deterministic scatter, phase/DMS/weapon gating; stored item untouched; built-in destroy-on-drop turret guns stay on the mech.");
     }
 
     private static ThingWithComps Item(string name)

@@ -53,6 +53,7 @@ public static class Driver
         Hook(qa, typeof(FloatMenuOption), nameof(FloatMenuOption.SetSizeMode), nameof(Skip));
         Hook(qa, typeof(PawnCapacitiesHandler), nameof(PawnCapacitiesHandler.CapableOf), nameof(Capable));
         Hook(qa, typeof(SoundStarter), nameof(SoundStarter.PlayOneShotOnCamera), nameof(Skip));
+        Hook(qa, typeof(ContentFinder<Texture2D>), "Get", nameof(NoTexture), new[] { typeof(string), typeof(bool) });
         Hook(qa, typeof(GenGrid), nameof(GenGrid.Walkable), nameof(Walkable), new[] { typeof(IntVec3), typeof(Map) });
         Hook(qa, typeof(RegionAndRoomQuery), nameof(RegionAndRoomQuery.RegionAt), nameof(NoRegion),
             new[] { typeof(IntVec3), typeof(Map), typeof(RegionType) });
@@ -77,6 +78,7 @@ public static class Driver
         Hook(qa, typeof(Pawn), nameof(Pawn.Notify_DisabledWorkTypesChanged), nameof(Skip));
         Hook(qa, typeof(Pawn_EquipmentTracker), nameof(Pawn_EquipmentTracker.Notify_EquipmentAdded), nameof(Skip));
         Hook(qa, typeof(Pawn_EquipmentTracker), nameof(Pawn_EquipmentTracker.Notify_EquipmentRemoved), nameof(Skip));
+        Hook(qa, typeof(CompForbiddable), nameof(CompForbiddable.PostSpawnSetup), nameof(Skip));
         Hook(qa, typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.TryTakeOrderedJob), nameof(Order), new[] { typeof(Job), typeof(JobTag?), typeof(bool) });
         Hook(qa, typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.CheckForJobOverride), nameof(Skip), new[] { typeof(float), typeof(bool) });
         Hook(qa, typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.EndCurrentJob), nameof(Skip));
@@ -92,6 +94,7 @@ public static class Driver
         WaitingRegression.Run(qa);
         DraftAndPoseRegression.Run();
         FollowupRegression.Run(qa);
+        WeaponInteractionRegression.Run();
         Scenarios.Run();
         Console.WriteLine("PASS: real sidecar menu/job, FFF capsule/container and native relation/bandwidth operations under explicit engine-boundary hooks.");
         Console.WriteLine("NOT TESTED: game GUI/art, real pathfinding/map registration, complete game save/load or third-party callback failures.");
@@ -282,6 +285,7 @@ public static class Driver
         qa.Patch(AccessTools.DeclaredMethod(type, name, arguments), prefix: new HarmonyMethod(typeof(Driver), replacement));
 
     public static bool Skip() => false;
+    public static bool NoTexture(ref Texture2D __result) { __result = null!; return false; }
     public static bool True(ref bool __result) { __result = true; return false; }
     public static bool False(ref bool __result) { __result = false; return false; }
     public static bool Error(string text) { Errors.Add(text); return false; }
