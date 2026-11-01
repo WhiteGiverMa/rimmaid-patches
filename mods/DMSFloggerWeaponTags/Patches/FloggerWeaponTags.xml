@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- Append missing tags only; retain the original tags and HeavyAutomatroid size. -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[defName="DMS_Gsh30Gatlinggun"]/weaponTags/li[text()="DMS_MechWeaponHeavy"]</xpath>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[defName="DMS_Gsh30Gatlinggun"]/weaponTags</xpath>
+      <value>
+        <li>DMS_MechWeaponHeavy</li>
+      </value>
+    </nomatch>
+  </Operation>
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[defName="DMS_Gsh30Gatlinggun"]/weaponTags/li[text()="V_Gatling30mm"]</xpath>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[defName="DMS_Gsh30Gatlinggun"]/weaponTags</xpath>
+      <value>
+        <li>V_Gatling30mm</li>
+      </value>
+    </nomatch>
+  </Operation>
+</Patch>

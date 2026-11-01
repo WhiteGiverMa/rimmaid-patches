@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMS - Flogger Weapon Tags / 鞭笞者装备修复</name>
+  <author>WhiteGiver (local patch)</author>
+  <packageId>whitegiver.dms.floggerweapontags</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <description>为古代军团的鞭笞者机炮补充 DMS_MechWeaponHeavy 和 V_Gatling30mm 装备标签，保留原标签与 2.5 体型要求。不修改其他武器、机体或全局装备限制。纯 XML 独立补丁，无需 Harmony。
+
+Adds the missing Heavy and V_Gatling30mm compatibility tags to AncientCorps' Gsh30-6 Flogger only. Preserves existing tags and its 2.5 body-size requirement. Does not change other weapons, mechs or global equipment rules. XML only; no Harmony required.</description>
+  <modDependencies>
+    <li>
+      <packageId>Aoba.DeadManSwitch.Core</packageId>
+      <displayName>The Dead Man's Switch</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3819799478</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Aoba.DeadManSwitch.AncientCorps</packageId>
+      <displayName>The Dead Man's Switch - AncientCorps</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3469398006</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>Aoba.DeadManSwitch.Core</li>
+    <li>Aoba.DeadManSwitch.AncientCorps</li>
+    <li>CETeam.CombatExtended</li>
+  </loadAfter>
+</ModMetaData>

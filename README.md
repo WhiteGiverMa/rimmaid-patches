@@ -57,6 +57,7 @@ See [`manifest.json`](manifest.json) for machine-readable metadata.
 | `WeaponStationFireModes` | [Weapon Station fire modes and equipped offsets](mods/WeaponStationFireModes/README.md); VFM modes, automatic selection, weapon profiles and equipped offsets for unmanned stations only; preserve manned operator logic | Added 2026-10-27, local sidecar, game QA confirmed by user |
 | `MiliraDailyExpendRecipeFix` | [Milira Daily Expend nutrition accounting](mods/MiliraDailyExpendRecipeFix/README.md); switch 20 cooking recipes to nutrition-based ingredients, reprice soy sauce and jam, fix bulk ratios and three over-generous recipes; XML only | Added 2026-10-27, local sidecar, game QA confirmed by user |
 | `DMSMechStorage` | [DMS mech storage](mods/DMSMechStorage/README.md); mechanitor right-click sealing into native FFF capsules, native seal/release reuse, drafted-idle allowed, bandwidth release, ground weapon draw, safe autonomous/commander restoration; DMS + Cinders Tombstone only | Added 2026-10-28, v1.1.4, game QA confirmed by user |
+| `DMSFloggerWeaponTags` | [AncientCorps Flogger equipment tags](mods/DMSFloggerWeaponTags/README.md); append Heavy and V_Gatling30mm to this weapon only, preserving existing tags and size 2.5 | Added 2026-11-02, XML-only sidecar, game QA confirmed by user |
 
 Historical local mirrors of full upstream mods are intentionally excluded. `archive/` is reserved for retired experiments; `tools/` is reserved for diagnostics that are not gameplay patches.
 
