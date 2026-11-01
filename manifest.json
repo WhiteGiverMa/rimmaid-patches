@@ -47,6 +47,7 @@
     { "name": "Adaptive-Storage-Framework", "reason": "full upstream fork; maintained separately" },
     { "name": "ConduitRoomStatsFix", "reason": "inactive experiment documented as ineffective; recovered source retained under archive/" },
     { "name": "GizmoDiag", "reason": "temporary inactive diagnostic tool; recovered source retained under tools/" },
-    { "name": "FortifiedCEWaylithLoader", "reason": "historical Waylith assembly loader metadata retained under archive/; third-party DLL not distributed; not recommended for installation" }
+    { "name": "FortifiedCEWaylithLoader", "reason": "historical Waylith assembly loader metadata retained under archive/; third-party DLL not distributed; not recommended for installation" },
+    { "directory": "PUAHDuplicateCompFix", "packageId": "whitegiver.puah.duplicatecompfix", "status": "game-qa-pending", "source": "local canonical source; added 2026-11-02; startup dedupe of inherited CompHauledToInventory from PUAH XML patch; not published to Workshop" }
   ]
 }

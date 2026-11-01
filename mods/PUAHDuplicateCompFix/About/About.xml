@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>PUAH 重复 Comp 修复 / PUAH Duplicate Comp Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.puah.duplicatecompfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>mehni.pickupandhaul</packageId>
+      <displayName>Pick Up And Haul</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1279012058</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>mehni.pickupandhaul</li>
+  </loadAfter>
+  <description>Pick Up And Haul 的 XML patch 按 thingClass="Pawn" 给所有 pawn def 添加 CompHauledToInventory，而 RimWorld 在继承合并之前应用 patch。原版 BasePawn 与任何自己又写了 thingClass=Pawn 的具体 def 会各拿到一份，继承合并后出现两个同类型 comp；读档时同一 ThingsHauledToInventory 路径被注册两次，日志出现「Tried to register the same list of load IDs twice」和「Could not get load IDs list」。本补丁在 DefDatabase 完成后按 compClass 去掉重复的 CompHauledToInventory，保留一份，不修改工坊文件、存档或其他 comp。依赖 RimWorld 1.7 与 Pick Up And Haul。</description>
+</ModMetaData>
