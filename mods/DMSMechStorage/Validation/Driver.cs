@@ -95,6 +95,7 @@ public static class Driver
         DraftAndPoseRegression.Run();
         FollowupRegression.Run(qa);
         WeaponInteractionRegression.Run();
+        InfoCardRegression.Run();
         Scenarios.Run();
         Console.WriteLine("PASS: real sidecar menu/job, FFF capsule/container and native relation/bandwidth operations under explicit engine-boundary hooks.");
         Console.WriteLine("NOT TESTED: game GUI/art, real pathfinding/map registration, complete game save/load or third-party callback failures.");
@@ -133,6 +134,7 @@ public static class Driver
         Seed(typeof(StatDefOf), nameof(StatDefOf.BandwidthCost), new StatDef { defName = "BandwidthCost" });
         Seed(typeof(StatDefOf), nameof(StatDefOf.MechBandwidth), new StatDef { defName = "MechBandwidth" });
         Seed(typeof(StatDefOf), nameof(StatDefOf.MechControlGroups), new StatDef { defName = "MechControlGroups" });
+        Seed(typeof(StatCategoryDefOf), nameof(StatCategoryDefOf.BasicsImportant), new StatCategoryDef { defName = "BasicsImportant", label = "Basics" });
         Seed(typeof(PawnCapacityDefOf), nameof(PawnCapacityDefOf.Manipulation), new PawnCapacityDef { defName = "Manipulation" });
         Seed(typeof(MechWorkModeDefOf), nameof(MechWorkModeDefOf.Work), new MechWorkModeDef { defName = "Work" });
         Add(new DesignationDef { defName = "ValidationDesignation" });
@@ -154,6 +156,7 @@ public static class Driver
             Add(new ThingDef
             {
                 defName = node["defName"]!.InnerText, label = node["label"]!.InnerText,
+                description = node["description"]!.InnerText,
                 category = ThingCategory.Building, thingClass = typeof(Building_MechCapsule),
                 size = new IntVec2(int.Parse(size[0]), int.Parse(size[1])),
                 building = new BuildingProperties { isInert = true },
@@ -161,6 +164,7 @@ public static class Driver
                 rotatable = true, fillPercent = 0.4f, useHitPoints = false
             });
         }
+        Set(typeof(Game), "hiddenItemsManager", game, new HiddenItemsManager());
         string modRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
         xml.Load(Path.Combine(modRoot, "Defs", "Jobs.xml"));
         StoreJob = (JobDef)DirectXmlToObjectNew.DefFromNodeNew(xml.SelectSingleNode("Defs/JobDef")!, null);

@@ -2,7 +2,7 @@
 
 RimWorld 1.7 / Biotech。选中一名机械师殖民者，右键己方 DMS 机兵，选择 **「封存某机兵」**。机械师走近后工作 300 tick，将原机兵装入 Fortified Features Framework 的休眠机械体建筑。
 
-版本：1.1.5。packageId：`whitegiver.dms.mechstorage`。
+版本：1.1.6。packageId：`whitegiver.dms.mechstorage`。
 
 游戏内 mod 列表与工坊标题都使用静态中英双名「失能机关 - 机兵封存 The Dead Man's Switch - Mech Storage」，所有语言下显示同一个名字；不再按语言切换。
 
@@ -11,6 +11,7 @@ RimWorld 1.7 / Biotech。选中一名机械师殖民者，右键己方 DMS 机�
 - 使用原 FFF 休眠建筑，保留原 pawn 身份、姓名、装备、物品栏和健康状态，不重新生成机兵。外观由 FFF 的机兵绘制逻辑提供；卸载后的物品也保留机兵姓名。
 - 装备中的主武器会按古代军团休眠建筑的方式画在机兵脚边；武器仍是同一件物品，不会被丢出或复制。衣物与其他装备同样原样保留。
 - 休眠建筑的信息面板会显示「当前装备」。选中建筑后可用原版重命名控件改名（作用于原机兵，激活后沿用），也可卸下当前武器或选择地面上的一件武器重新配备；已有武器会先被卸下并放到建筑旁，换装始终交换同一批物品。机兵自带、`destroyOnDrop` 的固定武器（例如 DMS 的 Mounted 炮塔枪）会标为「内置武器」，不会被画到地面，也不提供卸下。
+- 休眠建筑详情卡的「描述」正文下提供指向内部机兵的原生「查看…」链接，打开的是那一名机兵的信息页，而非机型定义。原描述和已有链接不变，链接名称跟随机兵改名；卸载为包裹后仍可查看。
 - 封存后解除原机械师控制关系并立即刷新带宽/控制列表。不要求由原机械师操作，也不要求封存者有空余带宽。
 - **被征召待命也可以封存**；只有正在攻击（`IsAttacking`，含近战、开火中或已锁定目标）才会拦下。目标是休眠/自停机的机兵时，等待过程保留其睡眠状态，不会打断它。
 - 可通过原版「卸载／重新安装」搬运，再由机械师右键休眠建筑，使用 FFF 原有的「控制」任务启用。
@@ -60,24 +61,26 @@ RimWorld 1.7 / Biotech。选中一名机械师殖民者，右键己方 DMS 机�
 - 释放时按 1.7 的真实所有权模型处理：`Thing.SpawnSetup` 会把已生成对象挂到 `map.spawnedThings`，因此 `holdingOwner != null` 不是错误状态；清理只针对容器所有者，Map 永不触碰。`ThingOwner.Contains` 只比较链接、不查列表，故一律用 `IndexOf` 判断真实列表：在列表里才移除（缺链接先补回），只是悬空引用则仅断链。机兵若残留“已生成”状态或仍登记在 `map.spawnedThings` 却无有效链接，先修复再在胶囊格重新生成，随后逐项校验 `Spawned/Map/Position/Destroyed/HasMech`，失败时输出具体数值与容器内容。
 - 封存/唤醒全过程的问题记录见 [排查记录](docs/troubleshooting-20261028.md)。
 - 入舱失败优先原地恢复同一机兵及原控制组；地图恢复也失败时，把装着原机兵的普通 FFF 胶囊放入机械师物品栏。失败激活保留原机兵供重试，不复制 pawn。
-- 注册十个 Harmony 目标，均带 DMS/玩家胶囊或持有者守卫，其余对象执行原逻辑：`Building_MechCapsule.CanActivate(Thing)`、`ActivateMech(Thing)`、`DynamicDrawPhaseAt`（脚边武器）、`GetFloatMenuOptions`（卸下/配备）、`GetInspectString`（当前装备）、`MinifiedThing.LabelNoCount`、`PawnUtility.GetPosture`、`GenSpawn.Spawn`（仅在从 DMS 胶囊释放原机兵时保留恢复语义）、`ThingWithComps.GetGizmos`（重命名/卸下/配备按钮）、`MainTabWindow_Inspect.DoInspectPaneButtons`（原版标题栏重命名按钮）。
+- 注册十一个 Harmony 目标，均带 DMS/玩家胶囊或持有者守卫，其余对象执行原逻辑：`Building_MechCapsule.CanActivate(Thing)`、`ActivateMech(Thing)`、`DynamicDrawPhaseAt`（脚边武器）、`GetFloatMenuOptions`（卸下/配备）、`GetInspectString`（当前装备）、`MinifiedThing.LabelNoCount`、`PawnUtility.GetPosture`、`GenSpawn.Spawn`（仅在从 DMS 胶囊释放原机兵时保留恢复语义）、`ThingWithComps.GetGizmos`（重命名/卸下/配备按钮）、`MainTabWindow_Inspect.DoInspectPaneButtons`（原版标题栏重命名按钮）、`StatsReportUtility.DescriptionEntry(Thing)`（在现有描述条目上追加内部机兵的实例链接，不修改共享 Def）。
 - 重新部署使用 `respawningAfterLoad: true`，保留真实电池余时和机兵平台资源，不触发「首次生成」补满/重建逻辑。释放时只豁免当前胶囊自身的建筑占位，其余占地仍检查。
 
-## 验证状态（2026-10-30）
+## 验证状态（2026-11-01）
 
 **v1.1.4 已由用户确认游戏内验证正常**：封存、征召待命封存、休眠机兵封存、脚边武器、唤醒落点与正常行动。离线驱动覆盖于此前的排查轮次，详见 [排查记录](docs/troubleshooting-20261028.md)。
 
 v1.1.5 的离线驱动已覆盖休眠建筑的重命名传播、当前装备信息、右键/工具栏入口、卸下与换装（同一物品、旧武器落地、脚边绘制跟随）、内置 `destroyOnDrop` 固定武器不绘制/不提供卸下，以及非 DMS/空胶囊/非武器/`destroyOnDrop` 拒绝；**新界面的实际点击、原版改名窗口和整局读档仍需游戏内确认**。
 
+v1.1.6 新增真实 `DescriptionEntry(Thing)` 工厂回归：补丁前精确复现没有 Pawn 链接，补丁后验证同一 Pawn 目标、保留描述/分类/显示标记/已有 Def 链接、不污染共享定义、重复枚举和重新打开不累加、名称跟随改名、原生卸载后仍可用、不依赖装备 tracker；空舱/非 DMS/非玩家舱或机兵/无关物品与移空后重开均不添加。既有完整驱动也通过。**游戏原生链接的实际绘制、点击和返回导航仍待正常重启后浅测，不把离线验证称为 GUI 验证。**
+
 严格构建、C# 诊断及离线真实程序集驱动通过；游戏窗口像素表现与整局存读档未由离线驱动覆盖。
 
-验证基线：RimWorld `1.7.4990 rev1069`，当前安装的 FFF 1.7 DLL。
+验证基线：RimWorld `1.7.4995 rev309`，当前安装的 FFF 1.7 DLL。
 
 | 文件 | SHA-256 |
 |---|---|
-| 发布 `DMSMechStorage.dll` | `09cbb019987c6c2c95701374f350fb28f7a1213793f0d94b5a385ee1452b389f` |
-| FFF `Fortified.dll` | `0a6be73cd22cf4559e0afd461a5dcc48e8c39aad684d3f388b9d8f7ddd6e21a3` |
-| 游戏 `Assembly-CSharp.dll` | `4e61d57205944c113631234bc55136a1a7c1679667b26008bee5425bcffa1463` |
+| 发布 `DMSMechStorage.dll` | `797fff30b8752cb52d6fe4849de71e64b8a588cba6ea96efd7b4355cb5c215d2` |
+| FFF `Fortified.dll` | `736fc4aa001dddf23c4f5fe0e4d30f6d4a62c7a16a8a27553a39b71c8100c9ed` |
+| 游戏 `Assembly-CSharp.dll` | `56399b6144d9f1695f9c53d054dc82972f7ab35e68d1a19a7129f2f5860ccd21` |
 
 运行 `pwsh -File Validation/validate.ps1`，可通过 `-GameRoot`、`-WorkshopRoot`、`-QaRoot`、`-ModPath` 指定位置。发布构建：`dotnet build Source/DMSMechStorage.csproj -c Release`，不会自动部署。
 
@@ -89,11 +92,13 @@ QA-only 副本仅重绑定 FFF 的 Unity 引用，并清除游戏 `ModsConfig`�
 
 保留真实入舱、ThingOwner 所有权、GenSpawn 的占地/wipe/容器移出逻辑、关系列表、relation worker、控制组和带宽刷新、FFF 相关 `PostSpawnSetup`、minify/install 方法。显式替换地图生成/销毁的引擎注册、图形/音频/翻译查询、统计数值来源、能力计算、寻路、AI 调度和界面通知；Job 路径到达/延迟由驱动手动推进。因此**不把这些结果冒充 GUI、真实寻路、整局 Scribe 读档或任意第三方回调环境的验证**。
 
-最小游戏浅测：正常重启后，选中机械师，右键一名原本没有自封存技能的 DMS 机兵，点「封存」，观察它成为同名休眠建筑且带宽下降。再选中该建筑：信息面板应显示当前装备；点原版重命名改名、点「卸下」看武器落在旁边、点「为其配备武器」选一件地面武器看它被收进建筑。卸载/搬运/重装、完整读档可在正常游玩时顺手确认，不要求为此制造复杂场景。
+本次最小游戏浅测：正常重启后，打开一座现有休眠建筑的详情卡，「描述」正文下应有「查看〈机兵名〉」链接；点击应打开该名机兵的信息页，而非通用机型页，原生返回按钮可回到建筑。无需重新封存或改档。
+
+其他功能可在正常游玩时顺手确认：信息面板显示当前装备，原版重命名作用于原机兵，「卸下」把武器放到旁边，「为其配备武器」收进选定地面武器；卸载/搬运/重装、完整读档不要求为此制造复杂场景。
 
 ## 更新、停用与限制
 
-FFF 或游戏更新后先核对上述六个 Harmony 目标、`TryAcceptMech`/胶囊容器契约、Overseer 关系/指挥机机制、`DrawData` 偏移来源及原生 float-menu API，再重建并运行驱动。工坊 DLL 的修改时间和哈希可作为更新提示，不能只看程序集版本（FFF 固定为 1.0.0.0）。Cinders 更新后要重核其 `1.7/DMS` 兼容层是否仍只覆盖墓碑与仿制墓碑。
+FFF 或游戏更新后先核对上述十一个 Harmony 目标、`TryAcceptMech`/胶囊容器契约、Overseer 关系/指挥机机制、`DrawData` 偏移来源及原生 float-menu API，再重建并运行驱动。描述链接另外依赖原生 `DescriptionEntry(Thing)` 和 `StatDrawEntry.hyperlinks` 字段；若上游改变此接口或原生已提供同等实例链接，须调整或移除该小补丁。工坊 DLL 的修改时间和哈希可作为更新提示，不能只看程序集版本（FFF 固定为 1.0.0.0）。Cinders 更新后要重核其 `1.7/DMS` 兼容层是否仍只覆盖墓碑与仿制墓碑。
 
 本模组没有自有休眠建筑或额外持久化数据，但有自定义作业。停用前结束/取消封存作业，并先唤醒封存中的无人机、觉醒机兵和指挥机，避免停用后回到 FFF 原始恢复语义。不要删除 FFF/DMS 依赖后直接读含有其内容的存档。
 
