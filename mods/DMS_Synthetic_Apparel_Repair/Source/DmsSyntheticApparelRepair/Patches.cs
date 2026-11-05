@@ -15,19 +15,35 @@ public static class Patches
 {
 	private const string SyntheticPackageId = "aoba.deadmanswitch.synthetic";
 	private const string CorePackageId = "aoba.deadmanswitch.core";
+	private const string DmsLegionPackageId = "srxf.deadmanswitch.legion";
 	private const string DmsLegionRepairDriverTypeName = "DMS_Legion.JobDriver_MechRepairMech";
+	private const string DmsLegionRepairCallbackName = "<MakeNewToils>b__4_3";
+	private const string DmsLegionLegacyRepairCallbackName = "<MakeNewToils>b__3_2";
 	private const string MilianRepairDriverTypeName = "Milira.JobDriver_MilianRepair";
+	private const string MilianRepairCallbackName = "<MakeNewToils>b__20_2";
 	private const string AutomatroidWeaponCategory = "AutomatroidWeapon";
+	private const string MechApparelCompClassName = "Fortified.CompMechApparel";
+	private const string TerraBodyTypeCompClassName = "DMS_Legion.CompTerraBodyType";
+	private const string MechApparelCompPropsClassName = "Fortified.CompProperties_MechApparel";
+	private const string TerraBodyTypeCompPropsClassName = "DMS_Legion.CompProperties_TerraBodyType";
+	private const string RepairTickCallbackPrefix = "<MakeNewToils>b__";
+	private static readonly string[] EligiblePackageIds = { SyntheticPackageId, CorePackageId, DmsLegionPackageId };
 	private static readonly MethodInfo SingleParameterRepairTick = AccessTools.Method(typeof(MechRepairUtility), nameof(MechRepairUtility.RepairTick), new[] { typeof(Pawn) });
+	private static readonly MethodInfo DeltaRepairTick = AccessTools.Method(typeof(MechRepairUtility), nameof(MechRepairUtility.RepairTick), new[] { typeof(Pawn), typeof(int) });
 	private static readonly Dictionary<Thing, float> GearRepairRemainders = new();
-	private static bool gearRepairTransactionsAvailable = true;
+	private static readonly Dictionary<short, OpCode> OpCodesByValue = BuildOpCodesByValue();
+	private static bool vanillaRepairTransactionAvailable = true;
+	private static bool dmsLegionRepairTransactionAvailable = true;
+	private static bool miliraRepairTransactionAvailable = true;
 
 	private static readonly HashSet<string> SyntheticDefNames = new()
 	{
 		"DMS_Mech_Maiden",
 		"DMS_Mech_Armiman",
 		"DMS_Mech_BigSister",
-		"DMS_Mech_Lady"
+		"DMS_Mech_Lady",
+		"DMSL_Mech_Terra",
+		"DMS_Mech_Frogman"
 	};
 
 	static Patches()
@@ -37,6 +53,14 @@ public static class Patches
 		PatchVanillaRepairTransaction(harmony);
 		PatchDmsLegionRepairTransaction(harmony);
 		PatchMiliraRepairTransaction(harmony);
+		try
+		{
+			EnsureSyntheticRepairableComps();
+		}
+		catch (Exception exception)
+		{
+			Log.Error($"[DMS Synthetic Apparel Repair] Could not normalise CompProperties_MechRepairable: {exception}");
+		}
 	}
 
 	[HarmonyPatch(typeof(MechRepairUtility), nameof(MechRepairUtility.CanRepair))]
@@ -51,12 +75,160 @@ public static class Patches
 		}
 	}
 
+	private static bool IsSynthetic(ThingDef def)
+	{
+		if (def == null || def.race?.IsMechanoid != true || !IsEligibleDmsPackage(def))
+		{
+			return false;
+		}
+
+		return SyntheticDefNames.Contains(def.defName) || HasMechApparelComp(def);
+	}
+
 	private static bool IsSynthetic(Pawn pawn)
 	{
-		string packageId = pawn.def.modContentPack?.PackageIdPlayerFacing;
-		return SyntheticDefNames.Contains(pawn.def.defName)
-			&& (string.Equals(packageId, SyntheticPackageId, StringComparison.OrdinalIgnoreCase)
-				|| string.Equals(packageId, CorePackageId, StringComparison.OrdinalIgnoreCase));
+		if (pawn?.def == null)
+		{
+			return false;
+		}
+		if (IsSynthetic(pawn.def))
+		{
+			return true;
+		}
+		if (pawn.def.race?.IsMechanoid != true || !IsEligibleDmsPackage(pawn.def))
+		{
+			return false;
+		}
+
+		foreach (ThingComp comp in pawn.AllComps)
+		{
+			string fullName = comp?.GetType().FullName;
+			if (fullName == MechApparelCompClassName || fullName == TerraBodyTypeCompClassName)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static bool IsEligibleDmsPackage(ThingDef def)
+	{
+		string packageId = def.modContentPack?.PackageIdPlayerFacing;
+		if (packageId == null)
+		{
+			return false;
+		}
+
+		foreach (string eligiblePackageId in EligiblePackageIds)
+		{
+			if (string.Equals(packageId, eligiblePackageId, StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static bool HasMechApparelComp(ThingDef def)
+	{
+		if (def.comps == null)
+		{
+			return false;
+		}
+
+		foreach (CompProperties compProps in def.comps)
+		{
+			if (compProps == null)
+			{
+				continue;
+			}
+			string compClassName = compProps.compClass?.FullName;
+			if (compClassName == MechApparelCompClassName || compClassName == TerraBodyTypeCompClassName)
+			{
+				return true;
+			}
+			string compPropsClassName = compProps.GetType().FullName;
+			if (compPropsClassName == MechApparelCompPropsClassName || compPropsClassName == TerraBodyTypeCompPropsClassName)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static void EnsureSyntheticRepairableComps()
+	{
+		int inspected = 0;
+		int deduplicated = 0;
+		foreach (ThingDef def in DefDatabase<ThingDef>.AllDefsListForReading)
+		{
+			if (!IsSynthetic(def))
+			{
+				continue;
+			}
+
+			inspected++;
+			List<CompProperties> comps = def.comps;
+			if (comps == null)
+			{
+				comps = new List<CompProperties>();
+				def.comps = comps;
+			}
+
+			int existing = 0;
+			for (int index = 0; index < comps.Count; index++)
+			{
+				if (comps[index] is CompProperties_MechRepairable)
+				{
+					existing++;
+				}
+			}
+			if (existing == 1)
+			{
+				continue;
+			}
+
+			try
+			{
+				if (existing == 0)
+				{
+					CompProperties_MechRepairable compProps = new();
+					comps.Add(compProps);
+					compProps.ResolveReferences(def);
+					continue;
+				}
+
+				bool kept = false;
+				for (int index = comps.Count - 1; index >= 0; index--)
+				{
+					if (!(comps[index] is CompProperties_MechRepairable))
+					{
+						continue;
+					}
+					if (kept)
+					{
+						comps.RemoveAt(index);
+						deduplicated++;
+					}
+					else
+					{
+						kept = true;
+					}
+				}
+			}
+			catch (Exception exception)
+			{
+				Log.Error($"[DMS Synthetic Apparel Repair] Could not normalise CompProperties_MechRepairable on {def.defName}: {exception}");
+			}
+		}
+
+		if (deduplicated > 0)
+		{
+			Log.Warning($"[DMS Synthetic Apparel Repair] Removed {deduplicated} duplicate CompProperties_MechRepairable entries across {inspected} synthetic mech defs.");
+		}
 	}
 
 	private static bool IsMilian(Pawn pawn)
@@ -106,7 +278,7 @@ public static class Patches
 		MethodInfo repairTickAction = AccessTools.Method(typeof(JobDriver_RepairMech), "<MakeNewToils>b__10_2");
 		if (repairTickAction == null)
 		{
-			DisableGearRepair("Vanilla repair callback was not found.");
+			DisableVanillaRepairTransaction("Vanilla repair callback was not found.");
 			return;
 		}
 
@@ -121,14 +293,47 @@ public static class Patches
 			return;
 		}
 
-		MethodInfo repairTickAction = AccessTools.Method(dmsLegionRepairDriverType, "<MakeNewToils>b__3_2");
+		MethodInfo repairTickAction = FindDmsLegionRepairTickAction(dmsLegionRepairDriverType);
 		if (repairTickAction == null)
 		{
-			DisableGearRepair("DMS Legion repair callback was not found.");
+			DisableDmsLegionRepairTransaction("DMS Legion repair callback was not found.");
 			return;
 		}
 
 		harmony.Patch(repairTickAction, transpiler: new HarmonyMethod(AccessTools.Method(typeof(Patches), nameof(TranspileDmsLegionRepairTransaction))));
+	}
+
+	private static MethodInfo FindDmsLegionRepairTickAction(Type dmsLegionRepairDriverType)
+	{
+		MethodInfo repairTickAction = AccessTools.Method(dmsLegionRepairDriverType, DmsLegionRepairCallbackName)
+			?? AccessTools.Method(dmsLegionRepairDriverType, DmsLegionLegacyRepairCallbackName);
+		if (IsRepairTickAction(repairTickAction))
+		{
+			return repairTickAction;
+		}
+
+		foreach (MethodInfo method in AccessTools.GetDeclaredMethods(dmsLegionRepairDriverType))
+		{
+			if (IsRepairTickAction(method) && CallsRepairTick(method))
+			{
+				return method;
+			}
+		}
+
+		return null;
+	}
+
+	private static bool IsRepairTickAction(MethodInfo method)
+	{
+		if (method == null
+			|| method.ReturnType != typeof(void)
+			|| !method.Name.StartsWith(RepairTickCallbackPrefix, StringComparison.Ordinal))
+		{
+			return false;
+		}
+
+		ParameterInfo[] parameters = method.GetParameters();
+		return parameters.Length == 1 && parameters[0].ParameterType == typeof(int);
 	}
 
 	private static void PatchMiliraRepairTransaction(Harmony harmony)
@@ -139,12 +344,12 @@ public static class Patches
 			return;
 		}
 
-		MethodInfo repairTickAction = AccessTools.Method(milianRepairDriverType, "<MakeNewToils>b__20_2");
+		MethodInfo repairTickAction = AccessTools.Method(milianRepairDriverType, MilianRepairCallbackName);
 		if (repairTickAction == null
 			|| AccessTools.Property(milianRepairDriverType, "energyCostFactor_Target") == null
 			|| AccessTools.Property(milianRepairDriverType, "energyCostFactor_Caster") == null)
 		{
-			DisableGearRepair("Milira repair transaction changed.");
+			DisableMiliraRepairTransaction("Milira repair transaction changed.");
 			return;
 		}
 
@@ -158,7 +363,7 @@ public static class Patches
 		int repairTickIndex = code.FindIndex(instruction => Calls(instruction, repairTick));
 		if (!TryFindEnergyTransactionStart(code, repairTickIndex, out int transactionStart))
 		{
-			DisableGearRepair("Vanilla repair transaction changed.");
+			DisableVanillaRepairTransaction("Vanilla repair transaction changed.");
 			return code;
 		}
 
@@ -174,12 +379,12 @@ public static class Patches
 		bool hasDelta = repairTickIndex < 0;
 		if (hasDelta)
 		{
-			repairTick = AccessTools.Method(typeof(MechRepairUtility), nameof(MechRepairUtility.RepairTick), new[] { typeof(Pawn), typeof(int) });
+			repairTick = DeltaRepairTick;
 			repairTickIndex = code.FindIndex(instruction => Calls(instruction, repairTick));
 		}
 		if (!TryFindEnergyTransactionStart(code, repairTickIndex, out int transactionStart))
 		{
-			DisableGearRepair("DMS Legion repair transaction changed.");
+			DisableDmsLegionRepairTransaction("DMS Legion repair transaction changed.");
 			return code;
 		}
 
@@ -191,11 +396,11 @@ public static class Patches
 	private static IEnumerable<CodeInstruction> TranspileMiliraRepairTransaction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
 	{
 		List<CodeInstruction> code = new(instructions);
-		MethodInfo repairTick = AccessTools.Method(typeof(MechRepairUtility), nameof(MechRepairUtility.RepairTick), new[] { typeof(Pawn) });
+		MethodInfo repairTick = SingleParameterRepairTick;
 		int repairTickIndex = code.FindIndex(instruction => Calls(instruction, repairTick));
 		if (!TryFindMiliraTransactionStart(code, repairTickIndex, out int transactionStart))
 		{
-			DisableGearRepair("Milira repair transaction changed.");
+			DisableMiliraRepairTransaction("Milira repair transaction changed.");
 			return code;
 		}
 
@@ -288,24 +493,140 @@ public static class Patches
 		return instruction.opcode == OpCodes.Ldfld && instruction.operand is FieldInfo field && field.Name == fieldName;
 	}
 
-	private static bool IsStoreLocal(CodeInstruction instruction)
+	private static Dictionary<short, OpCode> BuildOpCodesByValue()
 	{
-		return instruction.opcode == OpCodes.Stloc
-			|| instruction.opcode == OpCodes.Stloc_0
-			|| instruction.opcode == OpCodes.Stloc_1
-			|| instruction.opcode == OpCodes.Stloc_2
-			|| instruction.opcode == OpCodes.Stloc_3
-			|| instruction.opcode == OpCodes.Stloc_S;
+		Dictionary<short, OpCode> result = new();
+		foreach (FieldInfo field in typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static))
+		{
+			if (field.GetValue(null) is OpCode opcode)
+			{
+				result[opcode.Value] = opcode;
+			}
+		}
+
+		return result;
 	}
+
+	private static bool CallsRepairTick(MethodInfo method)
+	{
+		MethodBody body = method.GetMethodBody();
+		byte[] il = body?.GetILAsByteArray();
+		if (il == null)
+		{
+			return false;
+		}
+
+		Type[] typeArguments = method.DeclaringType != null && method.DeclaringType.IsGenericType ? method.DeclaringType.GetGenericArguments() : null;
+		Type[] methodArguments = method.IsGenericMethod ? method.GetGenericArguments() : null;
+		int index = 0;
+		while (index < il.Length)
+		{
+			int value = il[index++];
+			if (value == 0xFE)
+			{
+				if (index >= il.Length)
+				{
+					return false;
+				}
+				value = 0xFE00 | il[index++];
+			}
+			if (!OpCodesByValue.TryGetValue(unchecked((short)value), out OpCode opcode))
+			{
+				return false;
+			}
+			if ((opcode == OpCodes.Call || opcode == OpCodes.Callvirt) && index + 4 <= il.Length)
+			{
+				int token = BitConverter.ToInt32(il, index);
+				try
+				{
+					MethodBase target = method.Module.ResolveMethod(token, typeArguments, methodArguments);
+					if (target != null && target.DeclaringType == typeof(MechRepairUtility) && target.Name == nameof(MechRepairUtility.RepairTick))
+					{
+						return true;
+					}
+				}
+				catch (ArgumentException)
+				{
+				}
+				catch (BadImageFormatException)
+				{
+				}
+				catch (MissingMemberException)
+				{
+				}
+			}
+
+			index += OperandSize(opcode.OperandType, il, index);
+		}
+
+		return false;
+	}
+
+	private static int OperandSize(OperandType operandType, byte[] il, int index)
+	{
+		switch (operandType)
+		{
+			case OperandType.InlineNone:
+				return 0;
+			case OperandType.ShortInlineBrTarget:
+			case OperandType.ShortInlineI:
+			case OperandType.ShortInlineVar:
+				return 1;
+			case OperandType.InlineVar:
+				return 2;
+			case OperandType.InlineI8:
+			case OperandType.InlineR:
+				return 8;
+			case OperandType.InlineSwitch:
+				return index + 4 <= il.Length ? 4 + 4 * BitConverter.ToInt32(il, index) : il.Length - index;
+			default:
+				return 4;
+		}
+	}
+
+	private static void DisableVanillaRepairTransaction(string reason)
+	{
+		vanillaRepairTransactionAvailable = false;
+		LogDisable(reason, "Vanilla");
+	}
+
+	private static void DisableDmsLegionRepairTransaction(string reason)
+	{
+		dmsLegionRepairTransactionAvailable = false;
+		LogDisable(reason, "DMS Legion");
+	}
+
+	private static void DisableMiliraRepairTransaction(string reason)
+	{
+		miliraRepairTransactionAvailable = false;
+		LogDisable(reason, "Milira");
+	}
+
+	private static void LogDisable(string reason, string driverName)
+	{
+		Log.Error($"[DMS Synthetic Apparel Repair] {reason} Gear repair was disabled for the {driverName} repair driver only, to avoid an unsafe energy transaction. Other repair drivers are unaffected.");
+	}
+
+	private static bool AnyGearRepairTransactionAvailable => vanillaRepairTransactionAvailable || dmsLegionRepairTransactionAvailable || miliraRepairTransactionAvailable;
 
 	private static bool TryRunVanillaGearTransaction(JobDriver_RepairMech repairJob)
 	{
+		if (!vanillaRepairTransactionAvailable)
+		{
+			return false;
+		}
+
 		Pawn mech = repairJob.job.GetTarget(TargetIndex.A).Thing as Pawn;
 		return TryRunGearRepairTransaction(mech, 1, 1f, false);
 	}
 
 	private static bool TryRunDmsLegionGearTransaction(JobDriver_RepairMech repairJob, int delta)
 	{
+		if (!dmsLegionRepairTransactionAvailable)
+		{
+			return false;
+		}
+
 		Pawn mech = repairJob.job.GetTarget(TargetIndex.A).Thing as Pawn;
 		if (delta > 0 && mech != null && IsMilian(mech) && TryRunMilianRepairTransaction(repairJob.pawn, mech, delta))
 		{
@@ -317,6 +638,11 @@ public static class Patches
 
 	private static bool TryRunDmsLegionSingleGearTransaction(JobDriver_RepairMech repairJob)
 	{
+		if (!dmsLegionRepairTransactionAvailable)
+		{
+			return false;
+		}
+
 		Pawn mech = repairJob.job.GetTarget(TargetIndex.A).Thing as Pawn;
 		if (mech != null && IsMilian(mech) && TryRunMilianRepairTransaction(repairJob.pawn, mech, 1))
 		{
@@ -328,19 +654,19 @@ public static class Patches
 
 	private static bool TryRunMiliraGearTransaction(JobDriver repairJob)
 	{
-		Pawn mech = repairJob.job.GetTarget(TargetIndex.A).Thing as Pawn;
-		if (SingleParameterRepairTick == null)
+		if (!miliraRepairTransactionAvailable)
 		{
-			DisableGearRepair("Vanilla single-parameter repair callback was not found.");
 			return false;
 		}
+
+		Pawn mech = repairJob.job.GetTarget(TargetIndex.A).Thing as Pawn;
 		if (!TryCreateGearRepairPlan(mech, 1, out GearRepairPlan plan))
 		{
 			return false;
 		}
 		if (!TryGetMilianRepairEnergyFactors(repairJob, out float targetFactor, out float casterFactor))
 		{
-			DisableGearRepair("Milira energy factors could not be read.");
+			DisableMiliraRepairTransaction("Milira energy factors could not be read.");
 			return false;
 		}
 
@@ -417,25 +743,14 @@ public static class Patches
 		}
 		catch (Exception exception)
 		{
-			Log.WarningOnce($"[DMS Synthetic Apparel Repair] Could not read Milira's repair energy rules ({exception.GetType().Name}); gear repair was disabled.", 1912252936);
+			Log.WarningOnce($"[DMS Synthetic Apparel Repair] Could not read Milira's repair energy rules ({exception.GetType().Name}); Milira gear repair was disabled.", 1912252936);
 			return false;
 		}
 	}
 
-	private static void DisableGearRepair(string reason)
-	{
-		if (!gearRepairTransactionsAvailable)
-		{
-			return;
-		}
-
-		gearRepairTransactionsAvailable = false;
-		Log.Error($"[DMS Synthetic Apparel Repair] {reason} Gear repair was disabled to avoid an unsafe energy transaction.");
-	}
-
 	private static bool HasDamagedGear(Pawn pawn)
 	{
-		if (!gearRepairTransactionsAvailable)
+		if (!AnyGearRepairTransactionAvailable)
 		{
 			return false;
 		}
@@ -490,7 +805,6 @@ public static class Patches
 	{
 		if (!useDeltaRepair && SingleParameterRepairTick == null)
 		{
-			DisableGearRepair("Vanilla single-parameter repair callback was not found.");
 			return false;
 		}
 		if (!TryCreateGearRepairPlan(mech, repairAmount, out GearRepairPlan plan))
@@ -505,7 +819,7 @@ public static class Patches
 	private static bool TryCreateGearRepairPlan(Pawn mech, int repairAmount, out GearRepairPlan plan)
 	{
 		plan = null;
-		if (!gearRepairTransactionsAvailable || mech == null || repairAmount <= 0)
+		if (!AnyGearRepairTransactionAvailable || mech == null || repairAmount <= 0)
 		{
 			return false;
 		}
@@ -592,7 +906,10 @@ public static class Patches
 
 		if (useDeltaRepair)
 		{
+			// The delta overload is obsolete in 1.7 but is still the actual 1.6 repair entry point.
+#pragma warning disable CS0612
 			MechRepairUtility.RepairTick(mech, repairAmount);
+#pragma warning restore CS0612
 		}
 		else
 		{

@@ -4,6 +4,7 @@
 	<author>WhiteGiverMa</author>
 	<supportedVersions>
 		<li>1.6</li>
+		<li>1.7</li>
 	</supportedVersions>
 	<packageId>whitegiverma.dmssyntheticapparelrepair</packageId>
 	<description>DMS Synthetic is optional. When it is installed, eligible Synthetic pawns can repair worn apparel; otherwise this mod provides weapon repair for eligible DMS and integrated weapon-capable mechs. The in-game mod settings let you enable or disable apparel and weapon repair independently and adjust their energy cost. Apparel and non-standard weapons default to one tenth of MechEnergyLossPerHP per repaired hit point; AutomatroidWeapon durability repair remains free by default and is configurable.</description>
@@ -20,5 +21,6 @@
 		<li>brrainz.harmony</li>
 		<li>Ancot.MiliraRace</li>
 		<li>Srxf.DeadManSwitch.Legion</li>
+		<li>AOBA.Framework</li>
 	</loadAfter>
 </ModMetaData>
