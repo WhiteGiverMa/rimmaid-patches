@@ -62,6 +62,8 @@ See [`manifest.json`](manifest.json) for machine-readable metadata.
 
 Historical local mirrors of full upstream mods are intentionally excluded. `archive/` is reserved for retired experiments; `tools/` is reserved for diagnostics that are not gameplay patches.
 
+[HaulDestinationTrace](tools/HaulDestinationTrace/README.md) is a temporary, explicitly opt-in diagnostic for workbench hauling targets. It does not fix or suppress errors; disable it after capturing one reproduction.
+
 Changes that must remain inside a third-party project are captured as small recovery diffs under [`upstream-patches/`](upstream-patches/README.md). Direct Workshop XML edits are described there without republishing entire third-party mods.
 
 ## Local builds

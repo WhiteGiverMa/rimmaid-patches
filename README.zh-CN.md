@@ -68,6 +68,8 @@
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 
+临时工具 [HaulDestinationTrace](tools/HaulDestinationTrace/README.md) 只记录工作台搬运目的地变化，不修复或掩盖异常；仅在明确授权后安装，捕获一次复现后停用。
+
 必须留在第三方项目内部的改动，以小型恢复补丁的形式记录在 [`upstream-patches/`](upstream-patches/README.md) 中（[中文说明](upstream-patches/README.zh-CN.md)）。对创意工坊 mod 的直接 XML 修改也在那里描述，不会重新发布完整的第三方 mod。
 
 ## 维护与完整性校验

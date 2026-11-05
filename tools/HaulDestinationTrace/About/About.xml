@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>临时诊断：搬运目的地 / Haul Destination Trace</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.diagnostics.hauldestination</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter><li>brrainz.harmony</li></loadAfter>
+  <description>临时诊断工具，不是修复补丁。记录工作台搬开物品任务的目的地变化，异常时输出 [HaulDestinationTrace] 日志，用于定位无效搬运目的地。不改变任务、寻路、物品或异常处理，不保存诊断数据到存档。完成一次复现后停用；不需要 RimIOT，也不修改其工坊原件。Diagnostic only: observes haul-aside job targets without changing gameplay or suppressing errors. Remove after capturing one reproduction.</description>
+</ModMetaData>
