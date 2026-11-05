@@ -42,6 +42,7 @@
 | WeaponStationFireModes | 无人/有人 Def 的 comps 隔离、实际预热前唯一 `turretBurstWarmupTime` 字段地址读取、WS 预热/冷却入口、VFM FireModeDB/profile 与原版精度曲线、装备偏移及 burst 生命周期 | 上游提供等价无人基站适配后避免重复应用；任一接缝、曲线或模式语义漂移须复核；有人支架维持上游操作员逻辑，CE 不支持 |
 | MiliraDailyExpendRecipeFix | 27 个 RecipeDef 的 defName 与 `ingredients/li` 顺序、20 个 getter 注入点、日光酱油/果酱 Nutrition、批量酱油 60→10+10、鸡翅/米跳墙的非营养原料边界 | 上游自行设置 `ingredientValueGetterClass` 后先删对应注入；配方 defName/li 顺序、酱油果酱营养或上游数量变化时重算 README 收支表；新增含非营养原料的烹饪配方不得套营养值 getter |
 | DMSMechStorage | FFF 胶囊选择与 `ThingOwner` 释放契约、`CanActivate`/`ActivateMech`、原版完整占地/自身 edifice 豁免、Overseer 控制组与带宽、指挥/觉醒/无人机机制、恢复时 `PostSpawnSetup(true)`、`MinifiedThing.LabelNoCount`、`PawnUtility.GetPosture`、`Building_MechCapsule.DynamicDrawPhaseAt` 与古代军团 `weaponDraw` 偏移、`GenSpawn.Spawn` 恢复标志；Cinders `1.7/DMS` 兼容层与 `MechWeaponExtension`/`IWeaponUsable` 标记 | 上游提供等价 DMS 全系列机械师封存后退役；任一接口、来源 packageId 或 Cinders DMS 兼容层变化须重核并跑真实 DLL 驱动；停用前唤醒独立机兵并结束自定义作业，不改变非 DMS 胶囊 |
+| StartCarryReentrancyFix | 唯一 `StartCarryThing` 编译 initAction、actor/Job locals、唯一 `TryStartCarry(Thing,int,bool)` 和无 return 的零拿取失败分支；Job loadID/Driver 所有权与正常部分拿取队列/数量契约 | 原版加入失败结束后立即退出且防止换任务重入后退役；IL 形状变化拒绝应用，不以寻路 null guard 替代；不依赖或修改 RimIOT |
 | DMSFloggerWeaponTags | AncientCorps `DMS_Gsh30Gatlinggun/weaponTags` 与 FFF 标签筛选；保留原标签、HeavyAutomatroid 2.5，仅补 Heavy/V30 且不重复 | 上游原生补齐两项标签可停用；defName/列表结构变化导致 XPath 失配时先停用核对，不覆盖新定义或改全局体型限制 |
 
 `upstream-patches/` 的直接工坊修改须结合记录的基准使用。标为历史缺失、已撤回或不建议安装的内容只留档，不因这次合仓自动重打。

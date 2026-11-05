@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>搬运取料重入修复 / StartCarry Reentrancy Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.hauling.startcarryreentrancyfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter><li>brrainz.harmony</li></loadAfter>
+  <description>修复原版 StartCarryThing 取料回调在取料失败结束任务、或调用内任务已替换后仍继续写入旧任务对象的问题，避免对象池复用后破坏新任务的目标。保留正常完整与部分搬运，不改 RimIOT、仓储规则、数量或存档，不吞异常。仅支持 RimWorld 1.7；方法体变化时拒绝应用，需核验后更新。</description>
+</ModMetaData>
