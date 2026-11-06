@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>鼠族缩放缓存线程安全修复 / NewRatkin Draw Scale Cache Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.newratkin.drawscalecachefix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Solaris.RatkinRaceMod</packageId>
+      <displayName>NewRatkinPlus</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1578693166</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Solaris.RatkinRaceMod</li>
+  </loadAfter>
+  <description>修复 NewRatkinPlus 在 RimWorld 1.7 多线程绘制下，GeneDrawScaleCache 用普通 Dictionary 缓存鼠族体型缩放时被并发读写、抛出 InvalidOperationException 并可能留下损坏缓存的问题。只给 GeneDrawScaleCache.Get 与 Recalculate(Pawn, out float) 加同一个互斥锁，保留原有缓存与缩放行为。不改工坊文件或存档。
+
+Fixes NewRatkinPlus 1.7's GeneDrawScaleCache using a non-thread-safe Dictionary while Waylith pre-draws pawns on worker threads. Serializes GeneDrawScaleCache.Get and Recalculate(Pawn, out float) with one monitor; cache values, gene behavior and draw scale remain unchanged. No Workshop or save files are modified.</description>
+</ModMetaData>
