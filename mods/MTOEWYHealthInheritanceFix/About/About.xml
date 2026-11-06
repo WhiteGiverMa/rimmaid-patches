@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>米莉拉养成健康继承修复 / MTOEWY Health Inheritance Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.mtoewy.healthinheritancefix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>FunnyFlandre.milira.theoneentwinedwithyou</packageId>
+      <displayName>边缘米莉拉养成：与你相连之人</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3814027507</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>FunnyFlandre.milira.theoneentwinedwithyou</li>
+  </loadAfter>
+  <description>为「边缘米莉拉养成：与你相连之人」的艾蒂尔跨存档继承补充持久健康状态。保存并恢复仿生部位、植入体、等级植入体与其他持久 Hediff，保留原版启灵和机控逻辑；过滤伤口、缺失部位、妊娠、装备派生及临时状态。仅支持 RimWorld 1.7，不修改工坊文件、既有导出记录或存档。目标签名变化时拒绝挂载。</description>
+</ModMetaData>

@@ -60,6 +60,7 @@ See [`manifest.json`](manifest.json) for machine-readable metadata.
 | `StartCarryReentrancyFix` | [StartCarry reentrancy fix](mods/StartCarryReentrancyFix/README.md); stop stale pickup callbacks after failed carry/job replacement, preserving pooled replacement targets and normal full/partial carrying | Added 2026-10-30, real callback red/green passed, game QA pending |
 | `DMSFloggerWeaponTags` | [AncientCorps Flogger equipment tags](mods/DMSFloggerWeaponTags/README.md); append Heavy and V_Gatling30mm to this weapon only, preserving existing tags and size 2.5 | Added 2026-11-02, XML-only sidecar, game QA confirmed by user |
 | `PUAHDuplicateCompFix` | [PUAH duplicate comp fix](mods/PUAHDuplicateCompFix/README.md); dedupe inherited `CompHauledToInventory` by `compClass` at startup, keep the first, leave other comps untouched | Added 2026-11-02, local sidecar, offline red/green passed, in-game save reload pending |
+| `MTOEWYHealthInheritanceFix` | [MTOEWY persistent health inheritance fix](mods/MTOEWYHealthInheritanceFix/README.md); carry bionic parts, implants, level hediffs and persistent states through the real transfer codec while preserving upstream psylink/mechlink behavior; includes a note for the upstream author | Added 2026-11-06, local sidecar, real DLL red/green passed, in-game cross-save QA confirmed by user |
 
 Historical local mirrors of full upstream mods are intentionally excluded. `archive/` is reserved for retired experiments; `tools/` is reserved for diagnostics that are not gameplay patches.
 

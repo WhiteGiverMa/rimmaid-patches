@@ -44,5 +44,6 @@
 | DMSMechStorage | FFF 胶囊选择与 `ThingOwner` 释放契约、`CanActivate`/`ActivateMech`、原版完整占地/自身 edifice 豁免、Overseer 控制组与带宽、指挥/觉醒/无人机机制、恢复时 `PostSpawnSetup(true)`、`MinifiedThing.LabelNoCount`、`PawnUtility.GetPosture`、`Building_MechCapsule.DynamicDrawPhaseAt` 与古代军团 `weaponDraw` 偏移、`GenSpawn.Spawn` 恢复标志；Cinders `1.7/DMS` 兼容层与 `MechWeaponExtension`/`IWeaponUsable` 标记 | 上游提供等价 DMS 全系列机械师封存后退役；任一接口、来源 packageId 或 Cinders DMS 兼容层变化须重核并跑真实 DLL 驱动；停用前唤醒独立机兵并结束自定义作业，不改变非 DMS 胶囊 |
 | StartCarryReentrancyFix | 唯一 `StartCarryThing` 编译 initAction、actor/Job locals、唯一 `TryStartCarry(Thing,int,bool)` 和无 return 的零拿取失败分支；Job loadID/Driver 所有权与正常部分拿取队列/数量契约 | 原版加入失败结束后立即退出且防止换任务重入后退役；IL 形状变化拒绝应用，不以寻路 null guard 替代；不依赖或修改 RimIOT |
 | DMSFloggerWeaponTags | AncientCorps `DMS_Gsh30Gatlinggun/weaponTags` 与 FFF 标签筛选；保留原标签、HeavyAutomatroid 2.5，仅补 Heavy/V30 且不重复 | 上游原生补齐两项标签可停用；defName/列表结构变化导致 XPath 失配时先停用核对，不覆盖新定义或改全局体型限制 |
+| MTOEWYHealthInheritanceFix | 上游 `IdealTransferNeural.Capture/ExposeData/Restore`、`IdealTransferCodec.Project` 四签名；`neural` 白名单；纯标量 hediffs 无属性 XML；采集过滤、成对部位回退、AddedPart 两阶段恢复及标准启灵/机控语义；真实 DLL 红绿驱动 | 上游原生完整保存并恢复通用持久健康状态且通过同类验证后退役；目标签名或白名单变化时整组拒用并复核，旧记录缺失的数据不可由本补丁反推 |
 
 `upstream-patches/` 的直接工坊修改须结合记录的基准使用。标为历史缺失、已撤回或不建议安装的内容只留档，不因这次合仓自动重打。
