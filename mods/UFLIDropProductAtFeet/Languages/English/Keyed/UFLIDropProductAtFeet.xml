@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <UFLIDropAtFeet.SettingsCategory>UFLI: Drop at Feet</UFLIDropAtFeet.SettingsCategory>
+  <UFLIDropAtFeet.EnabledLabel>Holographic printers: drop products at the printer's feet</UFLIDropAtFeet.EnabledLabel>
+  <UFLIDropAtFeet.EnabledTooltip>On: products appear near the printer's interaction cell. Off: restore UFLI's original delivery to map-wide shelves or storage zones. Changes apply immediately and persist across saves.</UFLIDropAtFeet.EnabledTooltip>
+  <UFLIDropAtFeet.SettingsDescription>You can also select a UFLI holographic printer and use its bottom "Drop at feet" toggle. This global option affects every printer in every save.</UFLIDropAtFeet.SettingsDescription>
+  <UFLIDropAtFeet.GizmoLabel>Drop at feet</UFLIDropAtFeet.GizmoLabel>
+  <UFLIDropAtFeet.GizmoDescription>On: products from the holographic printer appear near its interaction cell.\nOff: restore UFLI's original delivery to map-wide shelves or storage zones.\n\nClick to switch and save immediately. Applies to every printer in every save.</UFLIDropAtFeet.GizmoDescription>
+</LanguageData>

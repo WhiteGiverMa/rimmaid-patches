@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <UFLIDropAtFeet.SettingsCategory>联合轻工：脚底输出</UFLIDropAtFeet.SettingsCategory>
+  <UFLIDropAtFeet.EnabledLabel>全息打印机：产物刷在打印机脚底</UFLIDropAtFeet.EnabledLabel>
+  <UFLIDropAtFeet.EnabledTooltip>开启：产物直接出现在打印机交互格附近。关闭：恢复 UFLI 原版逻辑，优先投递到全图货架或储存区。更改立即生效，并跨存档保存。</UFLIDropAtFeet.EnabledTooltip>
+  <UFLIDropAtFeet.SettingsDescription>也可以选中联合全息打印机，点击底部的「脚底输出」开关。此选项是全局设置，对所有打印机和所有存档生效。</UFLIDropAtFeet.SettingsDescription>
+  <UFLIDropAtFeet.GizmoLabel>脚底输出</UFLIDropAtFeet.GizmoLabel>
+  <UFLIDropAtFeet.GizmoDescription>开启：全息打印机的产物直接刷在打印机交互格附近。\n关闭：恢复 UFLI 原版投递，优先刷进全图货架或储存区。\n\n点击立即切换并保存；对所有打印机和所有存档生效。</UFLIDropAtFeet.GizmoDescription>
+</LanguageData>
