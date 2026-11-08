@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>联合轻工虚拟工具人修复 / UFLI Virtual Worker Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.ufli.virtualworkerfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>kindseal.ufli</packageId>
+      <displayName>UF Light Industries Furniture</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3651799915</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>kindseal.ufli</li>
+  </loadAfter>
+  <description>修复「联合轻工家具拓展」全自动超级工作台的虚拟工具人因随机背景故事/特性/基因导致工作技能被禁用（SkillRecord.TotallyDisabled），从而在 GenRecipe 中报 "Attempted to calculate value for disabled stat ButcheryMechanoidEfficiency" 红字、且技能等级按 0 级结算的问题。
+
+补丁在 UFRecipes.MapComponent_UFAutoVirtualWorkerPool.TryAcquire 返回虚拟工具人后，替换会禁用工作的背景故事、移除禁用工作或提供技能天赋的特性/基因/负面 Hediff，刷新技能禁用缓存，并把该 pawn 的所有技能等级同步为工作台的 skillLevel。不修改工坊文件、存档或原 DLL。
+
+Fixes UFLI's full-auto super workbench spawning a random colonist whose backstory can disable Crafting/Cooking. Normalizes the pooled ghost pawn after TryAcquire: replaces disabling backstories, removes work-disabling or aptitude-granting traits/genes/hediffs, refreshes skill-disable caches, and synchronizes every skill to the bench's skillLevel. No Workshop file, save or original DLL is modified.</description>
+</ModMetaData>

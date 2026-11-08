@@ -68,6 +68,7 @@
 | `PUAHDuplicateCompFix` | [PUAH 重复 Comp 修复](mods/PUAHDuplicateCompFix/README.md)，启动时按 compClass 去掉继承合并产生的重复 `CompHauledToInventory`，保留第一个，不碰其他 comp | 2026-11-02 新增，本地 sidecar 补丁，离线红绿通过，游戏内读档浅测待确认 |
 | `MTOEWYHealthInheritanceFix` | [米莉拉养成健康继承修复](mods/MTOEWYHealthInheritanceFix/README.md)，经真实传输编解码链保留仿生部位、植入体、等级 Hediff 与持久状态，维持上游启灵/机控逻辑，并附给上游作者的说明 | 2026-11-06 新增，本地 sidecar，真实 DLL 红绿通过，用户确认游戏内跨档验证通过 |
 | `NewRatkinDrawScaleCacheFix` | [鼠族缩放缓存线程安全修复](mods/NewRatkinDrawScaleCacheFix/README.md)，给 NewRatkinPlus 的 `GeneDrawScaleCache.Get` 与 `Recalculate(Pawn, out float)` 加同一把互斥锁，避免 1.7 并行预绘制下普通 `Dictionary` 被并发写坏；附给上游作者的说明 | 2026-11-07 新增，本地 sidecar，真实 DLL 16 线程红绿通过；重启后补丁注册成功，三次最小化恢复无 job fault，浅测观察通过（仍属概率性验证） |
+| `UFLIVirtualWorkerFix` | [联合轻工虚拟工具人修复](mods/UFLIVirtualWorkerFix/README.md)，归一化全自动超级工作台的虚拟工具人，替换禁用工作的背景故事、移除禁用/天赋特性与基因/Hediff，刷新技能禁用缓存并把所有技能同步为工作台等级，避免 `TotallyDisabled` 导致屠宰效率红字 | 2026-11-08 新增，本地 sidecar，真实 DLL 红绿通过；重启后补丁注册成功，游戏内生产 QA 待确认 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 
