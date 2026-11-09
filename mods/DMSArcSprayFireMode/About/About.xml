@@ -7,11 +7,11 @@
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
-    <li><packageId>aoba.framework_steam</packageId><displayName>Fortified Features Framework</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/3498575851</steamWorkshopUrl></li>
+    <li><packageId>aoba.framework</packageId><displayName>Fortified Features Framework</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/3498575851</steamWorkshopUrl></li>
   </modDependencies>
   <loadAfter>
-    <li>brrainz.harmony</li><li>aoba.framework_steam</li><li>aoba.deadmanswitch.core_steam</li>
-    <li>aoba.deadmanswitch.ancientcorps_steam</li><li>whitegiver.dms.floggerweapontags</li>
+    <li>brrainz.harmony</li><li>aoba.framework</li><li>aoba.deadmanswitch.core</li>
+    <li>aoba.deadmanswitch.ancientcorps</li><li>whitegiver.dms.floggerweapontags</li>
     <li>vortex.weaponstation</li><li>whitegiver.weaponstation.firemodes</li>
   </loadAfter>
   <description>玩家持枪单位与炮塔可随时切换「环世界原版直射 / DMS 原版扫射」。仅玩家阵营可切换，敌人永远保留 DMS 扫射。支持武器基站/支架，随枪械存档。CE 启用时不生效。
