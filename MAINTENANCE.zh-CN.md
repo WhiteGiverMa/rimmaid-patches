@@ -48,6 +48,5 @@
 | PUAHStaleEntryFix | Bulk Load `SoftlockCleaner.TryCleanPawn` 前的 PUAH 记录过滤；`pawn.inventory.innerContainer` 与 `pawn.carryTracker.CarriedThing` 双向判定，真实掉落路径不动 | 上游自行清掉残留引用或方法改名后复核；改名时警告跳过而非抛错，不让补丁成为新的报错源 |
 | Fix_WRMegaCorp_QuestRewardMultiplier | `WRMC_MeatOrder`/`WRMC_DepositExploitation`/`WRMC_ProjectLiquidation` 三处脚本插入点、`questRewardMultiplier` 变量名与各 1 处使用；`PatchOperationConditional` 包裹，`Set` 值为 1 | 上游补回 `QuestNode_Set` 后停用；Def 改名或结构变化时先核对新脚本再更新，不直接改成无条件 Patch |
 | WhileYouAreNearbyMaintained | 原版 TryIssueJobPackage/PawnCanUseWorkGiver、ThinkResult/JobMaker/JobQueue 所有权，原作 DLL hash 与设置 Scribe 键；保留单遍 grower 状态和唯一 Postfix | 上游原生合入相同修复并通过验证后回退上游；工坊更新不覆盖本地版，也不自动同步。forked 本地维护分支，许可未定，作者要求即退役 |
-| MTOEWYHealthInheritanceFix | 上游 `IdealTransferNeural.Capture/ExposeData/Restore`、`IdealTransferCodec.Project` 四签名；`neural` 白名单；纯标量 hediffs 无属性 XML；采集过滤、成对部位回退、AddedPart 两阶段恢复及标准启灵/机控语义；真实 DLL 红绿驱动 | 上游原生完整保存并恢复通用持久健康状态且通过同类验证后退役；目标签名或白名单变化时整组拒用并复核，旧记录缺失的数据不可由本补丁反推 |
 
 `upstream-patches/` 的直接工坊修改须结合记录的基准使用。标为历史缺失、已撤回或不建议安装的内容只留档，不因这次合仓自动重打。
