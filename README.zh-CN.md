@@ -68,6 +68,7 @@
 | `DMSArcSprayFireMode` | [DMS 直射/扫射切换](mods/DMSArcSprayFireMode/README.md)，仅玩家持枪 Pawn/机兵、炮塔、基站/支架可切，原版命中率管线或完整 FFF 三趟扫射，逐枪存档；敌人永远扫射，CE 自动不生效 | 2026-11-07 新增，真实 DLL 红绿通过，游戏内浅测待确认 |
 | `PUAHStaleEntryFix` | [BulkLoad PUAH 残留清理](mods/PUAHStaleEntryFix/README.md)，在 Bulk Load 的 SoftlockCleaner 检查前移除既不在背包、也不在手中的 PUAH 幽灵记录，避免同一条掉落日志反复打印；上游方法改名时打印警告并跳过 | 2026-10-30 新增，本地 sidecar，附排查记录，游戏内日志观察待确认 |
 | `Fix_WRMegaCorp_QuestRewardMultiplier` | [WRMegaCorp 任务奖励倍率初始化](mods/Fix_WRMegaCorp_QuestRewardMultiplier/README.md)，给三个 WRMegaCorp 任务脚本补上缺失的 `questRewardMultiplier` 变量，奖励不再算成 0；上游改名时 `PatchOperationConditional` 安静跳过；纯 XML | 2026-11-09 新增，XML 语法与 XPath 命中离线通过，游戏内待测 |
+| `WhileYouAreNearbyMaintained` | [就近工作本地 1.7 维护分支](mods/WhileYouAreNearbyMaintained/README.md)，格子先距离过滤、补工作来源、安全归还弃用 Job；沿用原 ID 的本地替代，无额外线程；forked，许可未定 | 2026-11-09 新增，离线验证通过，游戏浅测待确认；作者要求即删除 |
 | `PUAHDuplicateCompFix` | [PUAH 重复 Comp 修复](mods/PUAHDuplicateCompFix/README.md)，启动时按 compClass 去掉继承合并产生的重复 `CompHauledToInventory`，保留第一个，不碰其他 comp | 2026-11-02 新增，本地 sidecar 补丁，离线红绿通过，游戏内读档浅测待确认 |
 | `MTOEWYHealthInheritanceFix` | [米莉拉养成健康继承修复](mods/MTOEWYHealthInheritanceFix/README.md)，经真实传输编解码链保留仿生部位、植入体、等级 Hediff 与持久状态，维持上游启灵/机控逻辑，并附给上游作者的说明 | 2026-11-06 新增，本地 sidecar，真实 DLL 红绿通过，用户确认游戏内跨档验证通过 |
 | `NewRatkinDrawScaleCacheFix` | [鼠族缩放缓存线程安全修复](mods/NewRatkinDrawScaleCacheFix/README.md)，给 NewRatkinPlus 的 `GeneDrawScaleCache.Get` 与 `Recalculate(Pawn, out float)` 加同一把互斥锁，避免 1.7 并行预绘制下普通 `Dictionary` 被并发写坏；附给上游作者的说明 | 2026-11-07 新增，本地 sidecar，真实 DLL 16 线程红绿通过；重启后补丁注册成功，三次最小化恢复无 job fault，浅测观察通过（仍属概率性验证） |

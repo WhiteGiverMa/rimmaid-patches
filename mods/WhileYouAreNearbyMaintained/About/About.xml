@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>While You Are Nearby - Maintained / 就近工作维护版</name>
+  <author>pureMJ (original), WhiteGiverMa (local maintenance)</author>
+  <packageId>PureMJ.MjRimMods.WhileYouAreNearby</packageId>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+  </loadAfter>
+  <description>Local RimWorld 1.7 maintenance version of While You Are Nearby by pureMJ. Replaces the original mod; do not enable both. Preserves its nearby-work rules and settings while filtering distant cells before expensive job checks, retaining the work giver on replacement jobs, and returning discarded jobs to the vanilla pool. Does not create threads, replace pathfinding, or modify saves. The original Workshop files are not modified.</description>
+</ModMetaData>
