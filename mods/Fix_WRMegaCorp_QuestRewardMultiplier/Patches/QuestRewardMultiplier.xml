@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!--
+	  WRMegaCorp 的三个任务脚本引用了 $questRewardMultiplier，但没有任何 QuestNode_Set
+	  在第一次使用前初始化它（作者在某个更新里删掉了）。SlateRef 在数学表达式里遇到
+	  缺失变量时按 0 处理，于是：
+	    - WRMC_MeatOrder 的 rewardValue 直接乘该变量 -> 奖励为 0
+	    - WRMC_DepositExploitation / WRMC_ProjectLiquidation 的 QuestNode_Multiply -> 奖励为 0
+	  同时 QuestScriptDef.CanRun 的自然任务筛选会反复刷
+	  "Tried to use variable "questRewardMultiplier" in a math expression but it doesn't exist."
+	  红字（错误文本相同，一局只显示一次）。
+
+	  PatchOperationInsert 默认 Prepend，插在目标节点之前。
+	  PatchOperationConditional 让上游删除/改名 def 时安静跳过，不刷 patch 失败红字。
+	-->
+
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/QuestScriptDef[defName='WRMC_MeatOrder']</xpath>
+		<match Class="PatchOperationInsert">
+			<xpath>Defs/QuestScriptDef[defName='WRMC_MeatOrder']/root/nodes/li[@Class='QuestNode_Set'][name='rewardValue']</xpath>
+			<value>
+				<li Class="QuestNode_Set">
+					<name>questRewardMultiplier</name>
+					<value>1</value>
+				</li>
+			</value>
+		</match>
+	</Operation>
+
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/QuestScriptDef[defName='WRMC_DepositExploitation']</xpath>
+		<match Class="PatchOperationInsert">
+			<xpath>Defs/QuestScriptDef[defName='WRMC_DepositExploitation']/root/nodes/li[@Class='QuestNode_Multiply'][value2='$questRewardMultiplier']</xpath>
+			<value>
+				<li Class="QuestNode_Set">
+					<name>questRewardMultiplier</name>
+					<value>1</value>
+				</li>
+			</value>
+		</match>
+	</Operation>
+
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/QuestScriptDef[defName='WRMC_ProjectLiquidation']</xpath>
+		<match Class="PatchOperationInsert">
+			<xpath>Defs/QuestScriptDef[defName='WRMC_ProjectLiquidation']/root/nodes/li[@Class='QuestNode_Multiply'][value2='$questRewardMultiplier']</xpath>
+			<value>
+				<li Class="QuestNode_Set">
+					<name>questRewardMultiplier</name>
+					<value>1</value>
+				</li>
+			</value>
+		</match>
+	</Operation>
+
+</Patch>

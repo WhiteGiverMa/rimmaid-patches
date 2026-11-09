@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Fix - WRMegaCorp Quest Reward Multiplier</name>
+	<author>WhiteGiver (local patch)</author>
+	<packageId>whitegiver.fix_wrmegacorp_questrewardmultiplier</packageId>
+	<supportedVersions>
+		<li>1.6</li>
+		<li>1.7</li>
+	</supportedVersions>
+	<description>Initializes the missing $questRewardMultiplier slate variable in WRMegaCorp's WRMC_MeatOrder, WRMC_DepositExploitation and WRMC_ProjectLiquidation quest scripts. Without it, SlateRef treats the variable as 0, which zeroes the quest reward value and logs "Tried to use variable questRewardMultiplier in a math expression but it doesn't exist." every time natural quests are rolled. Value is set to 1 (no behavior change beyond restoring the intended multiplier).</description>
+	<modDependencies>
+		<li>
+			<packageId>com.zoshsgahdnkc.WRMegaCorpEdition</packageId>
+			<displayName>Wolfein Race MegaCorp Edition</displayName>
+			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3687841204</steamWorkshopUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>com.zoshsgahdnkc.WRMegaCorpEdition</li>
+		<li>com.zoshsgahdnkc.wrmegacorpedition</li>
+	</loadAfter>
+</ModMetaData>
