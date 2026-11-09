@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <DMSAF_Direct>環世界原版直射</DMSAF_Direct>
+  <DMSAF_Spray>DMS 原版掃射</DMSAF_Spray>
+  <DMSAF_Description>目前：{0}\n點擊立即切換「環世界原版直射 / DMS 原版掃射」，連發中途也可切換。\n\n直射瞄準所選目標，使用原版精度、散射與掩體攔截計算。掃射保留 DMS 原有三趟之字形彈道。連發數、射速間隔、彈藥、燃料、音效與槍口焰保持不變。\n\n僅玩家陣營的單位/炮塔可切換；敵人即使拿到曾屬於玩家的槍，也永遠保持掃射。選擇隨這把槍存檔。多選時同模式按鈕合併，點擊將該組統一切至另一模式。</DMSAF_Description>
+</LanguageData>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <DMSAF_Direct>Vanilla direct fire</DMSAF_Direct>
+  <DMSAF_Spray>DMS zigzag spray</DMSAF_Spray>
+  <DMSAF_Description>Current: {0}\nClick to switch between vanilla direct fire and original DMS zigzag spray, including during a burst.\n\nDirect fire aims at the selected target using vanilla accuracy, scatter and cover calculations. Spray keeps the original three-sweep zigzag. Burst size, shot intervals, charges, fuel, sounds and muzzle flash are preserved.\n\nOnly player-faction units and turrets can switch. Enemies always spray, even with a formerly player-owned gun. The choice follows this gun and is saved. Multi-selection groups matching modes; clicking unifies that group to the other mode.</DMSAF_Description>
+</LanguageData>
