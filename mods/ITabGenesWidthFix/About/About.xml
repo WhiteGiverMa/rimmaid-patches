@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>基因标签页宽度修复 / ITab Genes Width Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.itabgenes.widthfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ludeon.rimworld.biotech</packageId>
+      <displayName>Biotech</displayName>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+  </loadAfter>
+  <description>修复 RimWorld 1.7 中基因标签页（ITab_Genes）宽度永久为 0 导致的红字：ArgumentOutOfRangeException: length ('-1') must be a non-negative value。
+
+根因：ITab_Genes 是单例，在 ThingDef.ResolveReferences（游戏加载阶段）通过 InspectTabManager.GetSharedInstance 构造，此时 UI.screenWidth 尚未由 UI.ApplyUIScale 初始化，仍为默认 0；构造函数里的 size.x = Mathf.Min(736f, UI.screenWidth) 因此永久为 0。打开基因标签页时 BiostatsTable.Draw 的可用宽度为负，普通 pawn 的代谢总和 met == 0 会让 MetabolismDescAt 返回空字符串，1.7 的 GenText.Truncate 没有空串保护，最终执行 "".Substring(0, -1) 抛异常。
+
+补丁在 InspectTabBase.UpdateSize（TabRect 每次读取时调用）后检查 ITab_Genes，若 size.x &lt;= 0 则用当前 UI.screenWidth 重新计算。只修这一个标签页的宽度，不改变 GenText.Truncate 的全局行为。
+
+Fixes RimWorld 1.7's gene tab showing a zero-width layout and logging ArgumentOutOfRangeException: length ('-1'). ITab_Genes is constructed during def resolution before UI.screenWidth is initialized, so its cached size.x stays 0 forever. The patch repairs only ITab_Genes.size.x in InspectTabBase.UpdateSize; no global Truncate behavior is changed.</description>
+</ModMetaData>
