@@ -58,6 +58,7 @@
     { "name": "HaulDestinationTrace", "reason": "temporary inactive diagnostic tool for workbench hauling targets; source retained under tools/" },
     { "name": "FortifiedCEWaylithLoader", "reason": "historical Waylith assembly loader metadata retained under archive/; third-party DLL not distributed; not recommended for installation" },
     { "name": "MTOEWYHealthInheritanceFix", "reason": "retired local health-inheritance sidecar retained under archive/ with its validation notes; not recommended for installation" },
+    { "name": "Fix_WRMegaCorp_QuestPartCSC", "reason": "retired 1.7 QuestPart_CSC load fix retained under archive/ with source and validation notes; not recommended for installation" },
     { "directory": "PUAHDuplicateCompFix", "packageId": "whitegiver.puah.duplicatecompfix", "status": "game-qa-pending", "source": "local canonical source; added 2026-11-02; startup dedupe of inherited CompHauledToInventory from PUAH XML patch; not published to Workshop" }
   ]
 }

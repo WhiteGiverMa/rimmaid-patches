@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Fix: WRMegaCorp QuestPart_CSC Load</name>
+  <author>WhiteGiverMa (local patch)</author>
+  <packageId>whitegiver.fix_wrmegacorp.questpartcsc</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>com.zoshsgahdnkc.WRMegaCorpEdition</packageId>
+      <displayName>Wolfein Race MegaCorp Edition</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3687841204</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>com.zoshsgahdnkc.WRMegaCorpEdition</li>
+  </loadAfter>
+  <description>修复 RimWorld 1.7 读档时 WRMegaCorp.QuestPart_CSC 无法反序列化的 MissingMethodException。
+
+1.7 的 Quest.ExposeData 用无参构造函数实例化 quest parts，而 QuestPart_CSC 只有一个五参数构造函数，导致该 part 丢失并报红字。本补丁只在加载该类型节点时注入构造函数参数，保留原构造与 ExposeData 逻辑；同时补上原版未保存的 pos 字段，旧存档缺失 pos 时给地图上的随机落点。不改工坊原件或存档。
+
+Fixes the MissingMethodException when loading saves containing WRMegaCorp.QuestPart_CSC on RimWorld 1.7. Adds the missing pos serialization as a small follow-up. Does not modify the workshop mod or save files.</description>
+</ModMetaData>
