@@ -26,7 +26,7 @@ RimWorld **1.7** 独立小 mod，`whitegiver.ambience.cicadavolume`，版本 1.0
 
 XML 只向这三个 SoundDef 的 `Main` 子声音追加一个 `Constant` 音量映射。自定义 `SoundParamSource` 每帧读取当前设置，倍率与原版音量因子相乘。没有全局补丁、逐 tick 扫描或重建声音，也不修改游戏/工坊原件。静音再恢复不累计缩小基础音量。
 
-核验基线：本机 **1.7.4985 rev1269 / Waylith / .NET 10** 的实际 DLL 与 `Data/Core/Defs/SoundDefs/World_Sustainers_Ambiences.xml`，未用 RimSage 的 1.6 索引替代 1.7 接口。
+核验基线：本机 **1.7.4985 rev1269 / Waylith / .NET 10** 的实际 DLL 与 `Data/Core/Defs/SoundDefs/World_Sustainers_Ambiences.xml`。开发当时（2026-10-23）未以 RimSage 的 1.6 快照替代 1.7 接口；2026-10-30 已复核该服务包含 1.7 源码，但版本元数据尚未同步，后续仍按实际游戏 DLL 核验。
 
 游戏更新后复核这三个 def 的 `subSounds/li[name="Main"]/paramMappings`、`SoundParamSource.ValueFor(Sample)` 和 `Sample.Update → ApplyMappedParameters`。其他声音 mod 若整体替换这些定义或删除映射，需要调整加载顺序或重新核验。可检查上述 XML 与 `Assembly-CSharp.dll` 的修改时间/hash 发现版本变动。原版若提供同等独立调节，可停用本 mod；它是音量偏好功能，不因某次 bug 修复自动退役。
 

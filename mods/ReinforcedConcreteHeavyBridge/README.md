@@ -64,7 +64,7 @@ pwsh -NoProfile -File tools/draw-preview.ps1 -OutputPath "自定义输出路径.
 
 ## 构建、核验与维护
 
-基线为本机 **1.7.4985 rev1269 / Waylith / .NET 10** 的实际 XML 和程序集，不使用 RimSage 的旧 1.6 索引代替当前接口。
+基线为本机 **1.7.4985 rev1269 / Waylith / .NET 10** 的实际 XML 和程序集。开发时未使用 RimSage 当时的 1.6 快照替代当前接口；2026-10-30 已复核该服务包含 1.7 源码，但版本元数据尚未同步，后续仍按实际游戏 DLL 核验。
 
 ```text
 dotnet build Source/ReinforcedConcreteHeavyBridge.csproj -c Release -p:GameRoot="RimWorld 1.7 目录"
