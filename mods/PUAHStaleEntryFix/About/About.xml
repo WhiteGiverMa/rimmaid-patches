@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>BulkLoad PUAH 残留清理 / BulkLoad PUAH Stale Entry Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.bulkload.puahstale</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ilarion.bulkloadfortransporters</packageId>
+      <displayName>Bulk Load For Transporters</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3559292908</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>mehni.pickupandhaul</packageId>
+      <displayName>Pick Up And Haul</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1279012058</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>ilarion.bulkloadfortransporters</li>
+    <li>mehni.pickupandhaul</li>
+  </loadAfter>
+  <description>Bulk Load 的「PUAH Inventory Cleaner」会把已经离开背包、但仍留在 Pick Up And Haul 物品记录里的残留引用反复判定为待清理物品，并在休眠机兵身上持续打印「Dropping N soft-locked PUAH items」，即使背包实际为空。本补丁在清理器检查前移除那些既不在背包、也不在手中的残留引用；真正卡在背包里的物品仍按原逻辑掉落。依赖 RimWorld 1.7、Harmony、Bulk Load For Transporters 与 Pick Up And Haul。</description>
+</ModMetaData>

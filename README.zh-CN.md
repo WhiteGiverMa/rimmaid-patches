@@ -66,6 +66,7 @@
 | `StartCarryReentrancyFix` | [搬运取料重入修复](mods/StartCarryReentrancyFix/README.md)，取料失败结束或任务替换后立即停止旧回调，避免池对象复用污染新任务，保留完整/部分搬运 | 2026-10-30 新增，真实回调红绿验证通过，游戏内浅测待确认 |
 | `DMSFloggerWeaponTags` | [古代军团鞭笞者装备修复](mods/DMSFloggerWeaponTags/README.md)，仅给该武器追加 Heavy 与 V_Gatling30mm，保留原标签和 2.5 数值 | 2026-11-02 新增，纯 XML sidecar，用户确认游戏内验证通过 |
 | `DMSArcSprayFireMode` | [DMS 直射/扫射切换](mods/DMSArcSprayFireMode/README.md)，仅玩家持枪 Pawn/机兵、炮塔、基站/支架可切，原版命中率管线或完整 FFF 三趟扫射，逐枪存档；敌人永远扫射，CE 自动不生效 | 2026-11-07 新增，真实 DLL 红绿通过，游戏内浅测待确认 |
+| `PUAHStaleEntryFix` | [BulkLoad PUAH 残留清理](mods/PUAHStaleEntryFix/README.md)，在 Bulk Load 的 SoftlockCleaner 检查前移除既不在背包、也不在手中的 PUAH 幽灵记录，避免同一条掉落日志反复打印；上游方法改名时打印警告并跳过 | 2026-10-30 新增，本地 sidecar，附排查记录，游戏内日志观察待确认 |
 | `PUAHDuplicateCompFix` | [PUAH 重复 Comp 修复](mods/PUAHDuplicateCompFix/README.md)，启动时按 compClass 去掉继承合并产生的重复 `CompHauledToInventory`，保留第一个，不碰其他 comp | 2026-11-02 新增，本地 sidecar 补丁，离线红绿通过，游戏内读档浅测待确认 |
 | `MTOEWYHealthInheritanceFix` | [米莉拉养成健康继承修复](mods/MTOEWYHealthInheritanceFix/README.md)，经真实传输编解码链保留仿生部位、植入体、等级 Hediff 与持久状态，维持上游启灵/机控逻辑，并附给上游作者的说明 | 2026-11-06 新增，本地 sidecar，真实 DLL 红绿通过，用户确认游戏内跨档验证通过 |
 | `NewRatkinDrawScaleCacheFix` | [鼠族缩放缓存线程安全修复](mods/NewRatkinDrawScaleCacheFix/README.md)，给 NewRatkinPlus 的 `GeneDrawScaleCache.Get` 与 `Recalculate(Pawn, out float)` 加同一把互斥锁，避免 1.7 并行预绘制下普通 `Dictionary` 被并发写坏；附给上游作者的说明 | 2026-11-07 新增，本地 sidecar，真实 DLL 16 线程红绿通过；重启后补丁注册成功，三次最小化恢复无 job fault，浅测观察通过（仍属概率性验证） |
