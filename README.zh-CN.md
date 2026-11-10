@@ -65,7 +65,7 @@
 | `DMSMechStorage` | [失能机关机兵封存](mods/DMSMechStorage/README.md)，机械师右键全系列 DMS 机兵（含 Cinders 墓碑）封存为 FFF 休眠建筑，复用原生封存/释放，征召待命可用，脚边画武器，保留自主/指挥语义与搬运姓名 | 2026-10-28 新增，v1.1.4，用户确认游戏内验证正常 |
 | `StartCarryReentrancyFix` | [搬运取料重入修复](mods/StartCarryReentrancyFix/README.md)，取料失败结束或任务替换后立即停止旧回调，避免池对象复用污染新任务，保留完整/部分搬运 | 2026-10-30 新增，真实回调红绿验证通过，游戏内浅测待确认 |
 | `DMSFloggerWeaponTags` | [古代军团鞭笞者装备修复](mods/DMSFloggerWeaponTags/README.md)，仅给该武器追加 Heavy 与 V_Gatling30mm，保留原标签和 2.5 数值 | 2026-11-02 新增，纯 XML sidecar，用户确认游戏内验证通过 |
-| `DMSArcSprayFireMode` | [DMS 直射/扫射切换](mods/DMSArcSprayFireMode/README.md)，仅玩家持枪 Pawn/机兵、炮塔、基站/支架可切，原版命中率管线或完整 FFF 三趟扫射，逐枪存档；敌人永远扫射，CE 自动不生效 | 2026-11-07 新增，真实 DLL 红绿通过，游戏内浅测待确认 |
+| `DMSArcSprayFireMode` | [DMS 直射/扫射切换](mods/DMSArcSprayFireMode/README.md)，玩家逐枪切换原版命中/FFF 扫射；敌人永远扫射，CE 不生效；1.0.1 修复 More weapon sounds 重复继承目标覆盖入口 | 2026-11-10，1041 项无音效 / 1083 项组合验证通过，游戏内浅测待确认 |
 | `PUAHStaleEntryFix` | [BulkLoad PUAH 残留清理](mods/PUAHStaleEntryFix/README.md)，在 Bulk Load 的 SoftlockCleaner 检查前移除既不在背包、也不在手中的 PUAH 幽灵记录，避免同一条掉落日志反复打印；上游方法改名时打印警告并跳过 | 2026-10-30 新增，本地 sidecar，附排查记录，游戏内日志观察待确认 |
 | `Fix_WRMegaCorp_QuestRewardMultiplier` | [WRMegaCorp 任务奖励倍率初始化](mods/Fix_WRMegaCorp_QuestRewardMultiplier/README.md)，给三个 WRMegaCorp 任务脚本补上缺失的 `questRewardMultiplier` 变量，奖励不再算成 0；上游改名时 `PatchOperationConditional` 安静跳过；纯 XML | 2026-11-09 新增，XML 语法与 XPath 命中离线通过，游戏内待测 |
 | `WhileYouAreNearbyMaintained` | [就近工作本地 1.7 维护分支](mods/WhileYouAreNearbyMaintained/README.md)，格子先距离过滤、补工作来源、安全归还弃用 Job；沿用原 ID 的本地替代，无额外线程；forked，许可未定 | 2026-11-09 新增，离线验证通过，游戏浅测待确认；作者要求即删除 |

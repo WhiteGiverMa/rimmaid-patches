@@ -48,6 +48,10 @@ public static class ArcFireModes
             Require(typeof(Verb), "Reset", typeof(void), false);
             Require(typeof(ThingWithComps), "GetGizmos", typeof(IEnumerable<Gizmo>), false);
             Require(typeof(ThingWithComps), "ExposeData", typeof(void), false);
+            Type? soundPatch = AccessTools.TypeByName("GAU8TailSound.Patch_AllVerb_TryCastShot");
+            if (soundPatch != null)
+                harmony.Patch(Require(soundPatch, "TargetMethods", typeof(IEnumerable<MethodBase>), true),
+                    postfix: new HarmonyMethod(typeof(ArcFireModes), nameof(NormalizeSoundTargets)));
             DirectShot.Install(harmony);
             Patch(harmony, typeof(Verb_Spray), "TryCastShot", nameof(ShotPrefix), true);
             Patch(harmony, typeof(Verb_Spray), "get_AimAngleOverride", nameof(AimPrefix), true);
@@ -57,6 +61,7 @@ public static class ArcFireModes
             Patch(harmony, typeof(ThingWithComps), "ExposeData", nameof(ScribePostfix), false);
             Enabled = true;
             Log.Message("[DMS Arc Fire Mode] Installed player-only direct / original DMS spray controls; vanilla shot IL verified.");
+            if (soundPatch != null) Log.Message("[DMS Arc Fire Mode] More weapon sounds compatibility installed: inherited shot targets normalized before registration.");
         }
         catch (Exception exception)
         {
@@ -89,6 +94,10 @@ public static class ArcFireModes
         var hook = new HarmonyMethod(typeof(ArcFireModes), handler);
         harmony.Patch(target, prefix: prefix ? hook : null, postfix: prefix ? null : hook);
     }
+
+    private static void NormalizeSoundTargets(ref IEnumerable<MethodBase> __result)
+        // ReflectedType aliases share one native body but separate Harmony keys; preserve real overrides.
+        => __result = __result.Select(method => method.GetDeclaredMember()).Distinct().ToArray();
 
     public static bool Supports(Verb verb) => arcType?.IsInstanceOfType(verb) == true;
     public static bool Supports(ThingWithComps weapon) => arcType != null

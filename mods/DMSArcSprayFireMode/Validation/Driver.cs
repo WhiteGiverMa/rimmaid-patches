@@ -27,6 +27,13 @@ internal static class Driver
     private static int errors;
     private static ThingDef projectile = null!;
     private static Selector selector = null!;
+    private const string SoundId = "senilia.deadmanswitch.moreweaponsounds";
+    private static Assembly? soundAssembly;
+    private static MethodInfo? soundTargets;
+    private static MethodBase[] originalSoundTargets = Array.Empty<MethodBase>();
+    private static int soundPrefixCalls;
+    private static bool distantCamera;
+    private static SoundDef? lastSound;
     private static readonly MethodInfo shoot = AccessTools.DeclaredMethod(typeof(Verb_Spray), "TryCastShot");
     private static readonly MethodInfo prepare = AccessTools.DeclaredMethod(typeof(Verb_ArcSprayProjectile), "PreparePath");
     private static readonly Func<ThingWithComps, IEnumerable<Gizmo>> baseGizmos = BaseGizmoCaller();
@@ -34,7 +41,9 @@ internal static class Driver
     internal static void Run(string mode, string game, string workshop, string mod, string qa)
     {
         Setup(mod, qa);
-        if (mode == "ce")
+        bool sound = mode.StartsWith("sound", StringComparison.Ordinal);
+        if (sound) LoadSound(workshop);
+        if (mode is "ce" or "sound-ce")
         {
             Set(typeof(ModsConfig), "activeModsHashSet", null, new HashSet<string> { "ceteam.combatextended" });
             _ = new ArcFireModesMod(null!);
@@ -58,7 +67,7 @@ internal static class Driver
             Console.WriteLine("RED reproduced: 3 expected failing assertions; actual FFF and vanilla shot methods executed without our hooks.");
             return;
         }
-        if (mode == "drift")
+        if (mode is "drift" or "sound-drift")
         {
             _ = new ArcFireModesMod(null!);
             Check(!ArcFireModes.Enabled && !OwnedPatches().Any() && errors == 1, "real constructor refuses drift, logs error and leaves zero hooks");
@@ -66,15 +75,33 @@ internal static class Driver
             Console.WriteLine("PASS DRIFT: actual Apply refuses altered QA-only shot IL, reports one error, retains zero forward hooks and no UI."); return;
         }
         _ = new ArcFireModesMod(null!); _ = new ArcFireModesMod(null!);
+        if (mode == "sound-red")
+        {
+            // Disable only the new compatibility seam, leaving all original fire-mode hooks intact.
+            new Harmony(ArcFireModesMod.HarmonyId).Unpatch(soundTargets!, HarmonyPatchType.Postfix, ArcFireModesMod.HarmonyId);
+            ActivateSound();
+            Begin(baseVerb);
+            Check(ArcFireModes.IsDirect(baseVerb) && baseVerb.AimAngleOverride == null && ArcFireModes.Controls(turret).Any(), "conflict leaves direct predicate, aim and UI intact");
+            Check(Cast(baseVerb), "conflict still fires");
+            int failures = ExpectRed(() => Check(reports.Count == 1 && launches.Single().Intended == baseVerb.CurrentTarget, "sound registration preserves direct shot"));
+            Begin(baseVerb); baseVerb.WarmupComplete();
+            failures += ExpectRed(() => Check(reports.Count == 1 && launches.Single().Intended == baseVerb.CurrentTarget, "sound registration preserves virtual burst entry"));
+            Check(failures == 2 && reports.Count == 0 && soundPrefixCalls > 0, "duplicate sound targets overwrite both real direct entry paths");
+            Console.WriteLine("RED SOUND reproduced: toggle and aim remain direct, but real single-shot and virtual burst execute original spray after duplicate-alias registration.");
+            return;
+        }
+        if (sound) ActivateSound();
         foreach (LogMessage message in Log.Messages) Console.WriteLine("GAME LOG " + message.text);
         Check(ArcFireModes.Enabled, "patch group installed");
-        Check(OwnedPatches().Count() == 6, "six forward targets installed once");
+        Check(OwnedPatches().Count() == (sound ? 7 : 6), "six fire-mode targets plus optional sound target installed once");
+        if (sound) ValidateSoundTargets();
         ValidateDirect(baseGun, baseVerb);
         ValidateSpray(baseGun, baseVerb);
         ValidateSwitching(baseGun, baseVerb);
         ValidateGizmosAndFactions(workshop);
         ValidateScribe(baseGun, qa);
         ValidateBurst(baseGun, baseVerb, turret);
+        if (sound) ValidateSoundExecution();
         Check(errors == 0, "zero game error logs during green checks");
         Console.WriteLine($"PASS GREEN: {checks} assertions; real original and reverse-patched methods, FFF path, ShotReport, scatter, fuel/charges, Gizmos and Scribe exercised.");
         Console.WriteLine("NOT TESTED: game rendering, hardware mouse input, projectile flight/impact, full-map AI or any user save. Map/weather/cover/LOS/stat inputs and final spawn/launch/FX boundaries are isolated; target shot/path/report/burst/Scribe methods are real.");
@@ -161,6 +188,11 @@ internal static class Driver
     {
         properties ??= new VerbProperties { verbClass = typeof(Verb_ArcSprayProjectile), burstShotCount = 18, ticksBetweenBurstShots = 2, sprayWidth = 5, sprayThicknessCells = 3, sprayArching = 4, range = 60, minRange = 3.9f, canGoWild = true };
         properties.defaultProjectile = projectile;
+        if (soundAssembly != null)
+        {
+            properties.soundCast = new SoundDef { defName = "GAU8_Sound" };
+            properties.soundCastTail = new SoundDef { defName = "DMS_NoSound", subSounds = new List<Verse.Sound.SubSoundDef>() };
+        }
         var def = new ThingDef { defName = name, label = name, category = ThingCategory.Item, thingClass = typeof(ThingWithComps), equipmentType = EquipmentType.Primary };
         Set(typeof(ThingDef), "verbs", def, new List<VerbProperties> { properties });
         var gun = new ThingWithComps { def = def, thingIDNumber = id++, stackCount = 1 };
@@ -416,6 +448,63 @@ internal static class Driver
         MethodInfo original = AccessTools.DeclaredMethod(type, method, args) ?? throw new MissingMethodException(type.FullName, method);
         var hook = new HarmonyMethod(typeof(Driver), handler); h.Patch(original, prefix: postfix ? null : hook, postfix: postfix ? hook : null);
     }
+
+    private static void LoadSound(string workshop)
+    {
+        string path = Path.Combine(workshop, "3600522698/1.7/Assemblies/GAUSOUND.dll");
+        soundAssembly = Assembly.LoadFrom(path);
+        LoadedModManager.RunningModsListForReading[0].assemblies.loadedAssemblies.Add(soundAssembly);
+        GenTypes.ClearCache();
+        soundTargets = AccessTools.DeclaredMethod(soundAssembly.GetType("GAU8TailSound.Patch_AllVerb_TryCastShot", true)!, "TargetMethods");
+        originalSoundTargets = ((IEnumerable<MethodBase>)soundTargets.Invoke(null, null)!).ToArray();
+        Console.WriteLine($"SOUND INPUT SHA256 {Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(path)))}");
+        Check(originalSoundTargets.Count(method => method.MethodHandle == shoot.MethodHandle) > 1, "actual sound scanner returns reflected aliases for one spray method");
+    }
+
+    private static void ActivateSound()
+    {
+        var h = new Harmony("qa.sound");
+        Hook(h, typeof(Find), "get_CameraDriver", nameof(Camera));
+        Hook(h, typeof(CameraDriver), "get_MapPosition", nameof(CameraPosition));
+        Hook(h, typeof(CameraDriver), "get_ZoomRootSize", nameof(CameraZoom));
+        Hook(h, typeof(Map), "get_Biome", nameof(Biome));
+        h.Patch(AccessTools.DeclaredMethod(soundAssembly!.GetType("GAU8TailSound.Patch_AllVerb_TryCastShot", true)!, "Prefix"),
+            prefix: new HarmonyMethod(typeof(Driver), nameof(SoundPrefixProbe)));
+        RuntimeHelpers.RunClassConstructor(soundAssembly.GetType("GAU8TailSound.HarmonyInit", true)!.TypeHandle);
+    }
+
+    private static void ValidateSoundTargets()
+    {
+        var targets = ((IEnumerable<MethodBase>)soundTargets!.Invoke(null, null)!).ToArray();
+        var identities = originalSoundTargets.Select(method => (method.Module, method.MetadataToken)).ToHashSet();
+        Check(targets.Length == identities.Count && targets.Select(method => (method.Module, method.MetadataToken)).ToHashSet().SetEquals(identities), "normalization preserves every actual override, removing only reflected duplicates");
+        Check(targets.All(method => method.ReflectedType == method.DeclaringType), "sound targets use canonical declaring members");
+        Check(targets.Count(method => method.MethodHandle == shoot.MethodHandle) == 1 && targets.Contains(shoot), "spray target is canonical and registered exactly once");
+        foreach (MethodBase target in targets)
+            Check(Harmony.GetPatchInfo(target)!.Prefixes.Count(patch => patch.owner == SoundId) == 1, "one sound prefix per actual shot body: " + target.DeclaringType);
+        Check(Harmony.GetPatchInfo(shoot)!.Prefixes.Any(patch => patch.owner == ArcFireModesMod.HarmonyId), "canonical wrapper retains fire-mode prefix");
+        Check(Harmony.GetPatchInfo(AccessTools.DeclaredMethod(typeof(Verse.Sound.SoundStarter), "PlayOneShot"))!.Owners.Contains(SoundId), "sound volume hook remains installed");
+        Console.WriteLine($"PASS sound targets: {originalSoundTargets.Length} reflected entries -> {targets.Length} actual bodies; real overrides and both mods' prefixes retained.");
+    }
+
+    private static void ValidateSoundExecution()
+    {
+        var tail = new SoundDef { defName = "DMS_GunTail_GAU_Sound" };
+        DefDatabase<SoundDef>.Add(tail);
+        distantCamera = true;
+        foreach (FireMode mode in new[] { FireMode.Direct, FireMode.Spray })
+        {
+            var (gun, verb) = Gun("DMS_GAU8Gatlinggun"); Turret(gun);
+            ArcFireModes.SetChoice(gun, mode); Begin(verb);
+            int prefixBefore = soundPrefixCalls, audioBefore = soundCalls;
+            Check(Cast(verb) && soundPrefixCalls == prefixBefore + 1, "sound prefix runs once in " + mode);
+            Check(reports.Count == (mode == FireMode.Direct ? 1 : 0), "sound keeps selected ballistic pipeline in " + mode);
+            Check(soundCalls == audioBefore + 1 && ReferenceEquals(lastSound, tail), "actual GAU tail logic plays the replacement tail in " + mode);
+            Check(Cast(verb) && soundCalls == audioBefore + 1, "actual sound refire throttle prevents duplicate tail in " + mode);
+        }
+        distantCamera = false;
+        Console.WriteLine("PASS sound execution: real sound prefix, distant-tail selection/playback boundary and refire throttle work in direct AND spray; no sound method is bypassed.");
+    }
     private static bool Line(IntVec3 root, LocalTargetInfo targ, ref ShootLine resultingLine, ref bool __result) { resultingLine = new ShootLine(root, targ.Cell); __result = los; return false; }
     private static bool Spawn(ThingDef def, ref Thing __result) { __result = new Bullet { def = def }; return false; }
     private static bool Launch(LocalTargetInfo usedTarget, LocalTargetInfo intendedTarget, ProjectileHitFlags hitFlags, Thing equipment)
@@ -438,10 +527,15 @@ internal static class Driver
     private static void Wild() => wildCalls++;
     private static bool Fx() { fxCalls++; return false; }
     private static bool Muzzle() { muzzleCalls++; return false; }
-    private static bool Sound() { soundCalls++; return false; }
+    private static bool Sound(SoundDef soundDef) { soundCalls++; lastSound = soundDef; return false; }
     private static bool SoundCamera() { soundCalls++; return false; }
     private static bool EmptyGizmos(ref IEnumerable<Gizmo> __result) { __result = Array.Empty<Gizmo>(); return false; }
     private static bool SelectorBoundary(ref Selector __result) { __result = selector; return false; }
+    private static void SoundPrefixProbe() => soundPrefixCalls++;
+    private static bool Camera(ref CameraDriver __result) { __result = new CameraDriver(); return false; }
+    private static bool CameraPosition(ref IntVec3 __result) { __result = distantCamera ? new IntVec3(100, 0, 100) : new IntVec3(40, 0, 40); return false; }
+    private static bool CameraZoom(ref float __result) { __result = distantCamera ? 48f : 24f; return false; }
+    private static bool Biome(ref BiomeDef __result) { __result = new BiomeDef(); return false; }
     private static void Set(Type type, string name, object? instance, object? value) => AccessTools.Field(type, name).SetValue(instance, value);
     private static void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException("FAIL: " + message); checks++; }
 }

@@ -1,6 +1,6 @@
 # DMS Arc Spray Fire Mode / DMS 扫射模式切换
 
-**1.0.0 · RimWorld 1.7 · 独立 sidecar · 游戏内浅测待确认**
+**1.0.1 · RimWorld 1.7 · 独立 sidecar · 游戏内浅测待确认**
 
 - packageId: `whitegiver.dms.arcsprayfiremode`
 - author: `WhiteGiverMa`
@@ -56,6 +56,18 @@ Verse.Verb_Shoot -> Verse.Verb_LaunchProjectile -> Verse.Verb
 
 Original reverse patch uses the vanilla method body, while mods hooking the shared `ShotReport`, equipment, burst or projectile APIs continue to see the real objects. Existing VFM/WeaponStationFireModes controls remain a separate system.
 
+## More weapon sounds 兼容 / Compatibility
+
+1.0.1 修复与 [The Dead Man's Switch - More weapon sounds](https://steamcommunity.com/sharedfiles/filedetails/?id=3600522698)（`senilia.deadmanswitch.moreweaponsounds`）组合时「按钮/枪口显示直射，弹道仍扫射」的问题。
+
+音效模组的 `GAU8TailSound.Patch_AllVerb_TryCastShot.TargetMethods()` 扫描全部 `Verb` 子类，用 `AccessTools.Method` 取包括继承方法在内的 `TryCastShot`，再用 `HashSet<MethodBase>` 去重。同一方法从不同子类反射得到的 `MethodInfo` 有不同 `ReflectedType`，不相等但共享同一 `MethodHandle`。Harmony 3 把它们记为不同补丁目标，后面的音效单独 wrapper 覆盖同一原生入口，绕过已注册的直射 prefix。不是音效 XML 改了 verbClass，也不是音效 prefix 主动返回 false。
+
+兼容仅给音效 `TargetMethods` 加可选 postfix：`GetDeclaredMember()` 归一到实际声明的方法后 `Distinct()`，保留真实 override。游戏先加载所有程序集、创建 Mod，再运行音效的 `[StaticConstructorOnStartup]`，所以可在音效注册前修正目标，不必调整列表顺序。无音效模组时不加这个 hook；CE 仍在任何 hook 之前直接退出。不修改工坊 DLL，不禁用音效、尾音或音量控制，不改直射/扫射实现。
+
+Version 1.0.1 normalizes inherited `MethodInfo` aliases before More weapon sounds registers its shot prefixes. This prevents sound-only wrappers from replacing the direct-fire wrapper while preserving every real override and the original sound behavior. No sound DLL reference, hard dependency, priority race or Workshop edit is introduced.
+
+**不使用音效模组时**：直射/扫射功能仍完整生效，与音效模组无关。兼容入口仅在初始化时查询一次目标类型；程序集未加载就不注册音效 hook，不启动音效扫描、不调用尾音逻辑，也不增加逐发音效处理。保留兼容代码不等于仍在启用音效模组。
+
 ## 基线 / Baseline
 
 核查日期：2026-11-07。运行目录不含第三方 DLL。
@@ -64,6 +76,8 @@ Original reverse patch uses the vanilla method body, while mods hooking the shar
 |---|---|
 | `Assembly-CSharp.dll` / 1.7.5000 rev1275 | `d55aa8e47fa3c5463ca85b0eccd51f195b4bbcd04f56da3af21c2f6688a81254` |
 | FFF 1.7 `Fortified.dll` | `eb7b2a3af12257c9868bf37b8dccbf92e63cc352e9717f7730ac61ab655723b9` |
+| More weapon sounds 1.7 `GAUSOUND.dll` / 2026-11-10 兼容核查 | `b3edf208e0b058d306c2f472042f282670fdef707044a4db76c1017e532f088f` |
+| Harmony 3.0.0.0 / 2026-11-10 核查 | `c8ef7856b2be3cf24b345c9b5c2f197f68fcf92649635064fce7b3ccc8f77cb0` |
 
 上游介绍：[FFF](https://steamcommunity.com/sharedfiles/filedetails/?id=3498575851)、[DMS II](https://steamcommunity.com/sharedfiles/filedetails/?id=3819799478)、[AncientCorps](https://steamcommunity.com/sharedfiles/filedetails/?id=3469398006)。
 
@@ -72,9 +86,13 @@ Original reverse patch uses the vanilla method body, while mods hooking the shar
 ```powershell
 dotnet build mods/DMSArcSprayFireMode/Source/DMSArcSprayFireMode.csproj -c Release
 pwsh -File mods/DMSArcSprayFireMode/Validation/validate.ps1
+# Optional: requires the separately installed More weapon sounds DLL.
+pwsh -File mods/DMSArcSprayFireMode/Validation/validate.ps1 -WithSoundCompatibility
 ```
 
 工程 `net10.0`、`Nullable=enable`、`TreatWarningsAsErrors=true`。`GameRoot` / `WorkshopRoot` / `HarmonyPath` 可用 MSBuild 属性覆盖。不自动部署。
+
+默认只运行不含音效模组的原始验证，不需要 `GAUSOUND.dll`。显式指定 `-WithSoundCompatibility` 才额外运行全部音效专项红绿/CE/漂移检查，需要自行提供工坊 `3600522698/1.7/Assemblies/GAUSOUND.dll`；只在验证进程动态加载，不打包或引入生产依赖。`-QaRoot <临时目录>` 可指定隔离输出；不读改玩家存档/配置。
 
 2026-11-07：Release 0 警告/0 错误，四个 C# 文件 LSP 无诊断。隔离驱动绑定真实 Assembly-CSharp、Fortified、WeaponStation DLL；**3 项预期 RED，1041 项 GREEN，CE 2 项，真实构造入口 IL 漂移拒用 2 项通过**：
 
@@ -85,7 +103,11 @@ pwsh -File mods/DMSArcSprayFireMode/Validation/validate.ps1
 - 真实 Scribe 文件三种值往返、新实例读回、缺字段旧档与非法值默认，枪交换状态隔离、原生按钮分组与过期 action 门控。
 - QA-only 原版单发副本故意移除关键 getter：真实 Mod 构造入口报一个明确错误、零 forward hooks、零功能按钮。CE 模式同样零 hooks/UI。
 
+2026-11-10 / 1.0.1：Release 0 警告/0 错误；保留上述 **1041 项无音效回归**。真实 1.7 音效 DLL 先在关闭唯一新增兼容 hook 的对照进程中复现两项 RED：单发和真实 `WarmupComplete` 连发都绕过直射，但按钮与直射朝向仍在。兼容开启后 **1083 项通过**，含全部原回归、46 个反射目标归一成 28 个实际方法、真实 override 集合不变、每个实际方法只有一份音效 prefix、直射和扫射均执行真实音效 prefix / 远距离尾音逻辑 / 尾音节流。含音效存在的 CE 零 hooks 与 IL 漂移整组回滚也通过；原版基线仍 3 RED、CE2、漂移2。
+
 **验证边界**：没有启动游戏、没有读写玩家存档或真实设置。仅 QA 副本重绑定 Unity 到 `UnityStubs`，禁用 ModsConfig I/O 和静态纹理初始化；隔离 map/weather/cover/LOS/stat 输入、最终生成/Launch/FX、基础 Thing 存档的无关世界目录和装备 UI 热键，**不替换待测 FFF 路径、单发、ShotReport、原始散射、连发状态机、模式 Scribe**。全图 AI、真实鼠标/绘制、完整存档加载仍待游戏内浅测。
+
+音效组合验证另隔离相机位置/缩放、非真空 Biome 与最终声音播放边界；`GAUSOUND.dll` 原件、目标扫描、Harmony 初始化、尾音选择与节流均真实执行。不把离线声音回调当作真实扬声器听感确认。
 
 ## 安装、浅测、卸载 / Install, shallow check, uninstall
 
@@ -98,5 +120,7 @@ pwsh -File mods/DMSArcSprayFireMode/Validation/validate.ps1
 ## 维护 / Retirement
 
 - 游戏或 FFF DLL 更新后比较 SHA-256/最后写入时间并重跑离线驱动。核查 `Verb` burst 字段、原版 launcher IL、`Verb_Spray` 的索引与末发消耗、FFF 三趟路径/HitCell，以及 Pawn/炮塔是否仍经过共同 Gizmo/ExposeData 基类。
+- More weapon sounds 更新后，核查 `GAUSOUND.dll` SHA-256/最后写入时间、`GAU8TailSound.Patch_AllVerb_TryCastShot.TargetMethods()` 的 static 无参数/返回 `IEnumerable<MethodBase>` 签名与启动时机，并重跑 sound-red / sound 组合驱动。若上游已按实际声明方法去重，兼容 postfix 可删除；不要用 `GetBaseDefinition()` 合并真实 override。当前签名漂移仍使整组拒用；类被移除则不装可选 hook，须复核上游是否仍重复注册。
 - 启动日志应出现 `[DMS Arc Fire Mode] Installed player-only ... vanilla shot IL verified.`；若出现拒用日志，此次加载未启用本功能，应先停用并核查，不放宽 IL 锚点掩盖变化。
+- 两者启用时还应有 `[DMS Arc Fire Mode] More weapon sounds compatibility installed: inherited shot targets normalized before registration.`。音效自己的 `Patched N` 日志在归一之前打印，不能拿该数字判断去重是否生效。
 - FFF/原版若原生提供等价逐枪、玩家专属、可存档的直射/扫射切换，本 sidecar 可退役，避免重复控制。

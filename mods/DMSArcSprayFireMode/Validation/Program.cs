@@ -9,7 +9,7 @@ internal static class Program
 {
     private static int Main(string[] args)
     {
-        if (args.Length != 5) { Console.Error.WriteLine("Usage: Validation bind|red|green|ce|drift-bind|drift|restore GAME WORKSHOP MOD QA"); return 1; }
+        if (args.Length != 5) { Console.Error.WriteLine("Usage: Validation bind|red|green|sound-red|sound|ce|sound-ce|drift-bind|drift|sound-drift|restore GAME WORKSHOP MOD QA"); return 1; }
         try
         {
             string game = Path.GetFullPath(args[1]), workshop = Path.GetFullPath(args[2]), mod = Path.GetFullPath(args[3]), qa = Path.GetFullPath(args[4]);
