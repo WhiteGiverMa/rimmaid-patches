@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>装备精神能力读档修复 / Equippable Psycast Load Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.equippableability.psycastloadfix</packageId>
+  <modVersion>1.0.1</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+  </loadAfter>
+  <description>修复读档时 `Constructor on type 'RimWorld.Psycast' not found` 红字。原版 CompEquippableAbility 在存档时用无参构造恢复装备附带的能力，而 Psycast 只有 (Pawn) 与 (Pawn, AbilityDef) 构造；凡是以 Psycast 作为装备能力的 mod（例如 The Dead Man's Switch - Taktikmagier 的扫帚飞行）都会在读档时报错并丢失该能力的冷却/充能状态。本补丁只在该能力类型没有无参构造时补上匹配的构造参数，其他装备能力仍走原版路径。
+
+Fixes the red error "Constructor on type 'RimWorld.Psycast' not found" when loading a save. Vanilla CompEquippableAbility restores an equipment-granted ability with a parameterless constructor, but Psycast only has (Pawn) and (Pawn, AbilityDef); any mod that grants a Psycast through an equippable (e.g. broom flight from The Dead Man's Switch - Taktikmagier) fails to load it and resets its cooldown/charges. This patch supplies the matching constructor arguments only when the ability class has no parameterless constructor; other equippable abilities keep the vanilla path.</description>
+</ModMetaData>

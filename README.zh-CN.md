@@ -74,6 +74,7 @@
 | `UFLIVirtualWorkerFix` | [联合轻工虚拟工具人修复](mods/UFLIVirtualWorkerFix/README.md)，归一化全自动超级工作台的虚拟工具人，替换禁用工作的背景故事、移除禁用/天赋特性与基因/Hediff，刷新技能禁用缓存并把所有技能同步为工作台等级，避免 `TotallyDisabled` 导致屠宰效率红字 | 2026-11-08 新增，本地 sidecar，真实 DLL 红绿通过；重启后补丁注册成功，游戏内生产 QA 待确认 |
 | `UFLIDropProductAtFeet` | [联合轻工打印机脚底输出](mods/UFLIDropProductAtFeet/README.md)，通过持久化 Mod 设置与打印机底部开关，让全息打印机产物直接落在 InteractionCell 附近而非优先瞬移进远程储存；关闭后恢复 UFLI 原版投递 | 2026-11-09 新增，本地 sidecar，真实 DLL 红绿通过，用户确认游戏内验证通过 |
 | `ITabGenesWidthFix` | [基因标签页宽度修复](mods/ITabGenesWidthFix/README.md)，修复 1.7 原版 `ITab_Genes` 单例在 def 解析时 `UI.screenWidth=0` 导致宽度永久为 0，打开基因标签页时 `met==0` 触发 `GenText.Truncate` 的 `Substring(0,-1)` 红字 | 2026-11-09 新增，本地 sidecar，真实 Assembly-CSharp 离线 RED/GREEN 通过，游戏内浅测待确认 |
+| `EquippableAbilityPsycastLoadFix` | [装备Psycast读档修复](mods/EquippableAbilityPsycastLoadFix/README.md)，补能力构造参数；1.0.1移除旧版反射虚基类调用导致的读档递归 | 2026-11-10，真实读档入口与Scribe往返35项通过，用户确认读档成功；能力玩法浅测待确认，禁止使用1.0.0 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)、[MTOEWYHealthInheritanceFix](archive/MTOEWYHealthInheritanceFix/README.md)、[Fix_WRMegaCorp_QuestPartCSC](archive/Fix_WRMegaCorp_QuestPartCSC/README.md)）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 
