@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Pocket Sand 地面装备预留修复 / Ground Equip Reservation Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.pocketsand.equipreservationfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>usagirei.pocketsand</packageId>
+      <displayName>Pocket Sand</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2226330302</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>usagirei.pocketsand</li>
+  </loadAfter>
+  <description>为 Pocket Sand 的地面装备任务补回武器预留，避免装备者走过去之前被普通自动搬运拿走。保留背包内切枪、重量检查、换装延迟和旧武器收进背包的原有行为。不改工坊文件或存档；正常重启游戏后生效。
+
+Restores weapon reservations for Pocket Sand's ground-equip jobs, preventing ordinary automatic haulers from taking the weapon while its wearer is walking toward it. Inventory swapping, mass checks, equip delays and storage of the previous weapon remain unchanged. Independent sidecar; no Workshop or save edits. Restart the game normally after enabling.</description>
+</ModMetaData>
