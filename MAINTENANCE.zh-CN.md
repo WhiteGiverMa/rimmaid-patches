@@ -50,5 +50,6 @@
 | WhileYouAreNearbyMaintained | 原版 TryIssueJobPackage/PawnCanUseWorkGiver、ThinkResult/JobMaker/JobQueue 所有权，原作 DLL hash 与设置 Scribe 键；保留单遍 grower 状态和唯一 Postfix | 上游原生合入相同修复并通过验证后回退上游；工坊更新不覆盖本地版，也不自动同步。forked 本地维护分支，许可未定，作者要求即退役 |
 | PocketSandEquipReservationFix | PocketSand 自己声明的 `JobDriver_Equip.TryMakePreToilReservations(bool)`、原版 `pawn.Reserve` 的 job/整堆预约与强制抢占；背包不预约、衣架预约源建筑，原有装备 toils 不动 | 上游补地面装备预约后可退役；DLL修改时间/hash改变先复核。目标类型/签名漂移警告跳过，不扩展成全局Reserve补丁，不因1.7标签更新假定已修 |
 | EquippableAbilityPsycastLoadFix | `CompEquippableAbility.PostExposeData`、Ability构造及holder回绑；`CompEquippable.PostExposeData`当前仅深序列化verbTracker，ThingComp基类当前为空 | 官方补ctorArgs后退役；每次游戏更新对照两层基类和派生方法。绝不能用MethodInfo.Invoke模拟virtual base调用；1.0.0已知读档递归栈溢出，使用1.0.1并跑真实Scribe往返 |
+| FFFMechModificationQueueFix | `Job.JobIsSameAs`、`Fortified.JobDriver_ApplyModification.TryResolveAndReserveItem`、`Window_MechModification.TryIssueEntry` 及可选 `DMSSR.Jobs.JobDriver_ApplySyntheticBionic.TryMakePreToilReservations` | 上游 FFF/DMSSR 区分排队改装 Job 实例且改为按 `stackCount=1` 扣除同 Pawn 异 Job 预留后退役；更新后核对 `Fortified.dll`/`DMSSR.dll` hash 并复跑 33 项驱动 |
 
 `upstream-patches/` 的直接工坊修改须结合记录的基准使用。标为历史缺失、已撤回或不建议安装的内容只留档，不因这次合仓自动重打。

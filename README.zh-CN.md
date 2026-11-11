@@ -76,6 +76,7 @@
 | `ITabGenesWidthFix` | [基因标签页宽度修复](mods/ITabGenesWidthFix/README.md)，修复 1.7 原版 `ITab_Genes` 单例在 def 解析时 `UI.screenWidth=0` 导致宽度永久为 0，打开基因标签页时 `met==0` 触发 `GenText.Truncate` 的 `Substring(0,-1)` 红字 | 2026-11-09 新增，本地 sidecar，真实 Assembly-CSharp 离线 RED/GREEN 通过，游戏内浅测待确认 |
 | `PocketSandEquipReservationFix` | [Pocket Sand 地面装备预留修复](mods/PocketSandEquipReservationFix/README.md)，走向武器前补原版预约，保留背包切枪、重量检查和换装延迟 | 2026-11-10 新增，独立 sidecar，用户确认读档成功；地面装备玩法浅测待确认 |
 | `EquippableAbilityPsycastLoadFix` | [装备Psycast读档修复](mods/EquippableAbilityPsycastLoadFix/README.md)，补能力构造参数；1.0.1移除旧版反射虚基类调用导致的读档递归 | 2026-11-10，真实读档入口与Scribe往返35项通过，用户确认读档成功；能力玩法浅测待确认，禁止使用1.0.0 |
+| `FFFMechModificationQueueFix` | [FFF 机械体改装排程修复](mods/FFFMechModificationQueueFix/README.md)，防止同种改件排程被 `JobIsSameAs` 吞掉，改为单件预留并按任务独立计算可用余量（含 DMSSR 合成义体兼容） | 2026-11-12 新增，真实 DLL 33 项 RED/GREEN 检查通过，用户确认游戏内验证通过 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)、[MTOEWYHealthInheritanceFix](archive/MTOEWYHealthInheritanceFix/README.md)、[Fix_WRMegaCorp_QuestPartCSC](archive/Fix_WRMegaCorp_QuestPartCSC/README.md)）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 

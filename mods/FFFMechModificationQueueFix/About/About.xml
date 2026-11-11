@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>FFF 机械体改装排程修复 / Mech Modification Queue Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.fff.mechmodificationqueuefix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>AOBA.Framework</packageId>
+      <displayName>Fortified Feature Framework</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3498575851</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>AOBA.Framework</li>
+    <li>Aoba.DeadManSwitch.Core</li>
+    <li>Aoba.DeadManSwitch.AncientCorps</li>
+    <li>Cephalopod.DeadManSwitch.Synthriada</li>
+  </loadAfter>
+  <description>修复「机械体改装」窗口中同时排入多个同种改件（例如给左右腿各装一条合成肌腱、或连续安装两块抛弃式陶瓷装甲）时，机兵只安装第一个就结束工作并吃掉后续排程的问题。
+
+Fixes the Mech Modification window queue dropping subsequent jobs when multiple installations of the same modification item (e.g. installing two Synthetic Tendons on left/right legs or stacking two Ceramic Plates) are queued together.</description>
+</ModMetaData>
