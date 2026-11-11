@@ -20,10 +20,16 @@ public static class Driver
     internal static Map Map = null!;
     internal static Faction Player = null!;
     internal static JobDef EquipDef = null!;
+    internal static JobDef DressDef = null!;
+    internal static BodyDef Body = null!;
+    internal static BodyPartGroupDef Torso = null!;
+    internal static ApparelLayerDef OnSkin = null!;
+    internal static LifeStageDef Adult = null!;
     internal static HediffDef Adaptive = null!;
     internal static HediffDef Sling = null!;
     internal static HashSet<string> Active = null!;
     private static int nextThingId = 10000;
+    private static int checks;
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void Run(string mode, string patchPath, string gameRoot, string workshop, string qaRoot)
@@ -47,6 +53,7 @@ public static class Driver
         Setup(workshop);
         ValidateUpstreamContract();
         if (mode == "run") Assembly.GetExecutingAssembly().GetType("PatchValidation", true)!.GetMethod("Run")!.Invoke(null, new object[] { patch! });
+        Console.WriteLine($"PASS: {checks} real-DLL checks ({mode}).");
         Console.WriteLine("NOT TESTED: actual game window rendering, OS mouse hit-testing, map pathfinding/toil execution or in-game save/load.");
     }
 
@@ -58,6 +65,7 @@ public static class Driver
         Set(typeof(Game), "maps", game, new List<Map>());
         Set(typeof(Game), "uniqueIDsManager", game, new UniqueIDsManager());
         Set(typeof(Game), "tickManager", game, new TickManager());
+        Set(typeof(Game), "questManager", game, new QuestManager());
         Player = new Faction { def = new FactionDef { defName = "ValidationPlayer", isPlayer = true } };
         game.InitData = new GameInitData { playerFaction = Player };
         Set(typeof(Prefs), "data", null, RuntimeHelpers.GetUninitializedObject(typeof(PrefsData)));
@@ -74,8 +82,19 @@ public static class Driver
         var flesh = new FleshTypeDef { defName = "Mechanoid" };
         Add(flesh);
         Set(typeof(FleshTypeDefOf), "Mechanoid", null, flesh);
-        var body = new BodyDef { defName = "Milian_Body" };
-        Add(body);
+        Torso = new BodyPartGroupDef { defName = "Torso" };
+        Add(Torso);
+        OnSkin = new ApparelLayerDef { defName = "OnSkin" };
+        Add(OnSkin);
+        Adult = new LifeStageDef { defName = "MechanoidFullyFormed", developmentalStage = DevelopmentalStage.Adult };
+        Add(Adult);
+        Body = new BodyDef { defName = "Milian_Body" };
+        Body.corePart = new BodyPartRecord
+        {
+            body = Body, def = new BodyPartDef { defName = "Torso" }, groups = new List<BodyPartGroupDef> { Torso }
+        };
+        Body.ResolveReferences();
+        Add(Body);
         Adaptive = new HediffDef { defName = "MilianFitting_AdaptiveArmSystem", hediffClass = typeof(Hediff) };
         Add(Adaptive);
         Sling = new HediffDef { defName = "MilianFitting_TacticalSling", hediffClass = typeof(HediffWithComps) };
@@ -92,15 +111,22 @@ public static class Driver
         document.Load(Path.Combine(workshop, "3256974620", "1.6", "Mods", "Biotech", "Defs", "BiotechDefs", "JobDefs", "Jobs_Work.xml"));
         EquipDef = (JobDef)DirectXmlToObjectNew.DefFromNodeNew(document.SelectSingleNode("Defs/JobDef[defName='Milira_EquipMilian']")!, null);
         Add(EquipDef);
+        DressDef = (JobDef)DirectXmlToObjectNew.DefFromNodeNew(document.SelectSingleNode("Defs/JobDef[defName='Milira_DressMilian']")!, null);
+        Add(DressDef);
         Type defOf = Milira.GetType("Milira.MiliraDefOf", true)!;
         RuntimeHelpers.RunClassConstructor(defOf.TypeHandle);
         defOf.GetField("Milira_EquipMilian")!.SetValue(null, EquipDef);
+        defOf.GetField("Milira_DressMilian")!.SetValue(null, DressDef);
         defOf.GetField("MilianFitting_AdaptiveArmSystem")!.SetValue(null, Adaptive);
         defOf.GetField("MilianFitting_TacticalSling")!.SetValue(null, Sling);
 
         Map = new Map();
         Map.info.Size = new IntVec3(20, 1, 20);
         Map.cellIndices = new CellIndices(Map);
+        Map.thingGrid = new ThingGrid(Map);
+        Map.listerHaulables = new ListerHaulables(Map);
+        Map.listerMergeables = new ListerMergeables(Map);
+        Map.haulDestinationManager = new HaulDestinationManager(Map);
         Map.listerThings = new ListerThings(ListerThingsUse.Global);
         Map.reservationManager = new ReservationManager(Map);
         Map.events = new MapEvents(Map);
@@ -109,6 +135,7 @@ public static class Driver
         game.Maps.Add(Map);
         game.currentMapIndex = 0;
         Check(EquipDef.driverClass == Milira.GetType("Milira.JobDriver_EquipMilian"), "Real XML equip driver differs.");
+        Check(DressDef.driverClass == Milira.GetType("Milira.JobDriver_DressMilian"), "Real XML dress driver differs.");
     }
 
     internal static Pawn NewMilian(bool ranged = true, string bodyName = "Milian_Body")
@@ -120,12 +147,17 @@ public static class Driver
             defName = "ValidationMilian", label = "validation milian", category = ThingCategory.Pawn,
             thingClass = typeof(Pawn), race = new RaceProperties
             {
-                body = new BodyDef { defName = bodyName },
-                intelligence = Intelligence.ToolUser
+                body = bodyName == Body.defName ? Body : new BodyDef { defName = bodyName },
+                intelligence = Intelligence.ToolUser,
+                lifeStageAges = new List<LifeStageAge> { new() { def = Adult } }
             }
         };
         Set(typeof(RaceProperties), "fleshType", pawn.def.race, FleshTypeDefOf.Mechanoid);
         pawn.health = new Pawn_HealthTracker(pawn);
+        pawn.kindDef = new PawnKindDef { defName = "Milian_Mechanoid_PawnI", race = pawn.def };
+        pawn.ageTracker = new Pawn_AgeTracker(pawn);
+        Set(typeof(Pawn_AgeTracker), "cachedLifeStageIndex", pawn.ageTracker, 0);
+        pawn.apparel = new Pawn_ApparelTracker(pawn);
         pawn.equipment = new Pawn_EquipmentTracker(pawn);
         pawn.jobs = new Pawn_JobTracker(pawn);
         pawn.carryTracker = new Pawn_CarryTracker(pawn);
@@ -170,6 +202,53 @@ public static class Driver
         return weapon;
     }
 
+    internal static Apparel NewApparel(Pawn pawn, bool compatible = true, bool targetable = true, bool hediffOnly = false, bool dressable = true)
+    {
+        var apparel = new ProbeApparel
+        {
+            thingIDNumber = nextThingId++, stackCount = 1,
+            def = new ThingDef
+            {
+                defName = "ValidationApparel" + nextThingId, label = "milian apparel", category = ThingCategory.Item,
+                thingClass = typeof(Apparel), stackLimit = 1, useHitPoints = false,
+                apparel = new ApparelProperties
+                {
+                    bodyPartGroups = new List<BodyPartGroupDef> { Torso }, layers = new List<ApparelLayerDef> { OnSkin }
+                }
+            }
+        };
+        Add(apparel.def);
+        var comps = new List<ThingComp>
+        {
+            new CompForbiddable { parent = apparel, props = new CompProperties_Forbiddable() }
+        };
+        if (dressable)
+        {
+            var dress = (ThingComp)Activator.CreateInstance(Milira.GetType("Milira.CompDressMilian", true)!)!;
+            dress.parent = apparel;
+            dress.props = (CompProperties)Activator.CreateInstance(Milira.GetType("Milira.CompProperties_DressMilian", true)!)!;
+            comps.Add(dress);
+        }
+        if (targetable)
+        {
+            var properties = (CompProperties_Targetable)Activator.CreateInstance(Milira.GetType("Milira.CompProperties_TargetableMilian", true)!)!;
+            properties.ignoreQuestLodgerPawns = true;
+            properties.GetType().GetField("targetableMilianPawnkinds")!.SetValue(properties,
+                new List<PawnKindDef> { compatible && !hediffOnly ? pawn.kindDef : new PawnKindDef { defName = "OtherMilian" } });
+            properties.GetType().GetField("availableIfWithHediff")!.SetValue(properties,
+                hediffOnly ? new List<HediffDef> { Adaptive } : new List<HediffDef>());
+            var comp = (CompTargetable)Activator.CreateInstance(Milira.GetType("Milira.CompTargetable_Milian", true)!)!;
+            comp.parent = apparel;
+            comp.props = properties;
+            comps.Add(comp);
+        }
+        Set(typeof(ThingWithComps), "comps", apparel, comps);
+        Set(typeof(Thing), "mapIndexOrState", apparel, (sbyte)0);
+        Set(typeof(Thing), "positionInt", apparel, new IntVec3(7, 0, 5));
+        Map.listerThings.Add(apparel);
+        return apparel;
+    }
+
     private static void ValidateUpstreamContract()
     {
         Pawn rangedPawn = NewMilian();
@@ -198,6 +277,36 @@ public static class Driver
         Console.WriteLine("PASS: actual Milira Available ranged/melee/adaptive-arm boundaries and XML equip job TargetA/TargetB contract.");
         gun.DeSpawn();
         sword.DeSpawn();
+        ValidateApparelContract();
+    }
+
+    private static void ValidateApparelContract()
+    {
+        Pawn pawn = NewMilian();
+        Apparel apparel = NewApparel(pawn);
+        CompTargetable targetable = apparel.AllComps.OfType<CompTargetable>().Single();
+        Check(targetable.targetParams.CanTarget(pawn) && targetable.ValidateTarget(pawn, false), "Actual Milira apparel rejected its model.");
+        Check(ApparelUtility.HasPartsToWear(pawn, apparel.def) && EquipmentUtility.CanEquip(apparel, pawn, out _), "Actual apparel body/equipment eligibility failed.");
+        Apparel wrong = NewApparel(pawn, compatible: false);
+        Check(!wrong.AllComps.OfType<CompTargetable>().Single().targetParams.CanTarget(pawn), "Actual Milira apparel accepted a different model.");
+        Apparel fitting = NewApparel(pawn, hediffOnly: true);
+        CompTargetable fittingTarget = fitting.AllComps.OfType<CompTargetable>().Single();
+        Check(!fittingTarget.targetParams.CanTarget(pawn), "Actual Milira fitting apparel accepted a pawn without the fitting.");
+        pawn.health.hediffSet.hediffs.Add(new Hediff { def = Adaptive, pawn = pawn });
+        Check(fittingTarget.targetParams.CanTarget(pawn), "Actual Milira fitting did not extend apparel eligibility.");
+        pawn.health.hediffSet.hediffs.Clear();
+        var driver = (JobDriver)Activator.CreateInstance(DressDef.driverClass)!;
+        driver.pawn = pawn;
+        driver.job = JobMaker.MakeJob(DressDef, pawn, apparel);
+        driver.job.count = 1;
+        Check(ReferenceEquals(DressDef.driverClass.GetProperty("Milian", All)!.GetValue(driver), pawn), "Dress TargetA is not Milian.");
+        Check(ReferenceEquals(DressDef.driverClass.GetProperty("Apparel", All)!.GetValue(driver), apparel), "Dress TargetB is not apparel.");
+        Check(driver.TryMakePreToilReservations(false), "Actual dress job could not reserve self and ground apparel.");
+        Check(Map.reservationManager.ReservedBy(pawn, pawn, driver.job) && Map.reservationManager.ReservedBy(apparel, pawn, driver.job), "Dress job did not hold both reservations.");
+        Map.reservationManager.ReleaseAllForTarget(pawn);
+        Map.reservationManager.ReleaseAllForTarget(apparel);
+        apparel.DeSpawn(); wrong.DeSpawn(); fitting.DeSpawn();
+        Console.WriteLine("PASS: actual Milira apparel model/fitting eligibility, body checks and XML dress job with self/apparel reservations.");
     }
 
     internal static void Add<T>(T def) where T : Def, new()
@@ -208,7 +317,19 @@ public static class Driver
     internal static void Set(Type type, string field, object? instance, object value) => AccessTools.Field(type, field).SetValue(instance, value);
     internal static void Check(bool condition, string message)
     {
+        checks++;
         if (!condition) throw new InvalidOperationException(message);
+    }
+}
+
+public sealed class ProbeApparel : Apparel
+{
+    public override string LabelNoCount => def.label;
+
+    public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
+    {
+        Map.listerThings.Remove(this);
+        Driver.Set(typeof(Thing), "mapIndexOrState", this, (sbyte)-1);
     }
 }
 

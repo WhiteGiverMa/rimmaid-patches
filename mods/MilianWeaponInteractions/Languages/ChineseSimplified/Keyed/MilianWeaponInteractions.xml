@@ -4,8 +4,10 @@
   <MWI_SelectWeapon>为{0}选择地面武器</MWI_SelectWeapon>
   <MWI_NotControlled>需要一名可行动且由玩家控制的米莉安</MWI_NotControlled>
   <MWI_WeaponNotSupported>此米莉安不支持这类武器</MWI_WeaponNotSupported>
+  <MWI_ApparelNotSupported>此米莉安不支持这件衣物，需要匹配型号或对应配件</MWI_ApparelNotSupported>
+  <MWI_StackedApparel>请先将衣物拆分为单件</MWI_StackedApparel>
   <MWI_StackedWeapon>请先将武器拆分为单件</MWI_StackedWeapon>
-  <MWI_TargetUnavailable>武器已不在同一地图的地面上</MWI_TargetUnavailable>
+  <MWI_TargetUnavailable>装备已不在同一地图的地面上</MWI_TargetUnavailable>
   <MWI_JobUnavailable>米莉拉换装任务接口已变化，未下达指令，请检查模组日志。</MWI_JobUnavailable>
   <MWI_OrderFailed>米莉安未能接受换装任务。</MWI_OrderFailed>
 </LanguageData>

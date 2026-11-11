@@ -24,6 +24,9 @@ public static class WeaponInteractions
         new[] { typeof(Rect), typeof(bool) });
     private static Type? weaponCompType;
     private static Type? equipDriverType;
+    private static Type? apparelTargetableType;
+    private static Type? dressCompType;
+    private static Type? dressDriverType;
     private static MethodInfo? available;
     private static Func<Pawn, bool>? isMilian;
     public static bool Ready { get; private set; }
@@ -39,9 +42,13 @@ public static class WeaponInteractions
             weaponCompType = AccessTools.TypeByName("Milira.CompTargetableWeapon");
             Type? utility = AccessTools.TypeByName("Milira.MilianUtility");
             equipDriverType = AccessTools.TypeByName("Milira.JobDriver_EquipMilian");
-            if (column == null || weaponCompType == null || utility == null || equipDriverType == null)
+            apparelTargetableType = AccessTools.TypeByName("Milira.CompTargetable_Milian");
+            dressCompType = AccessTools.TypeByName("Milira.CompDressMilian");
+            dressDriverType = AccessTools.TypeByName("Milira.JobDriver_DressMilian");
+            if (column == null || weaponCompType == null || utility == null || equipDriverType == null
+                || apparelTargetableType == null || dressCompType == null || dressDriverType == null)
             {
-                Log.Error($"{LogPrefix} Milira equipment types are unavailable; both new interactions are disabled.");
+                Log.Error($"{LogPrefix} Milira equipment types are unavailable; equipment interactions are disabled.");
                 return;
             }
 
@@ -53,7 +60,9 @@ public static class WeaponInteractions
                 || menu == null || menu.IsStatic || menu.ReturnType != typeof(List<FloatMenuOption>)
                 || available == null || available.IsStatic || available.ReturnType != typeof(bool)
                 || identity == null || !identity.IsStatic || identity.ReturnType != typeof(bool)
-                || !typeof(ThingComp).IsAssignableFrom(weaponCompType) || !typeof(JobDriver).IsAssignableFrom(equipDriverType))
+                || !typeof(ThingComp).IsAssignableFrom(weaponCompType) || !typeof(JobDriver).IsAssignableFrom(equipDriverType)
+                || !typeof(CompTargetable).IsAssignableFrom(apparelTargetableType) || !typeof(CompUsable).IsAssignableFrom(dressCompType)
+                || !typeof(JobDriver).IsAssignableFrom(dressDriverType))
                 throw new MissingMethodException("Milira weapon-column, identity, eligibility or equip-job contract changed.");
 
             ValidateButtonCall(PatchProcessor.GetOriginalInstructions(cell));
@@ -61,13 +70,13 @@ public static class WeaponInteractions
             if (Harmony.GetPatchInfo(cell)?.Owners.Contains(HarmonyId) != true)
                 harmony.Patch(cell, transpiler: new HarmonyMethod(typeof(WeaponInteractions), nameof(Transpiler)));
             Ready = true;
-            Log.Message($"{LogPrefix} Weapon-cell picker and selected-Milian ground-weapon menu enabled.");
+            Log.Message($"{LogPrefix} Weapon-cell picker and selected-Milian ground-weapon/apparel menus enabled.");
         }
         catch (Exception exception)
         {
             if (cell != null) harmony.Unpatch(cell, HarmonyPatchType.Transpiler, HarmonyId);
             Ready = false;
-            Log.Error($"{LogPrefix} Could not apply weapon interactions; both new entries are disabled: {exception}");
+            Log.Error($"{LogPrefix} Could not apply equipment interactions; new entries are disabled: {exception}");
         }
     }
 
@@ -184,6 +193,63 @@ public static class WeaponInteractions
         return accepted;
     }
 
+    public static bool IsMilianApparel(Apparel apparel) => Ready
+        && apparel.AllComps.Any(comp => dressCompType!.IsInstanceOfType(comp))
+        && apparel.AllComps.Any(comp => apparelTargetableType!.IsInstanceOfType(comp));
+
+    public static bool CanDress(Pawn pawn, Apparel? apparel, out string reason)
+    {
+        reason = "";
+        if (!CanCommand(pawn) || pawn.apparel == null)
+            reason = "MWI_NotControlled".Translate();
+        else if (apparel == null || !apparel.Spawned || apparel.Map != pawn.Map || apparel.Position.Fogged(pawn.Map))
+            reason = "MWI_TargetUnavailable".Translate();
+        else if (apparel.stackCount != 1)
+            reason = "MWI_StackedApparel".Translate();
+        else if (!IsMilianApparel(apparel))
+            reason = "MWI_ApparelNotSupported".Translate();
+        else
+        {
+            var targetable = (CompTargetable)apparel.AllComps.First(comp => apparelTargetableType!.IsInstanceOfType(comp));
+            if (!targetable.targetParams.CanTarget(pawn) || !targetable.ValidateTarget(pawn, false))
+                reason = "MWI_ApparelNotSupported".Translate();
+            else if (apparel.IsBurning())
+                reason = "Burning".Translate();
+            else if (!ApparelUtility.HasPartsToWear(pawn, apparel.def))
+                reason = "CannotWearBecauseOfMissingBodyParts".Translate();
+            else if (!EquipmentUtility.CanEquip(apparel, pawn, out reason))
+                return false;
+            else if (!pawn.CanReach(apparel, PathEndMode.Touch, Danger.Deadly))
+                reason = "NoPath".Translate();
+            else if (!pawn.CanReserve(pawn) || !pawn.CanReserve(apparel))
+                reason = "Reserved".Translate();
+        }
+        // ponytail: Milira 自己会替换并锁定新衣；复制原版 locked 检查会阻止米莉安再次换衣。
+        return reason.NullOrEmpty();
+    }
+
+    public static bool TryDress(Pawn pawn, Apparel apparel)
+    {
+        if (!CanDress(pawn, apparel, out string reason))
+        {
+            Reject(reason, pawn);
+            return false;
+        }
+        JobDef? jobDef = DefDatabase<JobDef>.GetNamedSilentFail("Milira_DressMilian");
+        if (jobDef == null || jobDef.driverClass != dressDriverType)
+        {
+            Log.Error($"{LogPrefix} Milira_DressMilian or its driver changed; no dress order was issued.");
+            Reject("MWI_JobUnavailable".Translate(), pawn);
+            return false;
+        }
+        apparel.SetForbidden(false);
+        Job job = JobMaker.MakeJob(jobDef, pawn, apparel);
+        job.count = 1;
+        bool accepted = pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+        if (!accepted) Reject("MWI_OrderFailed".Translate(), pawn);
+        return accepted;
+    }
+
     private static void Reject(string reason, Pawn pawn) => Messages.Message(reason, pawn, MessageTypeDefOf.RejectInput, false);
 }
 
@@ -203,6 +269,17 @@ public sealed class FloatMenuOptionProvider_MilianWeapons : FloatMenuOptionProvi
     protected override FloatMenuOption? GetSingleOptionFor(Thing clickedThing, FloatMenuContext context)
     {
         Pawn? pawn = context.FirstSelectedPawn;
+        if (pawn != null && clickedThing is Apparel apparel && WeaponInteractions.IsMilianApparel(apparel))
+        {
+            bool canDress = WeaponInteractions.CanDress(pawn, apparel, out string dressReason);
+            bool utility = apparel.def.apparel.LastLayer.IsUtilityLayer;
+            string dressLabel = canDress ? (utility ? "ForceEquipApparel" : "ForceWear").Translate(apparel.LabelShort, apparel)
+                : (utility ? "CannotEquipApparel" : "CannotWear").Translate(apparel.LabelShort, apparel) + ": " + dressReason;
+            return new FloatMenuOption(dressLabel, canDress ? () => WeaponInteractions.TryDress(pawn, apparel) : null)
+            {
+                revalidateClickTarget = apparel
+            };
+        }
         if (pawn == null || clickedThing is not ThingWithComps || !clickedThing.def.IsWeapon) return null;
         bool allowed = WeaponInteractions.CanEquip(pawn, clickedThing, out string reason);
         string label = allowed ? "Equip".Translate(clickedThing.LabelShort)

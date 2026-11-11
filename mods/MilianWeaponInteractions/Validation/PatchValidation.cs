@@ -41,6 +41,7 @@ public static class PatchValidation
         qa.Patch(AccessTools.DeclaredMethod(typeof(Messages), nameof(Messages.Message),
             new[] { typeof(string), typeof(LookTargets), typeof(MessageTypeDef), typeof(bool) }), prefix: Hook(nameof(Message)));
         qa.Patch(AccessTools.DeclaredMethod(typeof(SoundStarter), nameof(SoundStarter.PlayOneShotOnCamera)), prefix: Hook(nameof(Skip)));
+        qa.Patch(AccessTools.DeclaredMethod(typeof(CompForbiddable), "UpdateOverlayHandle"), prefix: Hook(nameof(Skip)));
 
         Type mod = patch.GetType("WhiteGiver.MilianWeaponInteractions.MilianWeaponInteractionsMod", true)!;
         Activator.CreateInstance(mod, new object?[] { null });
@@ -51,9 +52,11 @@ public static class PatchValidation
         Driver.Check(Harmony.GetPatchInfo(cell)!.Transpilers.Count(item => item.owner == Driver.Owner) == 1, "Repeated construction duplicated the patch.");
         ValidateIl(cell);
         ValidateOrders(patch);
+        ValidateApparelOrders(patch);
         ValidateButtons(qa);
         ValidateOriginalMenu();
         ValidateSling(qa);
+        ValidateDressTransfer(qa, patch);
         Console.WriteLine("PASS: real Mod registration, drift rejection, original-menu preservation, shared job ordering and both interaction entry points.");
     }
 
@@ -195,6 +198,140 @@ public static class PatchValidation
         Console.WriteLine("PASS: real main-tab removal and Targeter initialization/caster lifecycle; button hit-test only is substituted.");
     }
 
+    private static void ValidateApparelOrders(Assembly patch)
+    {
+        Pawn pawn = Driver.NewMilian();
+        Apparel apparel = Driver.NewApparel(pawn);
+        Driver.Check(CanDress(pawn, apparel), "Compatible ground apparel rejected.");
+        Apparel wrong = Driver.NewApparel(pawn, compatible: false);
+        Driver.Check(!CanDress(pawn, wrong), "Wrong apparel model accepted.");
+        Apparel ordinary = Driver.NewApparel(pawn, targetable: false);
+        Driver.Check(!CanDress(pawn, ordinary), "Ordinary non-Milian apparel accepted.");
+        Apparel noDress = Driver.NewApparel(pawn, dressable: false);
+        Driver.Check(!CanDress(pawn, noDress), "Apparel without the native dress contract accepted.");
+        Apparel fitting = Driver.NewApparel(pawn, hediffOnly: true);
+        Driver.Check(!CanDress(pawn, fitting), "Fitting apparel accepted without its fitting.");
+        pawn.health.hediffSet.hediffs.Add(new Hediff { def = Driver.Adaptive, pawn = pawn });
+        Driver.Check(CanDress(pawn, fitting), "Native fitting extension rejected.");
+        pawn.health.hediffSet.hediffs.Clear();
+        apparel.stackCount = 2;
+        Driver.Check(!CanDress(pawn, apparel), "Stacked apparel accepted.");
+        apparel.stackCount = 1;
+        reachable = false;
+        Driver.Check(!CanDress(pawn, apparel), "Unreachable apparel accepted.");
+        reachable = true;
+        fogged = true;
+        Driver.Check(!CanDress(pawn, apparel), "Fogged apparel accepted.");
+        fogged = false;
+        controlled = false;
+        Driver.Check(!CanDress(pawn, apparel), "Uncontrolled pawn could dress.");
+        controlled = true;
+        Driver.Check(!CanDress(Driver.NewMilian(bodyName: "OtherMechBody"), apparel), "Unrelated mech could dress.");
+        BodyPartGroupDef group = apparel.def.apparel.bodyPartGroups[0];
+        apparel.def.apparel.bodyPartGroups[0] = new BodyPartGroupDef { defName = "MissingPart" };
+        Driver.Check(!CanDress(pawn, apparel), "Apparel with no matching body part accepted.");
+        apparel.def.apparel.bodyPartGroups[0] = group;
+        var targetable = apparel.AllComps.OfType<CompTargetable>().Single();
+        targetable.Props.cannotHaveHediff = Driver.Adaptive;
+        pawn.health.hediffSet.hediffs.Add(new Hediff { def = Driver.Adaptive, pawn = pawn });
+        Driver.Check(!CanDress(pawn, apparel), "Base target validation was bypassed.");
+        pawn.health.hediffSet.hediffs.Clear();
+        targetable.Props.cannotHaveHediff = null;
+        Pawn reserver = Driver.NewMilian();
+        Driver.Map.reservationManager.Reserve(reserver, JobMaker.MakeJob(Driver.DressDef), apparel);
+        Driver.Check(!CanDress(pawn, apparel), "Reserved apparel accepted.");
+        Driver.Map.reservationManager.ReleaseAllForTarget(apparel);
+        Driver.Map.reservationManager.Reserve(reserver, JobMaker.MakeJob(Driver.DressDef), pawn);
+        Driver.Check(!CanDress(pawn, apparel), "A different dress actor's Milian reservation was bypassed.");
+        Driver.Map.reservationManager.ReleaseAllForTarget(pawn);
+        var fire = new Fire { def = new ThingDef { defName = "ValidationFire" }, parent = null };
+        Driver.Map.thingGrid.ThingsListAt(apparel.Position).Add(fire);
+        Driver.Check(!CanDress(pawn, apparel), "Burning apparel accepted.");
+        Driver.Map.thingGrid.ThingsListAt(apparel.Position).Remove(fire);
+
+        var provider = (FloatMenuOptionProvider)Activator.CreateInstance(patch.GetType("WhiteGiver.MilianWeaponInteractions.FloatMenuOptionProvider_MilianWeapons", true)!)!;
+        var context = (FloatMenuContext)RuntimeHelpers.GetUninitializedObject(typeof(FloatMenuContext));
+        context.allSelectedPawns = new List<Pawn> { pawn };
+        context.map = Driver.Map;
+        Driver.Set(typeof(FloatMenuContext), "cachedClickedCell", context, apparel.Position);
+        FloatMenuMakerMap.currentProvider = provider;
+        Driver.Check(provider.SelectedPawnValid(pawn, context) && provider.Applies(context), "Apparel provider not applicable.");
+        context.allSelectedPawns.Add(reserver);
+        Driver.Check(!provider.Applies(context), "Apparel provider accepted multi-selection.");
+        context.allSelectedPawns.Remove(reserver);
+        Driver.Check(!provider.GetOptionsFor(ordinary, context).Any() && !provider.GetOptionsFor(noDress, context).Any(), "Unsupported apparel produced a menu entry.");
+        Driver.Check(provider.GetOptionsFor(wrong, context).Single().Disabled, "Wrong-model apparel menu entry was enabled.");
+        FloatMenuOption option = provider.GetOptionsFor(apparel, context).Single();
+        Driver.Check(!option.Disabled && option.Label.StartsWith("ForceWear", StringComparison.Ordinal), "Compatible wear menu entry missing.");
+        apparel.SetForbidden(true);
+        FloatMenuMakerMap.currentProvider = new NeverSelectedProvider();
+        ordered = null;
+        rejection = null;
+        option.action!();
+        Driver.Check(ordered?.def == Driver.DressDef && ordered.targetA.Thing == pawn && ordered.targetB.Thing == apparel
+            && ordered.count == 1 && actor == pawn && !apparel.GetComp<CompForbiddable>().Forbidden, "Apparel menu did not capture self, apparel, native job and unforbid.");
+        acceptJob = false;
+        Driver.Check(!(bool)interactions.GetMethod("TryDress")!.Invoke(null, new object[] { pawn, apparel })! && rejection != null, "Rejected dress order reported success.");
+        acceptJob = true;
+        Type originalDriver = Driver.DressDef.driverClass;
+        Driver.DressDef.driverClass = Driver.EquipDef.driverClass;
+        ordered = null;
+        Driver.Check(!(bool)interactions.GetMethod("TryDress")!.Invoke(null, new object[] { pawn, apparel })! && ordered == null, "Changed dress driver accepted.");
+        Driver.DressDef.driverClass = originalDriver;
+        apparel.DeSpawn();
+        ordered = null;
+        rejection = null;
+        option.action!();
+        Driver.Check(ordered == null && rejection != null, "Stale apparel menu still issued a job.");
+        wrong.DeSpawn(); ordinary.DeSpawn(); noDress.DeSpawn(); fitting.DeSpawn();
+        FloatMenuMakerMap.currentProvider = null;
+        Console.WriteLine("PASS: apparel context menu, model/fitting/base-target/body/fire/reach/reservation boundaries, stable captured actor, stale click and driver drift.");
+    }
+
+    private static void ValidateDressTransfer(Harmony qa, Assembly patch)
+    {
+        // The real apparel container notifications/unlock logic run; only rendering is isolated.
+        qa.Patch(AccessTools.DeclaredMethod(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Notify_ApparelChanged)), prefix: Hook(nameof(Skip)));
+        Pawn pawn = Driver.NewMilian();
+        Apparel old = Driver.NewApparel(pawn);
+        old.DeSpawn();
+        pawn.apparel.Wear(old, true, true);
+        Driver.Check(pawn.apparel.IsLocked(old) && old.Wearer == pawn, "QA could not seed the native locked apparel state.");
+        var replacements = new[] { Driver.NewApparel(pawn), Driver.NewApparel(pawn) };
+        ApparelProperties.ResetStaticData();
+        foreach (Apparel next in replacements)
+        {
+            Driver.Check(pawn.apparel.WouldReplaceLockedApparel(next), "Replacement did not actually conflict with locked apparel.");
+            Driver.Check(CanDress(pawn, next), "Native locked apparel incorrectly blocked repeat changing.");
+            var provider = (FloatMenuOptionProvider)Activator.CreateInstance(patch.GetType("WhiteGiver.MilianWeaponInteractions.FloatMenuOptionProvider_MilianWeapons", true)!)!;
+            var context = (FloatMenuContext)RuntimeHelpers.GetUninitializedObject(typeof(FloatMenuContext));
+            context.allSelectedPawns = new List<Pawn> { pawn };
+            context.map = Driver.Map;
+            FloatMenuMakerMap.currentProvider = provider;
+            FloatMenuOption option = provider.GetOptionsFor(next, context).Single();
+            ordered = null;
+            option.action!();
+            Driver.Check(ordered?.def == Driver.DressDef && actor == pawn, "Replacement menu did not issue native dress job.");
+            Job job = ordered!;
+            var driver = (JobDriver)Activator.CreateInstance(Driver.DressDef.driverClass)!;
+            driver.pawn = pawn;
+            driver.job = job;
+            Driver.Check(driver.TryMakePreToilReservations(false), "Native self-dress pre-toil reservations failed.");
+            next.DeSpawn();
+            Driver.Check(pawn.carryTracker.innerContainer.TryAdd(next), "QA could not carry replacement apparel.");
+            AccessTools.DeclaredMethod(Driver.DressDef.driverClass, "DressMilian").Invoke(driver, null);
+            Driver.Check(next.Wearer == pawn && pawn.apparel.WornApparel.Count == 1 && pawn.apparel.IsLocked(next), "Native dress failed to wear/lock new apparel.");
+            Driver.Check(old.Spawned && old.Wearer == null && !pawn.apparel.IsLocked(old), "Native dress failed to drop/unlock old apparel.");
+            Driver.Check(!next.Spawned && pawn.carryTracker.CarriedThing == null, "Native dress duplicated apparel across carry/ground/worn containers.");
+            Driver.Map.reservationManager.ReleaseAllForTarget(pawn);
+            Driver.Map.reservationManager.ReleaseAllForTarget(next);
+            old.DeSpawn();
+            old = next;
+        }
+        FloatMenuMakerMap.currentProvider = null;
+        Console.WriteLine("PASS: two real menu-to-DressMilian-to-Wear replacements; old locked apparel drops/unlocks, new apparel locks, no container duplicates.");
+    }
+
     private static void ValidateOriginalMenu()
     {
         Pawn pawn = Driver.NewMilian();
@@ -260,6 +397,11 @@ public static class PatchValidation
     {
         object?[] arguments = { pawn, weapon, null };
         return (bool)interactions.GetMethod("CanEquip")!.Invoke(null, arguments)!;
+    }
+    private static bool CanDress(Pawn pawn, Apparel apparel)
+    {
+        object?[] arguments = { pawn, apparel, null };
+        return (bool)interactions.GetMethod("CanDress")!.Invoke(null, arguments)!;
     }
     private static HarmonyMethod Hook(string name) => new(typeof(PatchValidation), name);
     public static bool NoTranslation(string key, out TaggedString result, ref bool __result) { result = key; __result = true; return false; }

@@ -4,8 +4,10 @@
   <MWI_SelectWeapon>Select a ground weapon for {0}</MWI_SelectWeapon>
   <MWI_NotControlled>Requires an able, player-controlled Milian</MWI_NotControlled>
   <MWI_WeaponNotSupported>This Milian cannot use this type of weapon</MWI_WeaponNotSupported>
+  <MWI_ApparelNotSupported>This apparel requires a compatible Milian model or fitting</MWI_ApparelNotSupported>
+  <MWI_StackedApparel>Split this apparel stack into single items first</MWI_StackedApparel>
   <MWI_StackedWeapon>Split this weapon stack into single items first</MWI_StackedWeapon>
-  <MWI_TargetUnavailable>The weapon is no longer on the ground on the same map</MWI_TargetUnavailable>
+  <MWI_TargetUnavailable>The equipment is no longer on the ground on the same map</MWI_TargetUnavailable>
   <MWI_JobUnavailable>Milira's equip-job interface changed. No order was issued; check the mod log.</MWI_JobUnavailable>
   <MWI_OrderFailed>The Milian could not accept the equip job.</MWI_OrderFailed>
 </LanguageData>
