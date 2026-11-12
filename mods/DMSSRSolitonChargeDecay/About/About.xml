@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMSSR 孤立子活性衰减 / Soliton Charge Decay</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmssr.solitonchargedecay</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Cephalopod.DeadManSwitch.Synthriada</packageId>
+      <displayName>The Dead Man's Switch - Synthriada</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3835512735</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Aoba.DeadManSwitch.Core</li>
+    <li>Cephalopod.DeadManSwitch.Synthriada</li>
+  </loadAfter>
+  <description>让 Synthriada 的五种孤立子光束武器系统在停火后按原生 coldTime 线性衰减，并显示剩余活性；重型集束器和执迷之眼保留 6 秒冷却，聚焦器 2 秒，手枪和散布器 1 秒。恢复开火时继承尚未消散的活性。安全模式的过热停火、强制冷却及反馈伤害规则保持原样。
+
+Enables the native coldTime-based linear activity decay for all five Synthriada particle-beam weapon systems and displays their remaining activity while idle. Firing resumes with the remaining charge. Preserves safety-mode forced cooling and overheat feedback rules.</description>
+</ModMetaData>

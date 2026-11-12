@@ -52,5 +52,6 @@
 | EquippableAbilityPsycastLoadFix | `CompEquippableAbility.PostExposeData`、Ability构造及holder回绑；`CompEquippable.PostExposeData`当前仅深序列化verbTracker，ThingComp基类当前为空 | 官方补ctorArgs后退役；每次游戏更新对照两层基类和派生方法。绝不能用MethodInfo.Invoke模拟virtual base调用；1.0.0已知读档递归栈溢出，使用1.0.1并跑真实Scribe往返 |
 | FFFMechModificationQueueFix | `Job.JobIsSameAs`、`Fortified.JobDriver_ApplyModification.TryResolveAndReserveItem`、`Window_MechModification.TryIssueEntry` 及可选 `DMSSR.Jobs.JobDriver_ApplySyntheticBionic.TryMakePreToilReservations` | 上游 FFF/DMSSR 区分排队改装 Job 实例且改为按 `stackCount=1` 扣除同 Pawn 异 Job 预留后退役；更新后核对 `Fortified.dll`/`DMSSR.dll` hash 并复跑 33 项驱动 |
 | WolfeinRestoreWorkPrioritiesFix | `Wolfein.HediffComp_RestoreWorkPriorities.CompPostPostAdd`/`CompPostPostRemoved`、`Pawn_WorkSettings.Initialized` 与原版 `PawnGenerator` 非玩家派系未初始化 `workSettings` 时序 | 上游在保存/恢复优先级前判断 `workSettings.Initialized`（或改到 `PostAdd` 之外）后退役；更新后核对 `Wolfein.dll` hash 与方法名，签名变化时日志报跳过而非抛错 |
+| DMSSRSolitonChargeDecay | DMSSR `IsBeamSwitchFireEnabled`、`StoreWarmupOnStop`、`GetChargePercent`、`ComputeCarryTicks`、四个原生活性字段，以及原版 `Verb.TryCastNextBurstShot` 的完成时序与 callback | 1.0.0 于 2026-11-12 经用户确认游戏内验证通过，已验证 DLL 保持原样。对照 DMSSR/游戏 DLL hash，更新后跑 115 项真实驱动；上游提供完整 Idle 显示、Burst 捕获和所需余热规则后停用。重型/炮塔是否默认保留活性是独立平衡选择，沿用原生 coldTime |
 
 `upstream-patches/` 的直接工坊修改须结合记录的基准使用。标为历史缺失、已撤回或不建议安装的内容只留档，不因这次合仓自动重打。
