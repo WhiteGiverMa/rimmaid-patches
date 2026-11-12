@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>沃芬工作优先级初始化修复 / Wolfein Work Priorities Init Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.wolfein.restoreworkprioritiesfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>MelonDove.WolfeinRace</packageId>
+      <displayName>Wolfein Race</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3473140562</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>MelonDove.WolfeinRace</li>
+  </loadAfter>
+  <description>修复 Wolfein Race 在 RimWorld 1.7 生成袭击者时的红字：外骨骼 Hediff 的 CompPostPostAdd 会读取尚未初始化的 Pawn_WorkSettings，触发 “Sale did not have work settings initialized.” 并提前初始化工作优先级。本补丁在该阶段跳过优先级保存/恢复，把初始化留给原版流程；已初始化 pawn 的行为完全不变。
+
+Fixes the RimWorld 1.7 red error when Wolfein raiders spawn with heavy gear augmentations. The hediff comp read Pawn_WorkSettings before vanilla initialized it, logging "did not have work settings initialized" and initializing priorities mid-generation. The patch skips priority bookkeeping only while work settings are uninitialized; behavior for initialized pawns is unchanged.</description>
+</ModMetaData>

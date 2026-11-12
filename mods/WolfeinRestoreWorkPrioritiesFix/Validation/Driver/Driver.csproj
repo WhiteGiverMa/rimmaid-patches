@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GameRoot Condition="'$(GameRoot)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <HarmonyPath Condition="'$(HarmonyPath)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100\2009463077\1.7\Assemblies\0Harmony.dll</HarmonyPath>
+    <WolfeinPath Condition="'$(WolfeinPath)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100\3473140562\1.6\Assemblies\Wolfein.dll</WolfeinPath>
+    <FixPath Condition="'$(FixPath)' == ''">$(MSBuildThisFileDirectory)..\..\1.7\Assemblies\WolfeinRestoreWorkPrioritiesFix.dll</FixPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameRoot)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityStubs">
+      <HintPath>$(GameRoot)\UnityStubs.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(HarmonyPath)</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="WolfeinRestoreWorkPrioritiesFix">
+      <HintPath>$(FixPath)</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
