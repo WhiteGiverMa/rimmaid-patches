@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>天工铸造炮塔升级扫描优化 / CeleTech Turret Upgrade Perf Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.celetech.turretupgradeperffix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>TOT.CeleTech.MKIII</packageId>
+      <displayName>CeleTech Arsenal MKIII</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3446237098</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>TOT.CeleTech.MKIII</li>
+  </loadAfter>
+  <description>消除天工铸造炮塔升级工作扫描的全地图尖峰：WorkGiver_TurretUpgrade 把 ThingRequestGroup.BuildingArtificial 当作候选集，却没有覆盖 ShouldSkip 或 PotentialWorkThingsGlobal，于是每个殖民者/机械体的每次 Construction 工作搜索都会在 GenClosest.ClosestThingReachable 里遍历地图上的每一面墙、导管、门、货架和建筑；即使地图上没有天工炮塔或没有任何排队升级也照扫不误。本补丁用每张地图一份的 Comp_TurretUpgrade 索引提前短路：没有排队升级时 O(1) 跳过该 WorkGiver，有升级时只把真正有排队升级的炮塔交给原版验证器。任务结果、资源、升级顺序和原版方法全部保留，不改工坊 DLL/XML，不写存档。
+
+Removes the full-map work-scan spike in CeleTech turret upgrades: WorkGiver_TurretUpgrade advertises ThingRequestGroup.BuildingArtificial but does not override ShouldSkip or PotentialWorkThingsGlobal, so every Construction work search for every colonist/mech walks every wall, conduit, door, shelf and building on the map through GenClosest.ClosestThingReachable, even with zero CeleTech turrets or zero queued upgrades. This patch keeps a per-map Comp_TurretUpgrade registry and short-circuits the giver in O(1) when nothing is queued; when something is queued it hands the original validator only the turrets that actually have queued upgrades. Job results, resources, upgrade order and all upstream methods are preserved. No Workshop DLL/XML edits and nothing is scribed.
+
+纯运行时 Harmony 补丁，可随时安全添加或移除。
+Pure runtime Harmony patch. Nothing is scribed, so it can be added or removed at any time.</description>
+</ModMetaData>
