@@ -2,6 +2,23 @@
 
 RimWorld 1.7，版本 **1.0.0**，packageId **`whitegiver.dmssr.solitonchargedecay`**。
 
+## 已退役归档 — 2026-11-13
+
+**本补丁已由用户停用，从 `mods/` 移入 `archive/`，不再作为推荐安装项。下文行为、安装命令、115 项验证与旧上游 hash 均为 1.0.0 的历史记录。** About、发布 DLL、源码、验证脚本和调查文档完整保留；发布 DLL 未重新编译，SHA-256 仍为 `116e1a68a316640e4670c9847ee52bc84b42d75c3be2c32f0bf46881e4083a99`。本次归档只移动仓库副本，游戏 `Mods/DMSSRSolitonChargeDecay` 保留原状。
+
+作者 Cephalopod 在[原反馈串](https://steamcommunity.com/workshop/filedetails/discussion/3835512735/738187822665612482/#c738187822665619893)回复：「1方法用错了，2没做边界情况保护，3是刻意改成的停火清零 / 我现在修一下」（2026-11-12 14:53:16 UTC）。因此，Idle UI 取值与失败 Burst 捕获属于 Bug，重型集束器、执迷之眼的停火清零是明确设计，不再将其列作漏配。
+
+2026-11-13 实查结果：
+
+- **工坊远端**：主页与更新页已有 Nov 12 / Nov 13 的新记录，最新发布时间为 **2026-11-13 08:25:16 UTC**（页面显示 Nov 13 @ 12:25am PST）。
+- **本机磁盘**：`DMSSR.dll` 已更新为 **729088 bytes**，最后写入 **2026-11-13 09:47:18.937676 UTC**，SHA-256 `19714ac9acd16d78d093fd7b973b5e5d05397794986e82abd89557f4a0fb1033`；Steam 的已安装 manifest 与最新 manifest 均为 `161770291871422498`，`timeupdated` 与远端一致。
+- **已实装**：Idle `GetChargePercent` 读取 `ComputeCarryTicks`；`StoreWarmupOnStop` 直接用时间差计算余量，不再依赖 Bursting 状态；`WarmupComplete` 和 `BurstingTick` 在失败结束后补 `Reset`；重型/炮塔继续使用缺省 `beamSwitchFire=false`；散布器 XML 的 `beamCount` 已从 6 改为 **12**，与三语描述一致。
+- **验证与剩余边界**：当前上游真实 DLL 离线驱动 **63 项检查通过**，确认 Idle 衰减、两种失败入口、首次射击失败、重复 Reset、上限/负时间及安全清空均正常工作。另观察到一处细微边界：失败清理经原版 `Reset` 会清空炮塔的 `castCompleteCallback`，使 `Building_TurretGun` 在经历一次失败 Burst 后不再登记后续 Burst 完成冷却（执迷之眼本身未开启 carry，对聚焦器等手持武器无影响）。
+
+逐行变更、XML/三语对照及验证详情见 [UPSTREAM-VERIFICATION-20261113.md](UPSTREAM-VERIFICATION-20261113.md)。
+
+## 历史说明（1.0.0）
+
 让 Synthriada 的孤立子光束在普通停火后保留剩余活性，按作者已有的 `coldTime` 线性消散；能量条同步显示剩余值，再次开火继承尚未消散的活性。沿用原生参数和存储字段，无额外设置。
 
 ## 行为
