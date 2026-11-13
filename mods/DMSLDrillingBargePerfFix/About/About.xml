@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMS 军团钻井驳机性能优化 / DMS Legion Drilling Barge Perf Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmsl.drillingbargeperffix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Srxf.DeadManSwitch.Legion</packageId>
+      <displayName>The Dead Man's Switch - Legion</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3666117000</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Srxf.DeadManSwitch.Legion</li>
+  </loadAfter>
+  <description>消除 DMSL_Mech_DrillingBarge（钻井驳机）深钻井工作扫描的性能尖峰：原版在默认设置下会把整张地图（325×325 = 105,625 格）当成候选工作格，并逐格做一次 21 格半径的深层资源检查；同时每次检查都会重复查询 DefDatabase 并遍历 comps。本补丁用每张地图一份、随 DeepResourceGrid.SetAt 增量维护的索引替换这两处热点，逐格结果与原版完全一致，不改动任何 DLL/XML。
+
+Removes the drilling barge deep-drill work-scan spikes: with default settings the upstream work giver yields the entire map (105,625 cells on 325x325) and validates every cell with a 21-cell radial deep-resource scan, re-querying DefDatabase and walking comps on each check. This patch replaces both hot paths with a per-map index that is updated incrementally from DeepResourceGrid.SetAt. Cell-for-cell results are identical, and no DLL or XML of the original mod is touched.
+
+纯运行时 Harmony 补丁，不写入存档数据，可随时安全添加或移除。
+Pure runtime Harmony patch. Nothing is scribed, so it can be added or removed at any time.</description>
+</ModMetaData>

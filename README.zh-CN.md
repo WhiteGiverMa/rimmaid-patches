@@ -79,6 +79,7 @@
 | `FFFMechModificationQueueFix` | [FFF 机械体改装排程修复](mods/FFFMechModificationQueueFix/README.md)，防止同种改件排程被 `JobIsSameAs` 吞掉，改为单件预留并按任务独立计算可用余量（含 DMSSR 合成义体兼容） | 2026-11-12 新增，真实 DLL 33 项 RED/GREEN 检查通过，用户确认游戏内验证通过 |
 | `WolfeinRestoreWorkPrioritiesFix` | [沃芬工作优先级初始化修复](mods/WolfeinRestoreWorkPrioritiesFix/README.md)，在非玩家沃芬袭击者生成期 `Pawn_WorkSettings` 尚未初始化时跳过外骨骼 `HediffComp_RestoreWorkPriorities` 的优先级保存/恢复，消除 `did not have work settings initialized` 红字与提前初始化副作用 | 2026-11-10 新增，真实 DLL 13 项 RED/GREEN 检查通过，启动注册与多日游戏内验证确认正常 |
 | `DMSSRSolitonChargeDecay` | [Synthriada 孤立子活性衰减](mods/DMSSRSolitonChargeDecay/README.md)，五种光束复用原生 coldTime，修复 Idle UI 和 Burst 失败捕获，保留安全模式强制排空 | 2026-11-12 新增，115 项真实 DLL 检查通过；2026-11-12 用户确认游戏内验证通过；已验证 1.0.0 DLL 保持原样 |
+| `DMSLDrillingBargePerfFix` | [DMS 军团钻井驳机性能优化](mods/DMSLDrillingBargePerfFix/README.md)，用每图深矿索引替代全图钻井工作扫描并缓存排除名单，逐格结果与原版一致 | 2026-11-13 新增，真实 DLL 45 项检查与 211,250 组逐格等价对比通过，用户确认游戏内验证通过 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)、[MTOEWYHealthInheritanceFix](archive/MTOEWYHealthInheritanceFix/README.md)、[Fix_WRMegaCorp_QuestPartCSC](archive/Fix_WRMegaCorp_QuestPartCSC/README.md)）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 
