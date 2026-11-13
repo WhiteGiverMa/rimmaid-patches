@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMS 复乐园兼容军团参数调节 / Synthriada Legion Customization Compat</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmssr.legioncustomizationcompat</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>AOBA.Framework</packageId>
+      <displayName>Fortified Features Framework</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3498575851</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Srxf.DeadManSwitch.Legion</packageId>
+      <displayName>The Dead Man's Switch - Legion</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3666117000</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Cephalopod.DeadManSwitch.Synthriada</packageId>
+      <displayName>The Dead Man's Switch - Synthriada</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3835512735</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>AOBA.Framework</li>
+    <li>Srxf.DeadManSwitch.Legion</li>
+    <li>Cephalopod.DeadManSwitch.Synthriada</li>
+  </loadAfter>
+  <description>让《死手开关：复乐园（合成体）》的“机兵参数调节”窗口支持《死手开关：军团》的 DMSL_Mech_* 机兵。
+
+症状：军团机兵在装了合成体后，右键“改装”只打开 Fortified 的原版改装窗，没有右侧五条参数滑条、没有参数上限、没有协议模拟按钮；同样情况下 DMS_Mech_* 与 Cinder_Mech_* 正常。
+根因：Synthriada 的 MechCustomizationUtility.IsSupportedPawn 只认 "DMS_Mech_"（以及包含 "DMS_Mech" 的名字）和 "Cinder_Mech_"。军团 20 台机兵的 defName 全部是 DMSL_Mech_*，既不满足 StartsWith("DMS_Mech_")，也不包含连续子串 "DMS_Mech"（DMSL 中间多一个 L），于是 CreateWindowFor 返回 null，Fortified 的窗口工厂链回退到普通 Window_MechModification。
+本补丁只在 IsSupportedPawn 上加一个 Postfix：上游判 false 且名字是 DMSL_Mech_* 时改为 true；并在上游“微型电子学基础研究完成时给已生成机兵补 DMS_MechCustomization”这一方法的 Postfix 中，对 DMSL_Mech_* 做同样的事。参数上限、Scribe 存档往返、协议模拟、预设、改装槽位全部沿用上游实现，没有复制或改写。
+
+边界：
+• 军团无人机 DMSL_Drone_CommandingBird 不纳入（上游同样不把 DMS_Drone_* 纳入参数调节）。
+• DMSL_Mech_Terra 的 DMSL_Body_Terra 是人类装备兼容的普通人形身体，不是湿件合成体；因此不改 SyntheticBionicUtility 的 DMS_Synthroid / DMS_Armored_Synthroid_Cephalopoda 白名单，Terra 可正常调五条参数，但不会多出“合成体植入”子面板。
+• 不改 CompMechCarrier.HasAllowedMechPrefix（否则 DMS 母机会把军团机兵当随机乘客生成），也不改 GeneSetUtility.IsDmsMechPawn（否则所有军团机兵会对带基因印记权限的殖民者失去敌意）。
+
+纯运行时 Harmony 补丁：不新增 Def，不写存档字段，不改任何工坊 DLL/XML，可随时安全添加或移除。
+English: Restores Synthriada's five-parameter mech customization window for Legion's DMSL_Mech_* mechanoids. Upstream MechCustomizationUtility.IsSupportedPawn accepts only DMS_Mech_*/Cinder_Mech_*, so every Legion mech fails the predicate, CreateWindowFor returns null, and Fortified falls back to the plain modification window. Two postfixes: the predicate becomes true for DMSL_Mech_*, and the MicroelectronicsBasics completion scan grants the same DMS_MechCustomization hediff to spawned Legion mechs. Caps, Scribe persistence, protocol simulation, presets and modification slots are all upstream code. The CommandingBird drone is deliberately excluded; Terra keeps its humanlike body and is not added to the wetware synthetic whitelist. No Defs, no scribed fields, no Workshop edits; safe to add or remove at any time.</description>
+</ModMetaData>
