@@ -82,6 +82,7 @@
 | `CeleTechTurretUpgradePerfFix` | [天工铸造炮塔升级扫描优化](mods/CeleTechTurretUpgradePerfFix/README.md)，按地图索引排队升级的炮塔，无排队时 O(1) 跳过，有排队时只把相关炮塔交给原版验证器 | 2026-11-13 新增，真实 DLL 9 项 RED / 46 项 GREEN 检查通过，用户确认游戏内验证通过 |
 | `HARAnimatePerfFix` | [HAR 动画缓存与并行渲染性能修复](mods/HARAnimatePerfFix/README.md)，以 `IEquatable` `ConcurrentDictionary` 与逐节点锁消除每次查询 98B 装箱、64B 字符串拼接及 1.7 并行预绘制下的 24B 结构体撕裂读 | 2026-11-13 新增，真实 DLL 21 项 RED / 51 项 GREEN 检查通过，用户确认游戏内验证通过 |
 | `DMSEWorldPerfFix` | [DMSE 世界防空性能修复](mods/DMSEWorldPerfFix/README.md)，让 `StageOf`/`RadarWarm` 保持只读、自动休眠和平基线据点、缓存阵营导弹教义并索引活动 BVR 扫描节点 | 2026-11-13 新增，1,300 据点真实世界夹具 12 项 RED / 40 项 GREEN 检查通过，用户确认游戏内验证通过 |
+| `MTOEWYStatPerfFix` | [边缘米莉拉养成属性查询性能修复](mods/MTOEWYStatPerfFix/README.md)，把 `StatExtension.GetStatValue` 全局 Postfix 换成 14 属性零分配分派器并缓存组件与 LoadID | 2026-11-13 新增，真实 DLL 60 项检查与 288 组属性值逐位对比通过，用户确认游戏内验证通过 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)、[MTOEWYHealthInheritanceFix](archive/MTOEWYHealthInheritanceFix/README.md)、[Fix_WRMegaCorp_QuestPartCSC](archive/Fix_WRMegaCorp_QuestPartCSC/README.md)、[DMSSRSolitonChargeDecay](archive/DMSSRSolitonChargeDecay/README.md)，后者于 2026-11-13 在上游修复及作者确认重型停火清零设计后退役）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 

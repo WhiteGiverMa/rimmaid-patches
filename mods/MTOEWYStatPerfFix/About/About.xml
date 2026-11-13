@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>边缘米莉拉养成：属性查询性能修复 / MTOEWY Stat Perf Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.mtoewy.statperffix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>FunnyFlandre.milira.theoneentwinedwithyou</packageId>
+      <displayName>边缘米莉拉养成：与你相连之人</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3814027507</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>FunnyFlandre.milira.theoneentwinedwithyou</li>
+  </loadAfter>
+  <description>把「边缘米莉拉养成：与你相连之人」挂在 StatExtension.GetStatValue 上的属性补丁换成零分配的等价实现。原补丁会在每一次 Pawn 属性查询时做 9 次 defName 字符串比较，MoveSpeed 查询还会反复线性扫描 Game.components，并通过 IsCurrentIdeal → pawn.GetUniqueLoadID() 每次分配 2~3 个字符串。实测非艾蒂尔 Pawn 的 MoveSpeed 每次分配 320 B、艾蒂尔本人 640 B；10 万次查询就是 32~64 MB 垃圾。本补丁先按 StatDef 分派（只处理上游会改的 14 个属性），缓存 GameComponent_IdealTracker，并在世界效果列表为空时直接跳过 MoveFactor；世界效果生效时仍调用上游 MoveFactor，数值逐位一致。不改工坊文件，不写存档，可随时增删。
+
+Replaces MTOEWY's StatExtension.GetStatValue postfix with an allocation-free equivalent. The original runs up to nine defName string comparisons on every pawn stat query, rescans Game.components several times for MoveSpeed, and allocates two or three strings per scan through IsCurrentIdeal → pawn.GetUniqueLoadID(). Measured: 320 bytes per MoveSpeed query for a non-Aidier pawn, 640 bytes for Aidier; 100k queries produce 32–64 MB of garbage. This patch dispatches on the 14 StatDefs MTOEWY can touch, caches the GameComponent_IdealTracker, and skips MoveFactor when the world-effect list is empty; when effects are active the upstream MoveFactor is still called, so results are bit-identical. No Workshop files are edited, nothing is scribed, and the mod can be added or removed at any time.</description>
+</ModMetaData>
