@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>联合轻工 BWM 订单剪贴板修复 / UFLI BWM Clipboard Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.ufli.iwbclipboardfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>kindseal.ufli</packageId>
+      <displayName>UF Light Industries Furniture</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3651799915</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>falconne.bwm</packageId>
+      <displayName>Better Workbench Management</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/935982361</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>kindseal.ufli</li>
+    <li>falconne.bwm</li>
+  </loadAfter>
+  <description>修复联合轻工读取 Better Workbench Management 订单剪贴板时把 BillCopyPasteHandler 字段误当属性、以及 List 泛型转换失败的问题，恢复 BWM 复制订单后在联合全息打印机中粘贴。不修改工坊文件、原 DLL 或存档；保留打印机自身与原版剪贴板优先级，不改变生产逻辑。目标接口变化时跳过补丁；上游修复后应停用。
+
+Repairs UFLI's field lookup and generic-list conversion when importing copied bills from Better Workbench Management. Preserves native clipboard precedence and paste validation. Independent Harmony sidecar; no Workshop files, original DLLs or saves are modified. Revalidate on upstream updates and remove when UFLI includes the fix.</description>
+</ModMetaData>

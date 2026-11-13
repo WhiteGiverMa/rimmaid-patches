@@ -76,6 +76,7 @@
 | `ITabGenesWidthFix` | [基因标签页宽度修复](mods/ITabGenesWidthFix/README.md)，修复 1.7 原版 `ITab_Genes` 单例在 def 解析时 `UI.screenWidth=0` 导致宽度永久为 0，打开基因标签页时 `met==0` 触发 `GenText.Truncate` 的 `Substring(0,-1)` 红字 | 2026-11-09 新增，本地 sidecar，真实 Assembly-CSharp 离线 RED/GREEN 通过，游戏内浅测待确认 |
 | `PocketSandEquipReservationFix` | [Pocket Sand 地面装备预留修复](mods/PocketSandEquipReservationFix/README.md)，走向武器前补原版预约，保留背包切枪、重量检查和换装延迟 | 2026-11-10 新增，独立 sidecar，用户确认读档成功；地面装备玩法浅测待确认 |
 | `EquippableAbilityPsycastLoadFix` | [装备Psycast读档修复](mods/EquippableAbilityPsycastLoadFix/README.md)，补能力构造参数；1.0.1移除旧版反射虚基类调用导致的读档递归 | 2026-11-10，真实读档入口与Scribe往返35项通过，用户确认读档成功；能力玩法浅测待确认，禁止使用1.0.0 |
+| `UFLIIwbClipboardFix` | [联合轻工 BWM 订单剪贴板修复](mods/UFLIIwbClipboardFix/README.md)，修正字段读取与泛型列表转换，恢复 BWM → 打印机订单转贴；保留来源优先级、验证与克隆 | 2026-11-11 新增，真实 DLL 12红/36绿/2缺依赖检查通过，原生游戏 UI 浅测待确认；附上游反馈稿 |
 | `FFFMechModificationQueueFix` | [FFF 机械体改装排程修复](mods/FFFMechModificationQueueFix/README.md)，防止同种改件排程被 `JobIsSameAs` 吞掉，改为单件预留并按任务独立计算可用余量（含 DMSSR 合成义体兼容） | 2026-11-12 新增，真实 DLL 33 项 RED/GREEN 检查通过，用户确认游戏内验证通过 |
 | `WolfeinRestoreWorkPrioritiesFix` | [沃芬工作优先级初始化修复](mods/WolfeinRestoreWorkPrioritiesFix/README.md)，在非玩家沃芬袭击者生成期 `Pawn_WorkSettings` 尚未初始化时跳过外骨骼 `HediffComp_RestoreWorkPriorities` 的优先级保存/恢复，消除 `did not have work settings initialized` 红字与提前初始化副作用 | 2026-11-10 新增，真实 DLL 13 项 RED/GREEN 检查通过，启动注册与多日游戏内验证确认正常 |
 | `DMSLDrillingBargePerfFix` | [DMS 军团钻井驳机性能优化](mods/DMSLDrillingBargePerfFix/README.md)，用每图深矿索引替代全图钻井工作扫描并缓存排除名单，逐格结果与原版一致 | 2026-11-13 新增，真实 DLL 45 项检查与 211,250 组逐格等价对比通过，用户确认游戏内验证通过 |
