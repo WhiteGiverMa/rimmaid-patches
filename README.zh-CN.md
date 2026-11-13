@@ -80,6 +80,7 @@
 | `WolfeinRestoreWorkPrioritiesFix` | [沃芬工作优先级初始化修复](mods/WolfeinRestoreWorkPrioritiesFix/README.md)，在非玩家沃芬袭击者生成期 `Pawn_WorkSettings` 尚未初始化时跳过外骨骼 `HediffComp_RestoreWorkPriorities` 的优先级保存/恢复，消除 `did not have work settings initialized` 红字与提前初始化副作用 | 2026-11-10 新增，真实 DLL 13 项 RED/GREEN 检查通过，启动注册与多日游戏内验证确认正常 |
 | `DMSLDrillingBargePerfFix` | [DMS 军团钻井驳机性能优化](mods/DMSLDrillingBargePerfFix/README.md)，用每图深矿索引替代全图钻井工作扫描并缓存排除名单，逐格结果与原版一致 | 2026-11-13 新增，真实 DLL 45 项检查与 211,250 组逐格等价对比通过，用户确认游戏内验证通过 |
 | `CeleTechTurretUpgradePerfFix` | [天工铸造炮塔升级扫描优化](mods/CeleTechTurretUpgradePerfFix/README.md)，按地图索引排队升级的炮塔，无排队时 O(1) 跳过，有排队时只把相关炮塔交给原版验证器 | 2026-11-13 新增，真实 DLL 9 项 RED / 46 项 GREEN 检查通过，用户确认游戏内验证通过 |
+| `HARAnimatePerfFix` | [HAR 动画缓存与并行渲染性能修复](mods/HARAnimatePerfFix/README.md)，以 `IEquatable` `ConcurrentDictionary` 与逐节点锁消除每次查询 98B 装箱、64B 字符串拼接及 1.7 并行预绘制下的 24B 结构体撕裂读 | 2026-11-13 新增，真实 DLL 21 项 RED / 51 项 GREEN 检查通过，用户确认游戏内验证通过 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)、[MTOEWYHealthInheritanceFix](archive/MTOEWYHealthInheritanceFix/README.md)、[Fix_WRMegaCorp_QuestPartCSC](archive/Fix_WRMegaCorp_QuestPartCSC/README.md)、[DMSSRSolitonChargeDecay](archive/DMSSRSolitonChargeDecay/README.md)，后者于 2026-11-13 在上游修复及作者确认重型停火清零设计后退役）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 

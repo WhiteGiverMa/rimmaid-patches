@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Validation</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GameRoot Condition="'$(GameRoot)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <HarmonyPath Condition="'$(HarmonyPath)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100\2009463077\1.7\Assemblies\0Harmony.dll</HarmonyPath>
+    <AlienRacePath Condition="'$(AlienRacePath)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100\839005762\1.7\Assemblies\AlienRace.dll</AlienRacePath>
+    <HARAnimatePath Condition="'$(HARAnimatePath)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100\3761190956\Assemblies\HARAnimate.dll</HARAnimatePath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Source\HARAnimatePerfFix.csproj" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameRoot)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityStubs">
+      <HintPath>$(GameRoot)\UnityStubs.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(HarmonyPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="AlienRace">
+      <HintPath>$(AlienRacePath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="HARAnimate">
+      <HintPath>$(HARAnimatePath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

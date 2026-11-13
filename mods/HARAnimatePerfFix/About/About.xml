@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>HAR 动画缓存性能修复 / HARAnimate Perf Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.haranimate.perffix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>dtrndg.haranimate</packageId>
+      <displayName>HAR BodyPart Animate FrameWork</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3761190956</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>erdelf.HumanoidAlienRaces</li>
+    <li>dtrndg.haranimate</li>
+  </loadAfter>
+  <description>纯运行时 Harmony 性能修复，针对 HAR BodyPart Animate FrameWork（dtrndg.haranimate）在 RimWorld 1.7 下的动画缓存：去掉每个渲染节点每次查询产生的 32 字节装箱键与 64 字节字符串拼接，去掉每 30000 tick 一次的 ToArray() 拷贝与空转日志。缓存语义、刷新间隔、过期规则与动画结果保持逐位一致，并额外保证 Waylith 并行预绘制下的线程安全（每个节点独立加锁，杜绝 24 字节 BodyAddonTransform 撕裂读）。不改工坊文件、不写存档。
+
+A runtime-only Harmony performance fix for HAR BodyPart Animate FrameWork (dtrndg.haranimate) on RimWorld 1.7. It removes the 32-byte boxed cache key and the 64-byte string concatenation performed on every render-node lookup, plus the 30,000-tick ToArray() copy and no-op log spam. Cache semantics, refresh interval, expiry rules and animation results stay bit-identical, and the replacement cache is thread-safe for Waylith's parallel pre-draw (per-node lock, no torn 24-byte BodyAddonTransform reads). No Workshop files are modified and nothing is scribed into saves.</description>
+</ModMetaData>
