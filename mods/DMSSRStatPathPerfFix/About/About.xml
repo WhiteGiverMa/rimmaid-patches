@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>死手开关：合成体 属性/寻路性能修复 / DMSSR Stat &amp; Path Perf Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmssr.statpathperffix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Cephalopod.DeadManSwitch.Synthriada</packageId>
+      <displayName>The Dead Man's Switch - Synthriada</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3835512735</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Cephalopod.DeadManSwitch.Synthriada</li>
+  </loadAfter>
+  <description>消除《死手开关：合成体》两处结构性热点，让每一步寻路和每一次属性查询都只做该做的工作。
+
+一、每条腿的每一步都跑两次地形惩罚豁免。DMSSR 给 Pawn_PathFollower.CostToMoveIntoCell 的两个重载都挂了 Postfix，而原版 1.7 的单参数重载就是 return CostToMoveIntoCell(pawn, c);——于是同一段 ClampPathCostForAbility 在每个殖民者/动物/机械体的每一步都执行两次，每次都把该生物身上所有 Hediff 扫一遍（既查 DefModExt_IgnoreTerrainMovePenalty，又查 HediffComp_IgnoreTerrainMovePenalty），不做任何缓存。
+更糟的是这还是个行为 bug：ClampPathCostForAbility 做的是 pathCost = max(pathCost - 地形pathCost, 该生物移动tick数)，跑两次就会把地形代价扣两遍；只要该格实际代价高于「移动tick + 地形代价」（门、地形标签、移动姿态、其它 mod 的 Postfix 都会造成这种情况），带「无视地形移动惩罚」的生物就会比它自身的基准速度还快。
+
+二、每一个机械体的每一条属性查询都先扫一遍 Hediff。Patch_MechCustomization_ApplyStatPreFinalize.Postfix 的判断顺序是：有 Thing → 是 Pawn → 是机械体 → TryGetCompFast（线性扫描 DMS_MechCustomization）→ 最后才看「这次问的是哪条属性」。所以护甲、市场价值、工作速度……任何一条与改造无关的属性，都要先付一次 O(Hediff 数量) 的扫描。
+
+本补丁：
+• 验证原版单参数重载确实只是转发后，移除 DMSSR 重复的那个 Postfix，并把 ClampPathCostForAbility 换成等价实现（同样的算式，标志位改为缓存读取）。无法验证时自动降级为「保留两个 Postfix，只把扫描变成缓存」。
+• 给 Patch_MechCustomization_ApplyStatPreFinalize.Postfix 加前置闸门：先 O(1) 判断这条属性是否属于改造属性，再判断是否机械体；不属于就直接跳过（上游此时本来就是空操作，结果完全一致）。
+• 给 TryGetCompFast 加前置缓存，让剩下的改造属性查询也不再线性扫描。
+• 缓存以 HediffSet.DirtyCache 为失效点（原版所有 Hediff 增删/读档都会经过它），并额外核对 HediffSet 实例与 Hediff 数量，任何改动都会自动重算。
+
+已用真实 Assembly-CSharp.dll 与真实 DMSSR.dll 做离线 RED/GREEN 验证：12 条属性 × 3 种生物形态共 36 组取值与 DMSSR 自身 Postfix 逐位相同；30 个 Hediff 的生物每步由 2 次扫描/60 次 Hediff 访问降为 0 次；无关属性查询由 1 次 O(30) 扫描降为 0 次。
+
+唯一有意的行为变化：带「无视地形移动惩罚」的生物不再被扣两次地形代价（这属于上游 bug）。详见 README。
+
+纯运行时 Harmony 补丁，不写存档、不改工坊文件，可随时安全添加或移除。
+Pure runtime Harmony patch. Nothing is scribed, no Workshop files are touched, and it can be added or removed at any time.</description>
+</ModMetaData>

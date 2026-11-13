@@ -57,5 +57,6 @@
 | HARAnimatePerfFix | `HARAnimate.Animation.AnimatorCache.Get/Cleanup/CleanAll/CacheCount`、`AnimatorCacheCleaner.CacheCleaner`、`AnimatorSystem.Register/Evaluate` 与 `stacks` 私有字典 | 2026-11-13 经用户确认游戏内验证通过，已验证 1.0.0 DLL 保持原样。上游将 `CacheKey` 改为 `IEquatable`、移除 `"race:label"` 拼接并加节点同步锁后退役；签名变化时打警告并跳过 |
 | DMSEWorldPerfFix | `WorldComponent_FactionAirDefenseAlert.StageOf/RadarWarm/WorldComponentTick/Prune`、`siteList`/`sites`/`neutralWarned`、`MissileDoctrine.For`、`WorldComponent_BVRNetwork.BuildNodes` | 2026-11-13 经用户确认游戏内验证通过，已验证 1.0.0 DLL 保持原样。上游让只读查询传 `create:false` 且休眠和平基线据点后退役；基线超过 4 或成员改名时对应补丁组跳过 |
 | MTOEWYStatPerfFix | `StatExtension.GetStatValue` 上 `MiliraTheOneEntwinedWithYou.Patches.IdealExclusiveStatPatch.Postfix`、14 个受影响 `StatDef`、`GameComponent_IdealTracker` 与 `IdealWorldEffectService.MoveFactor` | 2026-11-13 经用户确认游戏内验证通过，已验证 1.0.0 DLL 保持原样。上游改为 `StatDef` 分派并避免非艾蒂尔单位调用 `GetUniqueLoadID()` 后退役；上游版本变更（非 `1.4.0.0`）时重核 14 属性与倍率常量 |
+| DMSSRStatPathPerfFix | `Pawn_PathFollower.CostToMoveIntoCell` 两重载、`AbilityPathCostUtility.ClampPathCostForAbility/HasIgnoreTerrainMovePenalty`、`Patch_MechCustomization_ApplyStatPreFinalize.Postfix/TryGetCompFast`、`HediffSet.DirtyCache` | 2026-11-13 经用户确认游戏内验证通过，已验证 1.0.0 DLL 保持原样。上游去重 `CostToMoveIntoCell` Postfix、提前属性闸门并缓存 Hediff 查询后退役 |
 
 `upstream-patches/` 的直接工坊修改须结合记录的基准使用。标为历史缺失、已撤回或不建议安装的内容只留档，不因这次合仓自动重打。
