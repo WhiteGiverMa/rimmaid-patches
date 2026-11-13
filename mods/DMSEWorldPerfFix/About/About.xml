@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMSE 世界防空性能修复 / DMSE World Air-Defense Perf Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmse.worldperffix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Aoba.DeadManSwitch.Expedition</packageId>
+      <displayName>The Dead Man's Switch - Expedition</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3689879335</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Aoba.DeadManSwitch.Core</li>
+    <li>AOBA.Framework</li>
+    <li>Aoba.DeadManSwitch.Expedition</li>
+  </loadAfter>
+  <description>修复 DMSE 在世界层「防空警戒 / BVR 雷达网」上的三处性能设计缺陷，在 100% 海洋覆盖、上千据点的星球上尤其明显：
+
+1. 只读查询污染存档：BVR 网络每 2000 tick 重建节点时，会对星球上每一个有防空能力的据点调用 StageOf / RadarWarm。原版这两个方法内部调用 StateFor(parent)（create 默认 true），于是把全星球上千个和平据点各自实例化成 AirDefenseSiteAlert 并永久写进 siteList 与存档。本补丁让只读查询走 StateFor(parent, create:false)，返回值与「新建一个基线状态」完全一致（基线 1/2/3，records/waves 为空，计时器为 -1）。
+2. 250 tick 全量空转：一旦被污染，Prune 永远不会移除已经回到和平基线的状态，于是每 250 tick 都要对上千个空闲据点跑一遍 Prune + EvaluateAll，每个据点分配 2 个 RemoveAll 闭包（1,028 据点 ≈ 2,056 个委托）。本补丁把 Prune 换成零闭包倒序循环，并把「可证明 100% 静止」的据点从 siteList/sites 中休眠移除；真正有威胁/波次/暖机/封锁/警告的据点仍然按原节奏、原顺序每 250 tick 评估一次。siteList 为空时是 O(1) 返回。
+3. 重复线性扫描与闭包分配：MissileDoctrine.For 每次调用都会 GetModExtension + FirstOrDefault 闭包；BuildNodes(activeOnly:true) 在每个扫描 tick（15 tick）遍历全部世界对象只为挑出 nodeActiveUntil 里的几个 id。本补丁缓存教义查询（按 FactionDef，DefCount/世界变化时失效），并把活动扫描改为经缓存的 id→MapParent 索引，输出顺序与内容与原版逐元素一致。
+
+所有原版方法、任务结果、信件/消息、存档结构全部保留；补丁不写任何自定义存档字段，可随时安全添加或移除。详见 README.md 的双语根因分析、验证方法与「补丁何时可以删除」的失效条件。
+
+Fixes three performance defects in DMSE's world-layer air-defense alert / BVR radar network, most visible on 100% globe coverage worlds with 1,000+ settlements:
+
+1. Read-only queries pollute the save: whenever the BVR network rebuilds its nodes (every 2,000 ticks) it calls StageOf / RadarWarm for every settlement with air defense. Both upstream methods call StateFor(parent) whose create parameter defaults to true, so every peaceful settlement on the planet is instantiated as an AirDefenseSiteAlert and permanently appended to siteList and to the save file. This patch answers those queries with StateFor(parent, create:false) and returns exactly what a freshly created baseline state would have returned (baseline 1/2/3, empty records/waves, -1 timers).
+2. Full-planet busywork every 250 ticks: once polluted, Prune never removes a site that has decayed back to its peaceful baseline, so every 250 ticks Prune + EvaluateAll walk all 1,000+ idle sites and allocate two RemoveAll closures per site (≈2,056 delegates at 1,028 sites). This patch replaces Prune with allocation-free backward loops and hibernates every provably quiescent baseline site; sites with threat, waves, radar warm-up, blockade or a shown warning are still evaluated exactly once per 250 ticks, in the original order. An empty siteList is an O(1) return.
+3. Repeated linear scans and closure allocations: MissileDoctrine.For re-runs GetModExtension + a FirstOrDefault closure on every call, and BuildNodes(activeOnly:true) walks every world object on every scan tick (15 ticks) just to pick the few ids in nodeActiveUntil. This patch caches the doctrine lookup per FactionDef (invalidated on DefCount/world change) and resolves active scan nodes through a cached id→MapParent index whose output is element-by-element identical to upstream.
+
+Every upstream method, job result, letter/message and save structure is preserved; the patch scribes nothing and can be added or removed at any time. README.md contains the bilingual root-cause analysis, the validation method and the expiration conditions.</description>
+</ModMetaData>
