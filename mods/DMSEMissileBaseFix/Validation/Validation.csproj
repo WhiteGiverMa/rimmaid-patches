@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RimWorldDir Condition="'$(RimWorldDir)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</RimWorldDir>
+    <WorkshopDir Condition="'$(WorkshopDir)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100</WorkshopDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldDir)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityStubs">
+      <HintPath>$(RimWorldDir)\UnityStubs.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(WorkshopDir)\2009463077\1.7\Assemblies\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DMSE">
+      <HintPath>$(WorkshopDir)\3689879335\1.7\Assemblies\DMSE.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DMSEMissileBaseFix">
+      <HintPath>..\1.7\Assemblies\DMSEMissileBaseFix.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMSE 导弹阵地穿梭机与重组远行队修复 / DMSE Missile Base Shuttle &amp; Reform Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmse.missilebasefix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>AOBA.Framework</packageId>
+      <displayName>Fortified Features Framework</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3498575851</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Aoba.DeadManSwitch.Core</packageId>
+      <displayName>The Dead Man's Switch</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3819799478</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Aoba.DeadManSwitch.Expedition</packageId>
+      <displayName>The Dead Man's Switch - Expedition</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3689879335</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>AOBA.Framework</li>
+    <li>Aoba.DeadManSwitch.Core</li>
+    <li>Aoba.DeadManSwitch.Expedition</li>
+  </loadAfter>
+  <description>修复 DMSE 敌方导弹/防空阵地的两类站点交互问题：
+
+1. 仅将 DMSE_MissileBase、DMSE_FieldLaunchSite、DMSE_EarlyLaunchSite 的 validLaunchTarget 修正为 true，恢复穿梭机/运输舱进入，同时保留射程、燃料、BVR 防空风险确认、实际防空和撤退重入冷却。
+2. 修复清场后无法重组远行队及导弹战利品遗漏：为这三类 Site 采用临时营地式迷雾威胁规则；让真正无弹的炮塔不再永久阻塞；让安全的 CompMissileRackStorage 库存通过真实落地流程进入远行队和穿梭机装载。
+
+不会把仍有电且武装的炮塔当作安全目标，也不会远程清空活跃防空系统。Wing-Back 出生时其实有 300 个绝对燃料单位，可正常开火；本补丁处理的是实际耗尽后的状态。
+
+不修改工坊原件，不写自定义存档字段，可安全增删。
+
+Standalone DMSE site-interaction fix:
+1. Enables shuttle/pod entry only on the three enemy missile-base WorldObjectDefs while preserving fuel/range checks, BVR interception prompts, live air defense, and post-retreat re-entry cooldowns.
+2. Fixes fogged/dry-defense reform deadlocks and makes safe CompMissileRackStorage contents genuinely collectible through vanilla ground-loot, caravan, and transporter paths.
+
+Armed powered turrets and operational air defense remain protected. No Workshop edits, no custom save fields, safe to add or remove.</description>
+</ModMetaData>
