@@ -25,11 +25,11 @@ internal static class Program
     {
         if (args.Length == 1 && args[0] == "--help")
         {
-            Console.WriteLine("Usage: Validation bind|red|green GAME_ROOT HARMONY_DLL DMSSR_DLL PATCH_DLL");
+            Console.WriteLine("Usage: Validation bind|red|green|late-red|early-green GAME_ROOT HARMONY_DLL DMSSR_DLL PATCH_DLL");
             return 0;
         }
 
-        if (args.Length != 5 || args[0] is not ("bind" or "red" or "green"))
+        if (args.Length != 5 || args[0] is not ("bind" or "red" or "green" or "late-red" or "early-green"))
         {
             Console.Error.WriteLine("Expected a validation mode and four assembly paths; use --help.");
             return 1;
@@ -56,6 +56,14 @@ internal static class Program
 
             AssemblyLoadContext.Default.Resolving += Resolve;
             LoadBoundAssemblies();
+            // The driver uses a project reference for internal test hooks. The script stages the
+            // requested runtime bytes next to it; verify equality rather than silently testing a
+            // potentially different project-reference copy.
+            Assembly runtimePatch = AssemblyLoadContext.Default.LoadFromAssemblyPath(patchPath);
+            string expectedHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(patchPath)));
+            string actualHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(runtimePatch.Location)));
+            if (actualHash != expectedHash) throw new InvalidOperationException("Wrong runtime DLL bytes: " + runtimePatch.Location);
+            Console.WriteLine("Runtime patch: " + patchPath + " SHA256=" + actualHash);
             Run(mode);
             return 0;
         }
@@ -142,6 +150,8 @@ internal static class Program
             gameRoot,
             Path.GetDirectoryName(harmonyPath) ?? "",
             Path.GetDirectoryName(upstreamPath) ?? "",
+            Environment.GetEnvironmentVariable("DMSSR_VALIDATION_FORTIFIED_DIR")
+                ?? @"A:\SteamLibrary\steamapps\workshop\content\294100\3498575851\1.7\Assemblies",
         };
 
         foreach (string directory in directories)

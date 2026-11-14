@@ -21,8 +21,8 @@ namespace WhiteGiver.DMSSRStatPathPerfFix
     /// It is also a correctness bug, not just a cost bug: ClampPathCostForAbility computes
     /// <c>pathCost = max(pathCost - terrain.pathCost, ticksPerMove)</c>. Running it twice subtracts
     /// terrain.pathCost twice whenever a cell costs more than terrain + the pawn's own move ticks
-    /// (doors, terrain tags, locomotion urgency, other postfixes). That makes "ignore terrain move
-    /// penalty" pawns move faster than the pawn's own base speed on those cells.
+    /// (doors, terrain tags, locomotion urgency, other postfixes). The result is below the intended
+    /// single-clamp cost, though the ticksPerMove floor is still enforced.
     ///
     /// Fix: when the vanilla instance overload still delegates to the static one, drop DMSSR's
     /// instance postfix (one clamp per step, exactly as the author intended) and replace the clamp's
@@ -242,7 +242,8 @@ namespace WhiteGiver.DMSSRStatPathPerfFix
         /// <summary>
         /// True when <c>CostToMoveIntoCell(IntVec3)</c> is literally
         /// <c>ldarg.0; ldfld Pawn_PathFollower.pawn; ldarg.1; call CostToMoveIntoCell(Pawn, IntVec3); ret</c>.
-        /// This is what makes removing the instance postfix a pure de-duplication instead of a behaviour change.
+    /// This proves both postfixes process the same path step. Removing the duplicate deliberately
+    /// changes flagged costs where two terrain subtractions differed from one.
         /// </summary>
         private static bool InstanceOverloadDelegatesToStatic()
         {

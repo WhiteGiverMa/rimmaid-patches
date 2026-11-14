@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using DMSSR.Hediffs;
 using DMSSR.Patches;
 using HarmonyLib;
@@ -43,7 +44,29 @@ internal static class Tests
 
     internal static void Run(string mode, Type modType)
     {
-        if (mode == "red")
+        if (mode == "early-green")
+        {
+            fixture = Fixture.Create();
+            Probe.Install();
+            // Force this mod's startup BEFORE either upstream startup class. Its explicit call
+            // to EnsurePatched must install upstream first even in this valid alternate order.
+            UpstreamPatches.PrepareBootstrapScope();
+            Check(Activator.CreateInstance(modType, new object?[] { null }) != null, "Mod constructor failed.");
+            Type startup = modType.Assembly.GetTypes().Single(t => t.GetCustomAttributes(typeof(StaticConstructorOnStartup), false).Length != 0);
+            RuntimeHelpers.RunClassConstructor(startup.TypeHandle);
+            Check(PathCostPatches.SingleClampInstalled, "our startup before upstream startup failed");
+            RuntimeHelpers.RunClassConstructor(typeof(DMSSR.LocalMeshHarmony).TypeHandle);
+            RuntimeHelpers.RunClassConstructor(typeof(DMSSR.Misc.ModStartup).TypeHandle);
+            Check(PathCostPatches.SingleClampInstalled, "upstream startup undid repair");
+            Console.WriteLine("PASS alternate cctor order: our startup forces real EnsurePatched first.");
+        }
+        else if (mode == "late-red")
+        {
+            fixture = Fixture.Create();
+            Probe.Install();
+            LateStartup(modType, expectFixed: false);
+        }
+        else if (mode == "red")
         {
             RunRed();
         }
@@ -53,7 +76,7 @@ internal static class Tests
         }
 
         Console.WriteLine();
-        Console.WriteLine($"PASS: {checks} assertions.");
+        Console.WriteLine($"PASS: {checks + HotspotTests.CheckCount + RenderTests.CheckCount} assertions (core={checks}, health={HotspotTests.CheckCount}, drawing={RenderTests.CheckCount}).");
     }
 
     // ------------------------------------------------------------------ RED
@@ -125,6 +148,8 @@ internal static class Tests
         Check(Probe.MechCustomizationLookupCalls == 1, "the relevant stat did not do the upstream lookup.");
         Check(move.Equals(2f), $"MoveSpeed multiplier not applied by upstream: {move}.");
         Console.WriteLine("       unrelated stat query: 1 x 30-hediff scan; relevant stat: 1 x 30-hediff scan + multiplier.");
+        HotspotTests.Run(fx, fixedMode: false);
+        RenderTests.Run(fx, fixedMode: false);
 
         Probe.Remove();
         ReportPerfMatrix(plain, mech);
@@ -141,10 +166,8 @@ internal static class Tests
         Fixture fx = Fixture.Create();
         fixture = fx;
         Probe.Install();
-        UpstreamPatches.Apply();
-
-        object mod = Activator.CreateInstance(modType, new object?[] { null })!;
-        Check(mod != null, "Mod constructor returned null.");
+        LateStartup(modType, expectFixed: true);
+        UpstreamPatches.Apply(metadataOnly: true);
 
         Console.WriteLine(
             $"       mod state: singleClamp={PathCostPatches.SingleClampInstalled}"
@@ -176,8 +199,31 @@ internal static class Tests
         Check(HediffCachePatches.Installed, "the hediff cache invalidation hook was not installed.");
 
         HashSet<MethodBase> owned = OwnedMethods();
-        Check(owned.Count == 4, $"the mod patched {owned.Count} methods instead of 4: {string.Join(", ", owned.Select(Describe))}");
-        Console.WriteLine("       patch wiring: 4 targets (clamp prefix, stat gate, mech lookup cache, DirtyCache postfix).");
+        Check(owned.Count == 18, $"the mod patched {owned.Count} methods instead of 18: {string.Join(", ", owned.Select(Describe))}");
+        Check(owned.All(m => m.Name != "IsSupportedPawn" && m.Name != "ApplyToSpawnedMechs"), "Legion compatibility hooks were touched.");
+        var expected = new HashSet<MethodBase>
+        {
+            AccessTools.Method(typeof(AbilityPathCostUtility), "ClampPathCostForAbility"),
+            AccessTools.Method(typeof(HediffSet), nameof(HediffSet.DirtyCache), Type.EmptyTypes),
+            AccessTools.Method(typeof(Patch_MechCustomization_ApplyStatPreFinalize), "Postfix"),
+            AccessTools.Method(typeof(Patch_MechCustomization_ApplyStatPreFinalize), "TryGetCompFast"),
+            AccessTools.Method(typeof(Patch_MechCustomization_ApplyCapacity), "Postfix"),
+            AccessTools.Method(typeof(Patch_MechCustomization_ApplyCapacity), "TryGetCompFast"),
+            AccessTools.Method(typeof(Patch_MechCustomization_BodySize), "TryGetCompFast"),
+            AccessTools.Method(typeof(Patch_MechCustomization_MechEnergyMax), "TryGetCompFast"),
+            AccessTools.Method(typeof(Patch_MechCustomization_MechEnergyThresholdMin), "TryGetCompFast"),
+            AccessTools.Method(typeof(Patch_MechCustomization_MechEnergyThresholdMax), "TryGetCompFast"),
+            AccessTools.Method(typeof(Patch_MechCustomization_SkillBonus_GetLevel), "ApplyBonus"),
+            AccessTools.Method(typeof(Patch_MechCustomization_SkillBonus_GetLevelForUI), "ApplyBonus"),
+            AccessTools.Method(typeof(Patch_Schizophrenia_ConsciousnessFloor), "Postfix"),
+            AccessTools.Method(typeof(DMSSR.Patch_PawnCapacity_Calc), "Postfix"),
+            AccessTools.Method(typeof(Patch_EmbryteWeaver_UnfinishedDraw), "Prefix"),
+            AccessTools.Method(typeof(Patch_EmbryteWeaver_UnfinishedPrint), "Prefix"),
+            AccessTools.Method(typeof(DMSSR.Content.Patch_SyntheticPresentationScale), "Postfix"),
+            AccessTools.Method(typeof(DMSSR.Mech.ModExtension_WingedMech).Assembly.GetType("DMSSR.Mech.HydraFlightRendering"), "TryGetTransform"),
+        };
+        Check(owned.SetEquals(expected), "Runtime patch target whitelist mismatch.");
+        Console.WriteLine("       patch wiring: 18 targets.");
 
         // ---- the stat set is read from DMSSR itself, not duplicated
         MechStatSetMayAffectProbe(fx);
@@ -339,13 +385,44 @@ internal static class Tests
         fx.AddNoiseHediffs(animal, 3);
         Check(PathCost(animal.pather, Target).Equals(Fixture.RawCellCost), "a pawn with a small hediff list changed cost.");
         Check(Stat(animal, "MoveSpeed").Equals(1f), "a non-mech stat was modified.");
+        HotspotTests.Run(fx, fixedMode: true);
+        RenderTests.Run(fx, fixedMode: true);
 
         Probe.Remove();
         ReportPerfMatrix(plain, mech);
         ReportHediffScaling(fx);
+        HotspotBenchmarks.Run(fx);
     }
 
     // ------------------------------------------------------------- helpers
+
+    private static void LateStartup(Type modType, bool expectFixed)
+    {
+        MethodInfo instance = AccessTools.Method(typeof(Pawn_PathFollower), "CostToMoveIntoCell", new[] { typeof(IntVec3) });
+        MethodInfo staticMethod = AccessTools.Method(typeof(Pawn_PathFollower), "CostToMoveIntoCell", new[] { typeof(Pawn), typeof(IntVec3) });
+        MethodInfo upstreamStatic = AccessTools.Method(typeof(Patch_Ability_PathCost_Static), "Postfix");
+        Check(!HasPatch(staticMethod, upstreamStatic, false), "Startup fixture already has the DMSSR static postfix.");
+        Check(Activator.CreateInstance(modType, new object?[] { null }) != null, "Mod constructor failed.");
+        Check(!HasPatch(staticMethod, upstreamStatic, false), "Mod constructor prematurely ran DMSSR PatchAll.");
+        UpstreamPatches.EnsurePatched();
+        Check(HasPatch(staticMethod, upstreamStatic, false), "Real EnsurePatched did not install the static postfix.");
+        Type? startup = modType.Assembly.GetTypes().SingleOrDefault(t => t.GetCustomAttributes(typeof(StaticConstructorOnStartup), false).Length != 0);
+        if (startup != null) RuntimeHelpers.RunClassConstructor(startup.TypeHandle);
+        Check(PathCostPatches.SingleClampInstalled == expectFixed, "Late startup single-clamp state is incorrect.");
+        Check(HasPatch(instance, AccessTools.Method(typeof(Patch_Ability_PathCost_Instance), "Postfix"), false) != expectFixed,
+            "Late startup duplicate postfix state is incorrect.");
+        Console.WriteLine($"PASS real load order: Mod ctor -> DMSSR.EnsurePatched -> startup repair; singleClamp={PathCostPatches.SingleClampInstalled}.");
+        if (expectFixed)
+        {
+            MethodInfo apply = AccessTools.Method(modType, "ApplyPatches");
+            apply.Invoke(null, null);
+            UpstreamPatches.EnsurePatched();
+            RuntimeHelpers.RunClassConstructor(typeof(DMSSR.LocalMeshHarmony).TypeHandle);
+            RuntimeHelpers.RunClassConstructor(typeof(DMSSR.Misc.ModStartup).TypeHandle);
+            Check(!HasPatch(instance, AccessTools.Method(typeof(Patch_Ability_PathCost_Instance), "Postfix"), false),
+                "Repeated upstream startup restored duplicate clamp.");
+        }
+    }
 
     private static (Pawn Pawn, HediffComp_MechCustomization Comp) NewMechWithCustomization(Fixture fx, out Pawn control)
     {

@@ -66,6 +66,8 @@ internal sealed class Fixture
     internal HediffDef IgnoreCompDef = null!;
     internal HediffDef IgnoreCompOnPlainHediffDef = null!;
     internal HediffDef MechCustomizationDef = null!;
+    internal HediffDef SchizophreniaDef = null!;
+    internal readonly Dictionary<string, PawnCapacityDef> Capacities = new();
 
     internal readonly Dictionary<string, StatDef> Stats = new(StringComparer.Ordinal);
 
@@ -271,6 +273,13 @@ internal sealed class Fixture
             null);
 
         MechCustomizationDef = NewHediffDef("ValidationMechCustomization", typeof(HediffWithComps), null, null);
+        SchizophreniaDef = NewHediffDef("ValidationLinked", typeof(HediffWithComps), null, null);
+        foreach (string name in new[] { "Consciousness", "Manipulation", "Moving", "Sight", "Hearing", "Breathing" })
+        {
+            PawnCapacityDef capacity = new() { defName = name, workerClass = typeof(PawnCapacityWorker) };
+            DefDatabase<PawnCapacityDef>.Add(capacity);
+            Capacities[name] = capacity;
+        }
     }
 
     private ThingDef NewPawnDef(string defName, FleshTypeDef flesh, Intelligence intelligence)
@@ -345,6 +354,8 @@ internal sealed class Fixture
         SetDefOf(typeof(FleshTypeDefOf), "Normal", OrganicFlesh);
         SetDefOf(typeof(FleshTypeDefOf), "Mechanoid", MechFlesh);
         SetDefOf(typeof(DMS_HediffDefOf), "DMS_MechCustomization", MechCustomizationDef);
+        SetDefOf(typeof(DMS_HediffDefOf), "DMS_Schizophrenia_Linked", SchizophreniaDef);
+        foreach (var pair in Capacities) SetDefOf(typeof(PawnCapacityDefOf), pair.Key, pair.Value);
         foreach (KeyValuePair<string, StatDef> pair in Stats)
         {
             SetDefOf(typeof(StatDefOf), pair.Key, pair.Value);

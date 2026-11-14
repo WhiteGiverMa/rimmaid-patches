@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using DMSSR;
 using DMSSR.Extensions;
 using DMSSR.Hediffs;
 using Verse;
@@ -18,7 +19,8 @@ namespace WhiteGiver.DMSSRStatPathPerfFix
     /// hediff of every pawn, twice per step (see PathCostPatches). On every stat query it asks
     /// "is there a DMS_MechCustomization hediff?" by linearly scanning the same list.
     ///
-    /// Both questions only change when the hediff set changes, and RimWorld funnels every hediff
+    /// The snapshot also holds the first schizophrenia-link hediff and dynamic capacity providers.
+    /// Membership only changes when the hediff set changes, and RimWorld funnels every hediff
     /// add/remove through <see cref="HediffSet.DirtyCache"/>. So we cache the answers and drop
     /// them on that signal.
     ///
@@ -29,7 +31,9 @@ namespace WhiteGiver.DMSSRStatPathPerfFix
     ///   keyed by HediffDef; it mirrors upstream exactly: <c>def.GetModExtension&lt;T&gt;()?.enabled</c>
     ///   plus a compClass assignable to <c>HediffComp_IgnoreTerrainMovePenalty</c> on a
     ///   HediffWithComps (a plain Hediff never builds comps, so it can never match upstream).
-    /// - Reads are lock free. A race can only cause a duplicate scan, never a wrong answer.
+    /// - Fully constructed immutable snapshots are published with Volatile.Write/Read. Concurrent
+    ///   readers may duplicate a rebuild; no mutable Dictionary or partially built array is shared.
+    ///   As with upstream, hediff list mutation belongs to the main simulation phase, not pre-draw.
     /// </summary>
     internal static class HediffFlagCache
     {
@@ -64,6 +68,10 @@ namespace WhiteGiver.DMSSRStatPathPerfFix
         {
             return Get(pawn).MechCustomization;
         }
+
+        internal static Hediff? GetSchizophreniaLinked(Pawn? pawn) => Get(pawn).SchizophreniaLinked;
+
+        internal static IDynamicCapacityProvider[] GetCapacityProviders(Pawn? pawn) => Get(pawn).CapacityProviders;
 
         internal static void Invalidate()
         {
@@ -105,14 +113,14 @@ namespace WhiteGiver.DMSSRStatPathPerfFix
             }
 
             SnapshotHolder holder = Table.GetValue(pawn, static _ => new SnapshotHolder());
-            Snapshot? snapshot = holder.Value;
+            Snapshot? snapshot = Volatile.Read(ref holder.Value);
             if (snapshot == null
                 || snapshot.Generation != currentGeneration
                 || snapshot.Count != set.hediffs.Count
                 || !ReferenceEquals(snapshot.Set, set))
             {
                 snapshot = Scan(set, currentGeneration);
-                holder.Value = snapshot;
+                Volatile.Write(ref holder.Value, snapshot);
             }
 
             memoPawnId = pawn.thingIDNumber;
@@ -129,6 +137,8 @@ namespace WhiteGiver.DMSSRStatPathPerfFix
             bool ignoreTerrainPenalty = false;
             bool mechCustomizationResolved = false;
             HediffComp_MechCustomization? mechCustomization = null;
+            Hediff? schizophreniaLinked = null;
+            List<IDynamicCapacityProvider>? providers = null;
 
             for (int i = 0; i < hediffs.Count; i++)
             {
@@ -158,13 +168,26 @@ namespace WhiteGiver.DMSSRStatPathPerfFix
                     mechCustomization = hediff.TryGetComp<HediffComp_MechCustomization>();
                 }
 
-                if (ignoreTerrainPenalty && mechCustomizationResolved)
+                if (schizophreniaLinked == null && ReferenceEquals(def, DMS_HediffDefOf.DMS_Schizophrenia_Linked))
                 {
-                    break;
+                    schizophreniaLinked = hediff;
+                }
+
+                // Preserve upstream's per-def provider eligibility, but pay its lock only when a
+                // snapshot is rebuilt. Keep provider REFERENCES: their adjustment values are live.
+                if (hediff is HediffWithComps withComps && withComps.comps != null
+                    && CapacityPatches.DefHasProvider(withComps))
+                {
+                    foreach (HediffComp comp in withComps.comps)
+                    {
+                        if (comp is IDynamicCapacityProvider provider)
+                            (providers ??= new List<IDynamicCapacityProvider>()).Add(provider);
+                    }
                 }
             }
 
-            return new Snapshot(set, hediffs.Count, currentGeneration, ignoreTerrainPenalty, mechCustomization);
+            return new Snapshot(set, hediffs.Count, currentGeneration, ignoreTerrainPenalty,
+                mechCustomization, schizophreniaLinked, providers?.ToArray() ?? Array.Empty<IDynamicCapacityProvider>());
         }
 
         private static bool IgnoresTerrainPenalty(HediffDef def)
@@ -209,26 +232,33 @@ namespace WhiteGiver.DMSSRStatPathPerfFix
 
         private sealed class Snapshot
         {
-            internal static readonly Snapshot Empty = new(null, 0, int.MinValue, false, null);
+            internal static readonly Snapshot Empty = new(null, 0, int.MinValue, false, null, null,
+                Array.Empty<IDynamicCapacityProvider>());
 
             internal readonly HediffSet? Set;
             internal readonly int Count;
             internal readonly int Generation;
             internal readonly bool IgnoreTerrainPenalty;
             internal readonly HediffComp_MechCustomization? MechCustomization;
+            internal readonly Hediff? SchizophreniaLinked;
+            internal readonly IDynamicCapacityProvider[] CapacityProviders;
 
             internal Snapshot(
                 HediffSet? set,
                 int count,
                 int snapshotGeneration,
                 bool ignoreTerrainPenalty,
-                HediffComp_MechCustomization? mechCustomization)
+                HediffComp_MechCustomization? mechCustomization,
+                Hediff? schizophreniaLinked,
+                IDynamicCapacityProvider[] capacityProviders)
             {
                 Set = set;
                 Count = count;
                 Generation = snapshotGeneration;
                 IgnoreTerrainPenalty = ignoreTerrainPenalty;
                 MechCustomization = mechCustomization;
+                SchizophreniaLinked = schizophreniaLinked;
+                CapacityProviders = capacityProviders;
             }
         }
     }
