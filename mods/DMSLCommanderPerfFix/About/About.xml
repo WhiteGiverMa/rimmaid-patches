@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMS 军团指挥官与侦察性能修复 / DMS Legion Commander Perf Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmsl.commanderperffix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>AOBA.Framework</packageId>
+      <displayName>Fortified Features Framework</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3498575851</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Srxf.DeadManSwitch.Legion</packageId>
+      <displayName>The Dead Man's Switch - Legion</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3666117000</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>AOBA.Framework</li>
+    <li>Srxf.DeadManSwitch.Legion</li>
+  </loadAfter>
+  <description>消除 DMS Legion 指挥官自主性与 AXF12 侦察观察的热点：用 ThingDef 标记集和弱引用 comp 缓存取代每次遍历 comps，以零闭包循环查找 Overseer，并按 Game 缓存侦察管理器。保留自律/非自律机兵与观察地图的原始行为，支持 Waylith 并行预绘制读取，不写存档。
+
+Removes DMS Legion's commander-autonomy and AXF12 observation hot paths: a ThingDef marker set and weak comp cache replace repeated comps walks, allocation-free loops find overseers, and the recon manager is cached per Game. Autonomous/non-autonomous mechs and observed-map removal behaviour are preserved, Waylith parallel pre-draw reads are safe, and nothing is scribed.</description>
+</ModMetaData>
