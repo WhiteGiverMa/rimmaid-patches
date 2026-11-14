@@ -3,7 +3,7 @@
   <name>武器基站：射击模式与装备属性</name>
   <author>WhiteGiverMa</author>
   <packageId>whitegiver.weaponstation.firemodes</packageId>
-  <modVersion>1.0.0</modVersion>
+  <modVersion>1.1.0</modVersion>
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li>
@@ -28,5 +28,5 @@
     <li>Aliza.VanillaFireModes</li>
   </loadAfter>
   <incompatibleWith><li>CETeam.CombatExtended</li></incompatibleWith>
-  <description>为无人武器基站接通 Vanilla Fire Modes 的四种射击模式、按距离自动选择及每武器设置，并应用安装武器的装备时属性偏移量。有人武器支架继续沿用上游的操作员逻辑，不增加基站模式或改写其射击属性。仅适用于 RimWorld 1.7 原版战斗管线，不支持 Combat Extended。已有基站读档后直接生效，无需重建。</description>
+  <description>为无人武器基站接通 Vanilla Fire Modes 的四种射击模式、按距离自动选择及每武器设置，并应用安装武器的装备时属性偏移量。有人武器支架继续沿用上游的操作员逻辑，不增加基站模式或改写其射击属性。仅适用于 RimWorld 1.7 原版战斗管线，不支持 Combat Extended。已有基站读档后直接生效，无需重建。1.1.0 起，对全游戏 Verb 的逐帧补丁改为先按施法者类型与交接锁计数短路，小人与动物、机械体的每次射击不再支付查表开销，存档字段与行为不变。</description>
 </ModMetaData>

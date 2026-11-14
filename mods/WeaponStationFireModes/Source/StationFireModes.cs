@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -52,14 +54,16 @@ public sealed class CompStationFireModes : ThingComp
     private VFM_FireMode mode;
     private bool automatic;
     private ThingDef emptyGunDef = null!;
+    private bool targetStation;
+    private bool mannable;
 
     public VFM_FireMode Mode { get => mode; set => mode = value; }
     public bool AutoSelection { get => automatic; set => automatic = value; }
     internal Building_WeaponStation Station => (Building_WeaponStation)parent;
     internal Thing Gun => Station.InstalledGun;
-    internal bool Eligible => StationFireModesMod.RuntimeEnabled
-        && parent.def.defName == "VortexWS_WeaponStation"
-        && parent.GetComp<CompMannable>() == null
+    // Both probes are def/comp facts that never change after spawn, so they are resolved once instead of
+    // walking ThingWithComps.comps and comparing the defName on every stat, inspect and burst query.
+    internal bool Eligible => StationFireModesMod.RuntimeEnabled && targetStation && !mannable
         && Gun is { Destroyed: false } gun && gun.def != emptyGunDef;
     internal bool ModeEffectsEnabled => parent.Faction == Faction.OfPlayer || FireModeDB.Settings.enableFireModeForNPC;
 
@@ -76,6 +80,14 @@ public sealed class CompStationFireModes : ThingComp
         // StatsReport temporarily replaces turretGunDef with the mounted gun's Def.
         emptyGunDef = parent.def.building.turretGunDef;
         automatic = FireModeDB.Settings.autoModeDefaultOn;
+        targetStation = parent.def.defName == "VortexWS_WeaponStation";
+        mannable = parent.GetComp<CompMannable>() != null;
+    }
+
+    public override void PostSpawnSetup(bool respawningAfterLoad)
+    {
+        base.PostSpawnSetup(respawningAfterLoad);
+        mannable = parent.GetComp<CompMannable>() != null;
     }
 
     public override void PostExposeData()
@@ -196,15 +208,66 @@ public sealed class StationAccuracyPart : StatPart
 
 internal static class StationPatches
 {
+    // Dubs Performance Analyzer showed 0.291 ms/frame from this adapter on a 28-station map: Verb.VerbTick runs for
+    // every verb of every pawn, animal, mech and turret (thousands per tick), and 1.0.0 hashed the burst table on each
+    // one. A burst lock can only exist for a station's own verb, so one counter plus the caster type check lets every
+    // unrelated verb leave after two field reads, and lets idle stations leave without touching the table at all.
+    private static int activeBurstLocks;
+
     private sealed class BurstState
     {
+        internal CompStationFireModes? Comp;
         internal Thing? Gun;
         internal int Count;
-        internal bool Valid;
+        private int valid;
+
+        internal bool Valid => Volatile.Read(ref valid) != 0;
+
+        internal void SetValid(bool value)
+        {
+            int next = value ? 1 : 0;
+            if (Interlocked.Exchange(ref valid, next) == next) return;
+            if (value) Interlocked.Increment(ref activeBurstLocks);
+            else Interlocked.Decrement(ref activeBurstLocks);
+        }
+
+        // A verb can disappear mid-burst (despawn, map removal) without ever returning to Idle. Releasing the lock
+        // here keeps activeBurstLocks exact instead of pinning it above zero for the rest of the session.
+        ~BurstState()
+        {
+            if (Volatile.Read(ref valid) != 0) Interlocked.Decrement(ref activeBurstLocks);
+        }
     }
 
-    private static readonly ConditionalWeakTable<Verb, BurstState> Bursts = new();
+    private sealed class BurstTable
+    {
+        private readonly ConditionalWeakTable<Verb, BurstState> table = new();
+        private long lookups;
+        private long locks;
+
+        // Read by the offline validation driver to prove that non-station verbs never reach the table.
+        internal long Lookups => Interlocked.Read(ref lookups);
+        internal long Locks => Interlocked.Read(ref locks);
+
+        internal bool TryGetValue(Verb verb, [NotNullWhen(true)] out BurstState? state)
+        {
+            Interlocked.Increment(ref lookups);
+            return table.TryGetValue(verb, out state);
+        }
+
+        internal BurstState GetOrCreateValue(Verb verb)
+        {
+            Interlocked.Increment(ref locks);
+            return table.GetValue(verb, static _ => new BurstState());
+        }
+    }
+
+    private static readonly BurstTable Bursts = new();
     private static readonly FieldInfo WarmupField = AccessTools.Field(typeof(BuildingProperties), "turretBurstWarmupTime");
+
+    internal static int ActiveBurstLocks => Volatile.Read(ref activeBurstLocks);
+    internal static long BurstTableLookups => Bursts.Lookups;
+    internal static long BurstTableLocks => Bursts.Locks;
 
     internal static void Apply(Harmony harmony)
     {
@@ -262,34 +325,56 @@ internal static class StationPatches
             __result = (__result + "\n" + comp.CompInspectStringExtra()).Trim();
     }
 
-    private static CompStationFireModes? ForVerb(Verb verb)
+    private static CompStationFireModes? ForVerb(Building_WeaponStation station, Verb verb)
     {
-        CompStationFireModes? comp = CompStationFireModes.For(verb.Caster);
-        return comp != null && comp.ModeEffectsEnabled && !verb.verbProps.IsMeleeAttack
-            && verb is not Verb_ShootOneUse && ReferenceEquals(verb.EquipmentSource, comp.Gun)
-            && comp.Gun.def.IsRangedWeapon ? comp : null;
+        if (CompStationFireModes.For(station) is not { } comp || !comp.ModeEffectsEnabled) return null;
+        if (verb.verbProps.IsMeleeAttack || verb is Verb_ShootOneUse) return null;
+        if (!ReferenceEquals(verb.EquipmentSource, comp.Gun) || !comp.Gun.def.IsRangedWeapon) return null;
+        return comp;
     }
 
     private static void LockBurst(Verb __instance)
     {
-        if (Bursts.TryGetValue(__instance, out BurstState? old)) old.Valid = false;
-        if (ForVerb(__instance) is not { } comp) return;
+        if (__instance.caster is not Building_WeaponStation station) return;
+        if (Volatile.Read(ref activeBurstLocks) != 0 && Bursts.TryGetValue(__instance, out BurstState? previous))
+            previous.SetValid(false);
+        if (ForVerb(station, __instance) is not { } comp) return;
         int count = FireModeDB.GetBurstCount(comp.Mode, __instance.BurstShotCount, comp.Gun.def.defName);
         BurstState state = Bursts.GetOrCreateValue(__instance);
+        state.Comp = comp;
         state.Gun = comp.Gun;
         state.Count = Math.Max(1, count);
-        state.Valid = true;
+        state.SetValid(true);
     }
 
     private static void BurstCount(Verb __instance, ref int __result)
     {
-        if (Bursts.TryGetValue(__instance, out BurstState? state) && state.Valid
-            && ForVerb(__instance) is { } comp && ReferenceEquals(state.Gun, comp.Gun)) __result = state.Count;
+        if (__instance.caster is not Building_WeaponStation) return;
+        if (Volatile.Read(ref activeBurstLocks) == 0) return;
+        if (!Bursts.TryGetValue(__instance, out BurstState? state) || !state.Valid) return;
+        // The owner was resolved when the burst was locked, so no comp scan or defName compare happens here.
+        if (state.Comp is not { } comp || !comp.ModeEffectsEnabled) return;
+        if (!ReferenceEquals(state.Gun, comp.Gun) || !ReferenceEquals(__instance.EquipmentSource, comp.Gun)) return;
+        __result = state.Count;
     }
 
     private static void CleanupBurst(Verb __instance)
     {
+        if (__instance.caster is not Building_WeaponStation) return;
+        if (Volatile.Read(ref activeBurstLocks) == 0) return;
         if (__instance.state != VerbState.Bursting && Bursts.TryGetValue(__instance, out BurstState? state))
-            state.Valid = false;
+            state.SetValid(false);
     }
 }
+
+/// <summary>
+/// Read-only counters for performance verification. They exist so a profiler report can be traced back to the
+/// burst-lock fast path: on a healthy colony <see cref="BurstTableLookups"/> only moves while a station is firing.
+/// </summary>
+public static class StationFireModesDiagnostics
+{
+    public static int ActiveBurstLocks => StationPatches.ActiveBurstLocks;
+    public static long BurstTableLookups => StationPatches.BurstTableLookups;
+    public static long BurstTableLocks => StationPatches.BurstTableLocks;
+}
+

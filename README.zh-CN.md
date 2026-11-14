@@ -60,7 +60,7 @@
 | `ReplaceStuffBridgeReplacement` | [桥梁原位替换](mods/ReplaceStuffBridgeReplacement/README.md)，木桥上直接放原版或钢筋混凝土重型桥梁蓝图，完工后按原版比例返还旧桥材料 | 2026-10-25 新增，游戏内 QA 待做 |
 | `MilianWeaponInteractions` | [米莉安地面装备交互](mods/MilianWeaponInteractions/README.md)，武器格左键地图选取、右键原列表，单选机体右键地面武器／兼容衣物自行装备 | 1.1.0，2026-11-11，100 项真实 DLL 检查通过，用户确认衣物游戏内验证通过 |
 | `DefaultsWorkPrioritiesLifeStageFix` | [Defaults 自定义儿童阶段兼容](mods/DefaultsWorkPrioritiesLifeStageFix/README.md)，修复工作优先级与生日策略对原版 HumanlikeChild 的硬编码 | 2026-10-26 新增，本地 sidecar 补丁，游戏内 QA 待做 |
-| `WeaponStationFireModes` | [武器基站射击模式与装备属性](mods/WeaponStationFireModes/README.md)，仅无人基站接通 VFM 四种模式、自动选择、每武器配置及装备属性偏移，保留有人支架的操作员逻辑 | 2026-10-27 新增，本地 sidecar 补丁，用户确认游戏内验证正常 |
+| `WeaponStationFireModes` | [武器基站射击模式与装备属性](mods/WeaponStationFireModes/README.md)，仅无人基站接通 VFM 四种模式、自动选择、每武器配置及装备属性偏移，保留有人支架的操作员逻辑；1.1.0 按施法者类型与活动连发计数短路全局逐帧补丁并缓存基站组件 | 2026-10-27 新增，2026-11-14 更新至 1.1.0，本地 sidecar 补丁；1.0.0 用户确认游戏内验证正常，1.1.0 游戏内 QA 待做 |
 | `MiliraDailyExpendRecipeFix` | [米莉拉日常扩展配方营养值修正](mods/MiliraDailyExpendRecipeFix/README.md)，20 个烹饪配方改用营养值、酱油/果酱按原料成本定价、修批量比例与三个暴利配方，纯 XML | 2026-10-27 新增，本地 sidecar 补丁，用户确认游戏内验证正常 |
 | `DMSMechStorage` | [失能机关机兵封存](mods/DMSMechStorage/README.md)，机械师右键全系列 DMS 机兵（含 Cinders 墓碑）封存为 FFF 休眠建筑，复用原生封存/释放，征召待命可用，脚边画武器，保留自主/指挥语义与搬运姓名 | 2026-10-28 新增，v1.1.4，用户确认游戏内验证正常 |
 | `StartCarryReentrancyFix` | [搬运取料重入修复](mods/StartCarryReentrancyFix/README.md)，取料失败结束或任务替换后立即停止旧回调，避免池对象复用污染新任务，保留完整/部分搬运 | 2026-10-30 新增，真实回调红绿验证通过，游戏内浅测待确认 |

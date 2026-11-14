@@ -1,8 +1,10 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using System.Xml;
 using System.Globalization;
+using System.Diagnostics;
+using Cecil = Mono.Cecil;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -54,6 +56,7 @@ internal static class Driver
         }
         ValidatePatchXml(defs, modRoot);
         ValidateBehavior(game, workshop, modRoot, patch, qa, defs);
+        ValidateIlGuards(patch);
         Console.WriteLine("NOT TESTED: actual game rendering, OS mouse input, projectile flight/impact, full-map AI or loading the user's save.");
     }
 
@@ -153,6 +156,7 @@ internal static class Driver
     {
         var document = new XmlDocument();
         document.Load(Path.Combine(workshop, "3807251471/Defs/bundle.xml"));
+        OmitUnavailableExtensions(document);
         return document;
     }
 
@@ -202,6 +206,7 @@ internal static class Driver
     {
         var xml = new XmlDocument();
         xml.Load(Path.Combine(workshop, "3285968063/1.7/Vanilla/Defs/Weapons/RangedIndustrial_LMG.xml"));
+        OmitUnavailableExtensions(xml);
         var def = (ThingDef)DirectXmlToObjectNew.DefFromNodeNew(xml.SelectSingleNode("Defs/ThingDef[defName='HIDGun_REAPR']")!, null);
         XmlNode original = xml.SelectSingleNode("Defs/ThingDef[defName='HIDGun_REAPR']")!;
         def.statBases = ReadModifiers(original["statBases"]!);
@@ -217,6 +222,22 @@ internal static class Driver
         Set(typeof(VerbTracker), "verbs", eq.verbTracker, new List<Verb> { verb });
         Set(typeof(ThingWithComps), "comps", weapon, new List<ThingComp> { eq });
         return weapon;
+    }
+
+    // Third-party mod extensions (e.g. GTekFunctions.GunDrawExtension) live in assemblies the sandbox never loads;
+    // they only affect drawing, so drop exactly those nodes instead of failing the whole def.
+    private static readonly HashSet<string> ReportedMissingTypes = new();
+
+    private static void OmitUnavailableExtensions(XmlDocument document)
+    {
+        foreach (XmlNode node in document.SelectNodes("//*[@Class]")!.Cast<XmlNode>().ToArray())
+        {
+            string type = node.Attributes!["Class"]!.Value;
+            if (GenTypes.GetTypeInAnyAssembly(type) != null) continue;
+            if (ReportedMissingTypes.Add(type))
+                Console.WriteLine($"QA: omitted {type}, which is not loaded in the sandbox.");
+            node.ParentNode!.RemoveChild(node);
+        }
     }
 
     private static List<StatModifier> ReadModifiers(XmlNode node)
@@ -299,6 +320,7 @@ internal static class Driver
         ValidateManned(defs, game, workshop, patch);
         ValidateBurstAndAuto(station, comp, gun, profile);
         ValidateNpc(station, comp, gun, profile);
+        ValidateHotPath(station, comp, gun);
     }
 
     private static void ValidateReportAndInspect(Building_WeaponStation station, CompStationFireModes comp)
@@ -522,6 +544,229 @@ internal static class Driver
         Set(typeof(Thing), "factionInt", station, player);
         Console.WriteLine("PASS: disabling NPC fire modes bypasses all mode effects, including non-neutral Default profiles, while preserving gear offsets.");
     }
+
+    // 1.1.0 hot-path proof. Verb.VerbTick and the BurstShotCount getter run for every verb of every pawn, animal,
+    // mech and turret on the map, while only a station's own verb can ever hold a burst lock. The RED measurement
+    // swaps the 1.0.0 cleanup/getter bodies into the shipped patch stubs, so both numbers share the same Harmony
+    // trampolines, the same vanilla method bodies and the same 96 unrelated verbs.
+    private const int PerfVerbs = 96;
+    private const int PerfCalls = 60000;
+    private const int PerfRounds = 3;
+
+    private sealed class LegacyBurst
+    {
+        internal bool Valid;
+    }
+
+    private static ConditionalWeakTable<Verb, LegacyBurst>? legacyTable;
+    private static int legacyLookups;
+
+    private static void ValidateHotPath(Building_WeaponStation station, CompStationFireModes comp, ThingWithComps gun)
+    {
+        station.AttackVerb.Reset();
+        station.AttackVerb.VerbTick();
+        WaitForBurstLocks(0);
+
+        List<Verb> unrelated = NewUnrelatedVerbs(gun);
+        TimeUnrelatedVerbCalls(unrelated);
+        double legacyNs = TimeWithBodies(unrelated, "legacy", nameof(LegacyCleanup), nameof(LegacyBurstCount), true, out int legacyCalls);
+        int expectedCalls = PerfCalls * 2 * PerfRounds;
+        Check(legacyCalls == expectedCalls, $"The 1.0.0 bodies must hash on every call, saw {legacyCalls} of {expectedCalls}.");
+        Console.WriteLine($"RED: 1.0.0 CleanupBurst/BurstCount bodies under the shipped stubs hash ConditionalWeakTable<Verb, BurstState> on every non-station verb ({legacyCalls} lookups for {PerfCalls * PerfRounds} VerbTick+BurstShotCount rounds x2, {legacyNs:F2} ns/call).");
+
+        long lookups = StationFireModesDiagnostics.BurstTableLookups;
+        long locks = StationFireModesDiagnostics.BurstTableLocks;
+        long allocated = GC.GetAllocatedBytesForCurrentThread();
+        double greenNs = TimeUnrelatedVerbCalls(unrelated);
+        allocated = GC.GetAllocatedBytesForCurrentThread() - allocated;
+        Check(StationFireModesDiagnostics.BurstTableLookups == lookups,
+            $"Non-station verbs reached the burst table {StationFireModesDiagnostics.BurstTableLookups - lookups} times.");
+        Check(StationFireModesDiagnostics.BurstTableLocks == locks,
+            $"Non-station verbs created {StationFireModesDiagnostics.BurstTableLocks - locks} burst states.");
+        Check(allocated == 0, $"VerbTick/BurstShotCount allocated {allocated} B on non-station verbs.");
+        Check(greenNs < legacyNs * 0.9f, $"1.1.0 bodies ({greenNs:F2} ns/call) must beat 1.0.0 ({legacyNs:F2} ns/call) by at least 10%.");
+
+        // Floor of the measurement: the same stubs with both bodies replaced by `return false`.
+        double emptyNs = TimeWithBodies(unrelated, "empty", nameof(EmptyCleanup), nameof(EmptyBurstCount), false, out _);
+        Console.WriteLine($"GREEN: the same 96 colonist, melee and ordinary-turret verbs reach the table 0 times, create 0 states and allocate {allocated} B in {PerfCalls} VerbTick+BurstShotCount calls ({greenNs:F2} ns/call; 1.0.0 was {legacyNs:F2}, so {legacyNs - greenNs:F2} ns/call or {(legacyNs - greenNs) / legacyNs:P0} of the per-call cost is gone, ~{(legacyNs - greenNs) * 10000 / 1000000:F3} ms/frame at the ~10,000 VerbTick calls/frame reported by Dubs Performance Analyzer).");
+        Console.WriteLine($"INFO: replacing both bodies with an empty stub only reaches {emptyNs:F2} ns/call, so the rest of the 1.1.0 figure is Harmony's trampoline plus vanilla VerbTick/BurstShotCount; the two guards and their call frames add about {greenNs - emptyNs:F2} ns/call.");
+
+        lookups = StationFireModesDiagnostics.BurstTableLookups;
+        station.AttackVerb.VerbTick();
+        _ = station.AttackVerb.BurstShotCount;
+        Check(StationFireModesDiagnostics.BurstTableLookups == lookups, "An idle station touched the burst table while no burst lock was active.");
+        Console.WriteLine("PASS: idle station verbs leave after the lock counter read and add no table lookups.");
+
+        comp.Mode = VFM_FireMode.Precision;
+        station.AttackVerb.Reset();
+        Check(StationFireModesDiagnostics.ActiveBurstLocks == 0, "Colony reports a live burst lock while nothing fires.");
+        station.AttackVerb.WarmupComplete();
+        Check(StationFireModesDiagnostics.ActiveBurstLocks == 1, "A station burst did not register exactly one lock.");
+        Check(station.AttackVerb.BurstShotCount == 4, "Precision burst lock no longer overrides the getter.");
+        station.AttackVerb.Reset();
+        station.AttackVerb.VerbTick();
+        Check(StationFireModesDiagnostics.ActiveBurstLocks == 0, "Idle VerbTick did not release the station burst lock.");
+
+        LockAndAbandonBurst(gun, station);
+        Check(StationFireModesDiagnostics.ActiveBurstLocks == 1, "An abandoned burst did not stay counted before collection.");
+        WaitForBurstLocks(0);
+        Console.WriteLine("PASS: a verb that dies mid-burst releases its lock through the BurstState finalizer, so the counter returns to zero instead of pinning the fast path open.");
+    }
+
+    private static double TimeWithBodies(List<Verb> verbs, string label, string cleanup, string count, bool seedTable, out int lookups)
+    {
+        Type patches = typeof(StationFireModesMod).Assembly.GetType("WhiteGiver.WeaponStationFireModes.StationPatches", true)!;
+        var harmony = new Harmony("validation.weaponstation.body." + label);
+        harmony.Patch(AccessTools.DeclaredMethod(patches, "CleanupBurst"),
+            prefix: new HarmonyMethod(typeof(Driver), cleanup));
+        harmony.Patch(AccessTools.DeclaredMethod(patches, "BurstCount"),
+            prefix: new HarmonyMethod(typeof(Driver), count));
+        try
+        {
+            if (seedTable)
+            {
+                legacyTable = new ConditionalWeakTable<Verb, LegacyBurst>();
+                // A live colony always has a populated table: every station verb that ever fired left an entry.
+                for (int i = 0; i < 32; i++) legacyTable.GetOrCreateValue(new Verb_Shoot { verbProps = verbs[0].verbProps });
+            }
+            TimeUnrelatedVerbCalls(verbs);
+            legacyLookups = 0;
+            double ns = TimeUnrelatedVerbCalls(verbs);
+            lookups = legacyLookups;
+            return ns;
+        }
+        finally
+        {
+            harmony.UnpatchAll(harmony.Id);
+            legacyTable = null;
+            TimeUnrelatedVerbCalls(verbs);
+        }
+    }
+
+    private static bool LegacyCleanup(Verb __0)
+    {
+        legacyLookups++;
+        if (__0.state != VerbState.Bursting && legacyTable!.TryGetValue(__0, out LegacyBurst? state))
+            state.Valid = false;
+        return false;
+    }
+
+    private static bool LegacyBurstCount(Verb __0)
+    {
+        legacyLookups++;
+        legacyTable!.TryGetValue(__0, out _);
+        return false;
+    }
+
+    private static bool EmptyCleanup(Verb __0) => false;
+
+    private static bool EmptyBurstCount(Verb __0) => false;
+
+    private static List<Verb> NewUnrelatedVerbs(ThingWithComps gun)
+    {
+        var colonist = (Pawn)RuntimeHelpers.GetUninitializedObject(typeof(Pawn));
+        colonist.def = new ThingDef { defName = "ValidationColonist", category = ThingCategory.Pawn, race = new RaceProperties() };
+        var turret = (Building_TurretGun)RuntimeHelpers.GetUninitializedObject(typeof(Building_TurretGun));
+        turret.def = new ThingDef { defName = "ValidationTurret", category = ThingCategory.Building, building = new BuildingProperties() };
+        var melee = new VerbProperties { verbClass = typeof(Verb_MeleeAttackDamage), burstShotCount = 1, warmupTime = 1f };
+        VerbTracker tracker = gun.GetComp<CompEquippable>().verbTracker;
+        var verbs = new List<Verb>(PerfVerbs);
+        for (int i = 0; i < PerfVerbs; i++)
+        {
+            Thing caster = i % 3 == 0 ? turret : colonist;
+            verbs.Add(i % 4 == 0
+                ? new Verb_MeleeAttackDamage { verbProps = melee, verbTracker = tracker, caster = caster }
+                : new Verb_Shoot { verbProps = gun.def.Verbs[0], verbTracker = tracker, caster = caster });
+        }
+        return verbs;
+    }
+
+    private static double TimeUnrelatedVerbCalls(List<Verb> verbs)
+    {
+        double best = double.MaxValue;
+        for (int round = 0; round < PerfRounds; round++)
+        {
+            long start = Stopwatch.GetTimestamp();
+            for (int i = 0; i < PerfCalls; i++)
+            {
+                Verb verb = verbs[i % verbs.Count];
+                verb.VerbTick();
+                _ = verb.BurstShotCount;
+            }
+            best = Math.Min(best, (Stopwatch.GetTimestamp() - start) * 1000000000.0 / Stopwatch.Frequency / PerfCalls);
+        }
+        return best;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void LockAndAbandonBurst(ThingWithComps gun, Building_WeaponStation station)
+    {
+        var equippable = new CompEquippable { parent = gun, props = new CompProperties(typeof(CompEquippable)) };
+        var verb = new Verb_Shoot { verbProps = gun.def.Verbs[0], verbTracker = equippable.verbTracker, caster = station };
+        verb.WarmupComplete();
+        Check(verb.BurstShotCount == 4, "Abandoned burst did not lock the precision count.");
+        // The verb, its tracker and its CompEquippable are unreachable once this frame returns.
+    }
+
+    private static void WaitForBurstLocks(int expected)
+    {
+        for (int i = 0; i < 8 && StationFireModesDiagnostics.ActiveBurstLocks != expected; i++)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+        Check(StationFireModesDiagnostics.ActiveBurstLocks == expected,
+            $"Active burst locks: expected {expected}, got {StationFireModesDiagnostics.ActiveBurstLocks}.");
+    }
+
+    // Call-path proof on the shipped IL: every burst-table access sits behind the caster type check and the
+    // live-lock counter, and no other method in the assembly can reach the table at all.
+    private static void ValidateIlGuards(Assembly patch)
+    {
+        using Cecil.ModuleDefinition module = Cecil.ModuleDefinition.ReadModule(patch.Location);
+        Cecil.TypeDefinition patches = module.GetType("WhiteGiver.WeaponStationFireModes.StationPatches")
+            ?? throw new InvalidOperationException("StationPatches type missing from " + patch.Location);
+        var reached = new List<string>();
+        foreach (string name in new[] { "CleanupBurst", "BurstCount", "LockBurst" }) AssertGuardedBurstLookup(patches, name);
+        foreach (Cecil.TypeDefinition type in Types(module.Types))
+        foreach (Cecil.MethodDefinition method in type.Methods)
+        {
+            if (!method.HasBody) continue;
+            if (method.Body.Instructions.Any(i => IsBurstLookup(i.Operand))) reached.Add(method.Name);
+        }
+        string[] expected = { "CleanupBurst", "BurstCount", "LockBurst" };
+        Check(reached.Count == expected.Length && expected.All(reached.Contains),
+            "Unexpected burst-table call sites: " + string.Join(", ", reached));
+        Console.WriteLine("PASS: shipped IL reaches ConditionalWeakTable<Verb, BurstState> from three methods only, and each one is guarded by `caster is Building_WeaponStation` followed by the live-lock counter.");
+    }
+
+    private static void AssertGuardedBurstLookup(Cecil.TypeDefinition patches, string name)
+    {
+        Cecil.MethodDefinition method = patches.Methods.Single(m => m.Name == name);
+        List<Cecil.Cil.Instruction> code = method.Body.Instructions.ToList();
+        int lookup = code.FindIndex(i => IsBurstLookup(i.Operand));
+        int caster = code.FindIndex(i => i.OpCode == Cecil.Cil.OpCodes.Isinst
+            && i.Operand is Cecil.TypeReference type && type.FullName == "WeaponStation.Building_WeaponStation");
+        int counter = code.FindIndex(i => i.Operand is Cecil.MethodReference call
+            && call.DeclaringType.FullName == "System.Threading.Volatile" && call.Name == "Read");
+        Check(lookup >= 0, $"{name} no longer uses the guarded burst table; call-path proof is stale.");
+        Check(caster >= 0 && caster < lookup, $"{name} reaches the burst table before the caster type check.");
+        Check(counter >= 0 && counter < lookup, $"{name} reaches the burst table before the lock counter check.");
+        Check(code[counter - 1].Operand is Cecil.FieldReference field && field.Name == "activeBurstLocks",
+            $"{name} guards on something other than activeBurstLocks.");
+    }
+
+    private static IEnumerable<Cecil.TypeDefinition> Types(IEnumerable<Cecil.TypeDefinition> source)
+    {
+        foreach (Cecil.TypeDefinition type in source)
+        {
+            yield return type;
+            foreach (Cecil.TypeDefinition nested in Types(type.NestedTypes)) yield return nested;
+        }
+    }
+
+    private static bool IsBurstLookup(object? operand) => operand is Cecil.MethodReference call
+        && call.DeclaringType.Name == "BurstTable" && call.Name is "TryGetValue" or "GetOrCreateValue";
 
     private static int FirstBurst = -1;
     private static float FirstWarmup;
