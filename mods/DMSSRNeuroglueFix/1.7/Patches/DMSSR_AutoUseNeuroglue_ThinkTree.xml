@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThinkTreeDef/thinkRoot//li[@Class="ThinkNode_ConditionalPlayerControlledMech" and not(invert="true")]/subNodes/li[@Class="ThinkNode_ConditionalNotFormingCaravan"]/subNodes/li[@Class="ThinkNode_ConditionalRecharging"]</xpath>
+    <match Class="PatchOperationInsert">
+      <xpath>Defs/ThinkTreeDef/thinkRoot//li[@Class="ThinkNode_ConditionalPlayerControlledMech" and not(invert="true")]/subNodes/li[@Class="ThinkNode_ConditionalNotFormingCaravan"]/subNodes/li[@Class="ThinkNode_ConditionalRecharging"]</xpath>
+      <order>Append</order>
+      <value>
+        <li Class="WhiteGiver.DMSSRNeuroglueFix.JobGiver_AutoUseNeuroglue" />
+      </value>
+    </match>
+  </Operation>
+</Patch>

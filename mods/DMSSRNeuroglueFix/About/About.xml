@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>死手开关：合成体 受体凝胶药效与自动补给修复 / DMSSR Neuroglue &amp; Auto-Refill Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmssr.neurogluefix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Aoba.DeadManSwitch.Core</packageId>
+      <displayName>The Dead Man's Switch II</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3819799478</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Cephalopod.DeadManSwitch.Synthriada</packageId>
+      <displayName>The Dead Man's Switch - Synthriada</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3835512735</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Aoba.DeadManSwitch.Core</li>
+    <li>Cephalopod.DeadManSwitch.Synthriada</li>
+  </loadAfter>
+  <description>修复《失能机关：复乐园》（The Dead Man's Switch - Synthriada）中合成机兵使用受体凝胶漏掉药效导致全身退行性病变无法消除的缺陷，并为己方机兵补齐零分配的受体凝胶自动使用 AI。
+
+一、修复机兵使用受体凝胶不消除退行性病变的 Bug
+上游 DMS_DegenerativeSyndrome（退行性病变）与 DMS_SyntheticRejection（仿生排异反应）、DMS_BionicShockRemove（幻肢症候群）均依赖原版 HediffComp_RemoveIfOtherHediff 检测 NeuroglueHigh（受体凝胶生效）来治愈，DMS_BionicShock（异肢症候群）依赖 IngestionOutcomeDoer_ChangeHediffLevel 降级。
+但上游为机械体专门编写的 JobDriver_UseNeuroglue 在结算时仅执行了 IngestionOutcomeDoer_RefillBiogel（恢复 25 点神经信号效率），跳过了 Neuroglue 上的其余 IngestionOutcomeDoer，导致机兵使用受体凝胶永远无法获得 NeuroglueHigh，身上的退行性病变只增不减、不断向全身扩散；同时上游 CanRefill 仅在神经信号效率低于 100 时放行，导致效率满值或未安装湿件却因免死改件等原因患上退行性病变的机兵连手动用药都被拒绝。
+本补丁补齐结算时的全部 IngestionOutcomeDoer（不触发人类专属的药物过量与饮食记忆），并允许带病机兵在效率满值或无储槽时正常用药治愈。
+
+二、机兵自动使用受体凝胶 AI 与全图扫描优化
+• 通过行为树补丁为己方受控机械体接入 JobGiver_AutoUseNeuroglue：当神经信号效率降至 75 或以下（每剂恢复 25 点，刚好补满不浪费），或身上存在待受体凝胶清除的退行性病变/排异/幻肢症/异肢症时，非征召、非休眠、非交战中的机兵会自动前往取用 1 支受体凝胶。
+• 采用 HediffSet.DirtyCache 驱动的每 Pawn 无锁快照缓存 + listerThings.ThingsOfDef(Neuroglue) O(1) 空库存短路 + 寻路失败 600 ticks 退避冷却，普通机兵与日常求值 0 字节 GC 分配。
+• 顺手将上游 FloatMenuOptionProvider_UseNeuroglue 右键菜单中遍历全图 listerThings.AllThings + LINQ 排序的热点替换为 ThingsOfDef 距离预筛查询。
+
+纯运行时 Harmony + ThinkTree 补丁，不写自定义存档数据、不改工坊文件，可随时安全添加或移除。</description>
+</ModMetaData>

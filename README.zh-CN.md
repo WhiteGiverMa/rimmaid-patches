@@ -87,6 +87,7 @@
 | `DMSSRStatPathPerfFix` | [复乐园属性与寻路性能修复](mods/DMSSRStatPathPerfFix/README.md)，以 `HediffSet.DirtyCache` 驱动的快照缓存地形惩罚豁免与机兵改造组件、O(1) 短路无关属性查询并去重 `CostToMoveIntoCell` 截断 | 2026-11-13 新增，真实 DLL 21 项 RED / 131 项 GREEN 检查通过，用户确认游戏内验证通过 |
 | `DMSSRLegionCustomizationCompat` | [复乐园兼容军团机兵参数调节](mods/DMSSRLegionCustomizationCompat/README.md)，放行 `DMSL_Mech_*` 机兵使用复乐园五维参数调节窗口与微电子研究完成自动挂载（排除无人机） | 2026-11-13 新增，真实 DLL 107 项 RED / 179 项 GREEN 检查通过，用户确认游戏内验证通过 |
 | `DMSEMissileBaseFix` | [DMSE 导弹阵地穿梭机与重组远行队修复](mods/DMSEMissileBaseFix/README.md)，只放行三类敌方导弹阵地的穿梭机／运输舱进入（保留射程、燃料、BVR 风险确认、实际防空与重入冷却），恢复清场后的远行队重组，并让安全的导弹架库存走真实地面战利品、远行队与装载流程 | 2026-11-14 新增，真实 DLL 57 项 RED / 87 项 GREEN 检查通过，游戏内 QA 待做 |
+| `DMSSRNeuroglueFix` | [复乐园受体凝胶药效与自动补给修复](mods/DMSSRNeuroglueFix/README.md)，补齐机兵用药被跳过的结算效果（授予 `NeuroglueHigh`，清除退行性病变／排异／幻肢症），允许满效率或无储槽机兵用药，并新增零分配自动用药 AI | 2026-11-14 新增，真实 DLL 7 项 RED / 96 项 GREEN 检查通过，游戏内 QA 待做 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)、[MTOEWYHealthInheritanceFix](archive/MTOEWYHealthInheritanceFix/README.md)、[Fix_WRMegaCorp_QuestPartCSC](archive/Fix_WRMegaCorp_QuestPartCSC/README.md)、[DMSSRSolitonChargeDecay](archive/DMSSRSolitonChargeDecay/README.md)，后者于 2026-11-13 在上游修复及作者确认重型停火清零设计后退役）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 
