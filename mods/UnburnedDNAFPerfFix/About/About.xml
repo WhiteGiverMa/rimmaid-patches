@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Unburned + Do Not Avoid Fire 性能修复 / Performance Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.unburned.dnaf.perffix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>andromeda.unburned</packageId>
+      <displayName>Unburned</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3538336699</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>AntiHydrogen.DoNotAvoidFire</li>
+    <li>andromeda.unburned</li>
+  </loadAfter>
+  <description>优化无火与局部火灾中的待命扫描，修复密封装备缓存；加载 Do Not Avoid Fire 时，同时修复 1.7 寻路缓存、危险成本与原生内存生命周期。
+
+Optimizes idle scans on peaceful and burning maps, replaces the sealed-apparel cache, and repairs Do Not Avoid Fire's optional 1.7 path-grid integration, danger costs and native buffer lifetime.</description>
+</ModMetaData>

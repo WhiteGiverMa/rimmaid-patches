@@ -90,6 +90,7 @@
 | `DMSSRNeuroglueFix` | [复乐园受体凝胶药效与自动补给修复](mods/DMSSRNeuroglueFix/README.md)，补齐机兵用药被跳过的结算效果（授予 `NeuroglueHigh`，清除退行性病变／排异／幻肢症），允许满效率或无储槽机兵用药，并新增零分配自动用药 AI | 2026-11-14 新增，真实 DLL 7 项 RED / 96 项 GREEN 检查通过，游戏内 QA 待做 |
 | `VanillaFireModesPerfFix` | [Vanilla Fire Modes 性能修复](mods/VanillaFireModesPerfFix/README.md)，接管 VFM 预热与弹数补丁并删除每 tick 的 `ConditionalWeakTable` 清扫，改为从 `Verb.state` 与预热深度推导缓存有效性，安装失败回滚到 VFM 原补丁 | 2026-11-14 新增，48 项 RED/GREEN 检查与 285 组连发弹数对比通过，空闲时 0 次查表，游戏内 QA 待做 |
 | `DMSLCommanderPerfFix` | [军团指挥官与侦察性能修复](mods/DMSLCommanderPerfFix/README.md)，用 `ThingDef` 标记集与读线程安全的弱引用 comp 缓存取代指挥官自主性扫描，消除 Overseer 查找的嵌套闭包分配，并按 `Game` 缓存 AXF12 侦察管理器 | 2026-11-14 新增，真实 DLL 13 项 RED / 41 项 GREEN 检查与 16 线程 Waylith 预绘制压力测试通过，游戏内 QA 待做 |
+| `UnburnedDNAFPerfFix` | [Unburned 与 Do Not Avoid Fire 性能修复](mods/UnburnedDNAFPerfFix/README.md)，无火地图跳过 Unburned 的待命扫描、替换其强引用密封装备缓存，并修复 Do Not Avoid Fire 在 1.7 的寻路代价归属、危险成本、byref 转发与原生缓冲生命周期 | 2026-11-14 新增，31 项 RED / 60 项 GREEN、无 DNAF 29 项 GREEN、sidecar 先启动 60 项 GREEN 检查通过，游戏内 QA 待做 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)、[MTOEWYHealthInheritanceFix](archive/MTOEWYHealthInheritanceFix/README.md)、[Fix_WRMegaCorp_QuestPartCSC](archive/Fix_WRMegaCorp_QuestPartCSC/README.md)、[DMSSRSolitonChargeDecay](archive/DMSSRSolitonChargeDecay/README.md)，后者于 2026-11-13 在上游修复及作者确认重型停火清零设计后退役）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 
