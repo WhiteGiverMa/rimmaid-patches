@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>Validation</AssemblyName>
+    <RootNamespace>VanillaFireModesPerfFix.Validation</RootNamespace>
+    <GameRoot Condition="'$(GameRoot)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <WorkshopRoot Condition="'$(WorkshopRoot)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100</WorkshopRoot>
+    <HarmonyPath Condition="'$(HarmonyPath)' == ''">$(WorkshopRoot)\2009463077\1.7\Assemblies\0Harmony.dll</HarmonyPath>
+    <FireModesPath Condition="'$(FireModesPath)' == ''">$(WorkshopRoot)\3662471742\1.7\Assemblies\VFM_VanillaFireModes.dll</FireModesPath>
+    <BoundAssemblySource Condition="'$(BoundAssemblySource)' == ''">G:\dev\rimmaid-patches\mods\DMSEWorldPerfFix\Validation\bin\Release\net10.0\bound</BoundAssemblySource>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Source\VanillaFireModesPerfFix.csproj" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameRoot)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityStubs">
+      <HintPath>$(GameRoot)\UnityStubs.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(HarmonyPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VFM_VanillaFireModes">
+      <HintPath>$(FireModesPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
+  </ItemGroup>
+  <Target Name="StageBoundAssemblies" AfterTargets="Build">
+    <ItemGroup>
+      <BoundSource Include="$(BoundAssemblySource)\Assembly-CSharp.dll" Condition="Exists('$(BoundAssemblySource)\Assembly-CSharp.dll')" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BoundSource)" DestinationFolder="$(OutDir)bound" Condition="'@(BoundSource)' != ''" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

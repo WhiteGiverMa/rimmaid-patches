@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Vanilla Fire Modes 性能修复 / VFM Perf Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.vfm.perffix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+      <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+    </li>
+    <li>
+      <packageId>aliza.vanillafiremodes</packageId>
+      <displayName>Vanilla Fire Modes</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/3662471742</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>aliza.vanillafiremodes</li>
+  </loadAfter>
+  <description>Vanilla Fire Modes 的每一把远程武器、每一只动物、每一个空闲小人，每 tick 都会走它挂在 Verb.VerbTick 上的清理补丁；该补丁为了找到「刚刚结束连发」的少数 Verb，对殖民地全部 1,200+ 个 Verb 无条件查一次 ConditionalWeakTable。Dubs Performance Analyzer 把它记为 0.327 ms/frame。
+
+本补丁接管 VFM 的三个热路径补丁（WarmupComplete 前缀、BurstShotCount 后置、VerbTick 后置），用「从 Verb.state 直接推导缓存是否有效」取代「每 tick 查表清理」：
+1. VerbTick 钩子被整体删除——不再有任何每 tick 的查表，空闲殖民地每帧 0 次探测、0 次分配。
+2. BurstShotCount 后置补丁先用两次字段读取（state / 预热深度）快速拒绝，只有真正处于连发中或正在完成预热的 Verb 才会访问缓存表。
+3. 预热前缀同样先做 O(1) 的资格判断，再计算并锁存本连发的弹数。
+
+连发期间返回的弹数与 VFM 逐位相同（含 mid-burst 切换射击模式仍然冻结、自定义武器配置、NPC 开关、单发/近战/炮塔/OneUse 排除）。唯一有意的差异：VFM 的冻结值会一直保留到该 Verb 的下一次 VerbTick（最多 1 tick 的过期窗口），本补丁在 Verb 离开 Bursting 的瞬间就回到原版值。
+
+补丁在 Mod 构造函数与 [StaticConstructorOnStartup] 两个阶段幂等安装；若 VFM 的补丁签名变化或缺失，则什么都不改并记录日志；安装失败会回滚并恢复 VFM 原始补丁。不写入任何存档字段，可随时增删。详见 README.md。
+
+Every ranged weapon, every animal and every idle colonist in a colony ticks Vanilla Fire Modes' cleanup patch on Verb.VerbTick. To find the handful of verbs that just finished a burst it probes a ConditionalWeakTable for all 1,200+ verbs, every tick. Dubs Performance Analyzer reports it as 0.327 ms/frame.
+
+This mod takes over VFM's three hot patches (WarmupComplete prefix, BurstShotCount postfix, VerbTick postfix) and replaces "probe the table every tick to clean up" with "derive validity from Verb.state":
+1. The VerbTick hook is deleted entirely - no per-tick lookup, zero probes and zero allocations per frame in an idle colony.
+2. The BurstShotCount postfix rejects with two field reads (state / warm-up depth); only a verb that is actually bursting or finishing its warm-up ever touches the table.
+3. The warm-up prefix performs the same O(1) eligibility check before it computes and locks the burst length.
+
+During a burst the returned shot count is bit-identical to VFM (mid-burst fire-mode changes stay frozen, custom weapon profiles, the NPC toggle, and the single-shot/melee/turret/OneUse exclusions all behave the same). The only intentional difference: VFM kept the frozen value alive until that verb's next VerbTick (a stale window of up to one tick), while this mod returns the vanilla value the moment the verb leaves VerbState.Bursting.
+
+The patches install idempotently from both the Mod constructor and [StaticConstructorOnStartup]; if VFM's patch signatures change or the patches are missing, nothing is touched and a warning is logged; a failed install rolls back to VFM's own patches. Nothing is scribed and the mod can be added or removed at any time. See README.md for the bilingual root-cause analysis, the validation harness and the expiration conditions.</description>
+</ModMetaData>
