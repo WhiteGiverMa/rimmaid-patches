@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>1.0.0</Version>
+    <Authors>WhiteGiverMa</Authors>
+    <AssemblyName>DMSSRScourgeDeathFix</AssemblyName>
+    <RootNamespace>WhiteGiver.DMSSRScourgeDeathFix</RootNamespace>
+    <GameRoot Condition="'$(GameRoot)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <WorkshopRoot Condition="'$(WorkshopRoot)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100</WorkshopRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp" HintPath="$(GameRoot)\Assembly-CSharp.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(WorkshopRoot)\2009463077\1.7\Assemblies\0Harmony.dll" Private="false" />
+    <Reference Include="Fortified" HintPath="$(WorkshopRoot)\3498575851\1.7\Assemblies\Fortified.dll" Private="false" />
+    <Reference Include="DMSSR" HintPath="$(WorkshopRoot)\3835512735\1.7\Assemblies\DMSSR.dll" Private="false" />
+  </ItemGroup>
+  <Target Name="CopyToModAssemblies" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)\..\1.7\Assemblies" />
+  </Target>
+</Project>

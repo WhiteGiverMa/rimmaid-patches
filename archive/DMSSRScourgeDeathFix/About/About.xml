@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMS Synthriada - Scourge Death Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmssr.scourgedeathfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
+    <li><packageId>Cephalopod.DeadManSwitch.Synthriada</packageId><displayName>The Dead Man's Switch - Synthriada</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/3835512735</steamWorkshopUrl></li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>AOBA.DeadManSwitch.Core</li>
+    <li>Cephalopod.DeadManSwitch.Synthriada</li>
+  </loadAfter>
+  <description>修复天灾复活后再次死亡时的重复死亡与空尸体报错，同时保护人形机械体无伤害信息死亡时的植入物移除。保留原有复活、次数消耗、掉落与移除回调；不添加存档数据。
+
+Fixes reentrant death and empty-corpse errors when a resurrected Scourge dies again. Also protects implant removal in HumanlikeMech.Kill(null). Preserves resurrection, charge use, drops and removal callbacks. No saved data.</description>
+</ModMetaData>
