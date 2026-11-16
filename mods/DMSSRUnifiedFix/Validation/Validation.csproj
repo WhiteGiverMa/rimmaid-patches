@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>Validation</AssemblyName>
+    <GameRoot Condition="'$(GameRoot)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <WorkshopRoot Condition="'$(WorkshopRoot)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100</WorkshopRoot>
+    <HarmonyPath Condition="'$(HarmonyPath)' == ''">$(WorkshopRoot)\2009463077\1.7\Assemblies\0Harmony.dll</HarmonyPath>
+    <DmsPath Condition="'$(DmsPath)' == ''">$(WorkshopRoot)\3819799478\1.7\Assemblies\DMS.dll</DmsPath>
+    <DmssrPath Condition="'$(DmssrPath)' == ''">$(WorkshopRoot)\3835512735\1.7\Assemblies\DMSSR.dll</DmssrPath>
+    <FortifiedPath Condition="'$(FortifiedPath)' == ''">$(WorkshopRoot)\3498575851\1.7\Assemblies\Fortified.dll</FortifiedPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Source\DMSSRUnifiedFix.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameRoot)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityStubs">
+      <HintPath>$(GameRoot)\UnityStubs.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(HarmonyPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DMS">
+      <HintPath>$(DmsPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DMSSR">
+      <HintPath>$(DmssrPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Fortified">
+      <HintPath>$(FortifiedPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DMS_Legion" HintPath="$(WorkshopRoot)\3666117000\1.7\Assemblies\DMS_Legion.dll" Private="false" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
+  </ItemGroup>
+</Project>

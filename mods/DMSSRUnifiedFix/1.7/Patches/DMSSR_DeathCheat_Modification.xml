@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- Add the Fortified modification comp once; the runtime installer also has a fallback. -->
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <li Class="PatchOperationTest">
+        <xpath>Defs/HediffDef[defName="DMS_DeathCheat" and not(comps/li[@Class="Fortified.HediffCompProperties_Modification"])]</xpath>
+      </li>
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/HediffDef[defName="DMS_DeathCheat"]/comps</xpath>
+        <value>
+          <li Class="Fortified.HediffCompProperties_Modification">
+            <applyJob>FFF_ModificationRemove</applyJob>
+          </li>
+        </value>
+      </li>
+    </operations>
+  </Operation>
+</Patch>

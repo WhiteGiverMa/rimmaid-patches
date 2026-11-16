@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- Both hediffs are part-targeted modifications. Reactor was a copy-paste default that
+       overwrote the Brain/Spine part chosen by the install job. Skip silently if another patch
+       already removed the field. -->
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <li Class="PatchOperationTest">
+        <xpath>Defs/HediffDef[defName="DMS_CascadeDock" and defaultInstallPart]</xpath>
+      </li>
+      <li Class="PatchOperationRemove">
+        <xpath>Defs/HediffDef[defName="DMS_CascadeDock"]/defaultInstallPart</xpath>
+      </li>
+    </operations>
+  </Operation>
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <li Class="PatchOperationTest">
+        <xpath>Defs/HediffDef[defName="DMS_Blackwater" and defaultInstallPart]</xpath>
+      </li>
+      <li Class="PatchOperationRemove">
+        <xpath>Defs/HediffDef[defName="DMS_Blackwater"]/defaultInstallPart</xpath>
+      </li>
+    </operations>
+  </Operation>
+</Patch>

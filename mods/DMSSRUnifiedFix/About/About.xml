@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>失能机关：复乐园 综合修复与优化 / DMSSR Unified Fix</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.dmssr.unifiedfix</packageId>
+  <modVersion>1.1.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
+    <li><packageId>AOBA.Framework</packageId><displayName>Fortified Features Framework</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/3498575851</steamWorkshopUrl></li>
+    <li><packageId>Aoba.DeadManSwitch.Core</packageId><displayName>The Dead Man's Switch II</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/3819799478</steamWorkshopUrl></li>
+    <li><packageId>Cephalopod.DeadManSwitch.Synthriada</packageId><displayName>The Dead Man's Switch - Synthriada</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/3835512735</steamWorkshopUrl></li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>AOBA.Framework</li>
+    <li>Aoba.DeadManSwitch.Core</li>
+    <li>Srxf.DeadManSwitch.Legion</li>
+    <li>Cephalopod.DeadManSwitch.Synthriada</li>
+  </loadAfter>
+  <description>《失能机关：复乐园》综合修复与优化：
+• 属性、寻路、能力及并行预绘制缓存；等待上游启动完成后移除重复地形代价扣减。
+• 可选军团 DMSL_Mech_* 参数调节与研究解锁兼容；排除无人机，保持 Terra 湿件白名单不变。
+• 受体凝胶完整药效与自动用药，允许满效率或无储槽的患病机兵治疗；距离预筛查找与 600 tick 寻路退避。
+• 天灾再次死亡及人形机械体移除植入物时的重入保护，保留复活、掉落与移除回调。
+• 修正基因装配舱搬运尸体任务的无效数量，覆盖新任务、排队任务及读档重建 Toil。
+• PR 协议（DMS_DeathCheat）可在改装窗口叠层、卸装并按 20 层上限校验；压迫性重构期间拒绝安装且不消耗物品；初始整身充能与读档部位统一。
+• 缺失肢体安装合成仿生时先恢复肢体记录，不再静默吞掉仿生并消耗物品。
+• 远程控制植入体为非机械师殖民者建立机械师追踪、带宽与控制组，修复命令范围与征召 NRE，并存读档保留监督关系。
+• 连锁网络根节点过期或移除时立即清理叶节点，链接校验要求根节点仍持有 CasterMark。
+• Skylark 电力冲锋不再抓取友军/盟友；中断、倒地或强制停止时清除 Burst，未成功完成时同时清除 Buff。
+• 头足类投掷 AI 在找不到有效盟友/敌人组合时返回空任务而非 NRE。
+• Hirsch 应急战地包扎使用作者设定的 1.3 品质上限，不再把每次包扎压到 5.7% 均值。
+• Scourge 不朽护甲真正接入 Sharp/Blunt 护甲结算，并使用完整的 20,000 tick 持续时间。
+• 免疫异质化与免疫突变识别 FibrousMechanites、SensoryMechanites 及所有 mechanite 感染。
+• 基因装配舱右键入舱会先写入排队对象，任务不再以 Incompletable 结束。
+• Hydra 渗透者与非玩家伪装不再获得玩家控制、征召按钮或机械征召权限；玩家 Facedancer 保持完整控制。
+• 修复 DMS_CascadeDock / DMS_Blackwater 的 Reactor 错误默认安装部位。
+
+替代 DMSSRStatPathPerfFix、DMSSRLegionCustomizationCompat、DMSSRNeuroglueFix、DMSSRScourgeDeathFix，请停用四个旧包。军团为可选依赖。共用一个健康缓存失效钩子，各子系统独立安装。不新增存档字段，不修改工坊文件。
+
+Synthriada unified sidecar: the original five performance/legion/neuroglue/death/corpse-carry repairs plus twelve audited gameplay fixes for PR protocol stacking and caps, synthetic bionic limb restoration, remote-control mechanitor support, cascade leaf cleanup, Skylark charge safety, cephalopoda AI null guards, emergency tend quality, Undying armor stats and duration, mechanite recognition, gene-fitting pod entry, and Hydra facechange control flags. Replaces the four standalone DMSSR fixes listed above. Legion is optional. No custom saved state.</description>
+</ModMetaData>
