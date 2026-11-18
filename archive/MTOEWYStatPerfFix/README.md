@@ -1,3 +1,5 @@
+> **已退役（2026-11-18）**：上游 MTOEWY 1.4.3 自行把 `StatExtension.GetStatValue` 的 Postfix 改成 `StatDefOf` 引用分派、缓存 `IdealKitRuntime.Owner` 和 `RuntimeCache.StablePawnId`，本补丁针对的每次查询分配已不存在；继续启用会用 1.4.2 的移植覆盖新逻辑（Skystriker MoveSpeed +0.3 vs 上游 +0.1、已删除的 JoyFallRateFactor 分支）。已从 ModsConfig 移除，仅作历史存档，不建议安装。
+
 # 边缘米莉拉养成：属性查询性能修复 / MTOEWY Stat Perf Fix
 
 `packageId: whitegiver.mtoewy.statperffix` · RimWorld 1.7 · Harmony 3.x（随 1.7 工坊版本，实测 3.0.0.0）
