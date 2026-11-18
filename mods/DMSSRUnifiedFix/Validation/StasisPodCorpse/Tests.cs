@@ -93,7 +93,7 @@ internal static class Tests
         DefDatabase<HediffDef>.Add(customization); DMS_HediffDefOf.DMS_MechCustomization=customization;
         DMSSRUnifiedFixMod.ApplyPatches();
         int owned = Harmony.GetAllPatchedMethods().Count(m=>Harmony.GetPatchInfo(m)!.Owners.Contains(Program.Owner));
-        Check(owned==43,"combined installer owns exactly 43 reviewed methods (actual " + owned + ")");
+        Check(owned==52,"combined installer owns exactly 52 reviewed methods (actual " + owned + ")");
         Pawn mech=fx.SpawnColonyMech(new IntVec3(9,0,9));
         mech.def.defName="DMSL_Mech_Validation";
         Check((bool)AccessTools.Method(typeof(MechCustomizationUtility),"IsSupportedPawn").Invoke(null,new object[]{mech})!,"Legion predicate admits shared composition pawn");

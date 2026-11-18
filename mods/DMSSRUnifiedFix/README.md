@@ -1,9 +1,20 @@
 # 失能机关：复乐园 综合修复与优化 / DMSSR Unified Fix
 
-**1.1.0 · RimWorld 1.7 / .NET 10 · WhiteGiverMa**
+**1.1.1 · RimWorld 1.7 / .NET 10 · WhiteGiverMa**
 Package ID: `whitegiver.dmssr.unifiedfix` · Assembly: `DMSSRUnifiedFix.dll`
 
-面向《The Dead Man's Switch - Synthriada》（`Cephalopod.DeadManSwitch.Synthriada`，工坊 `3835512735`）的 Harmony + XML 侧挂补丁。1.0.0 整合原有的 `DMSSRStatPathPerfFix` 1.1.0、`DMSSRLegionCustomizationCompat` 1.0.0、`DMSSRNeuroglueFix` 1.0.0、`DMSSRScourgeDeathFix` 1.0.0 与停滞仓溶解尸体搬运修复；1.1.0 追加 2026-11-16 全模组审计确认的 12 项失效/半接线机制修复。启用本包前请停用上述四个独立旧包。
+面向《The Dead Man's Switch - Synthriada》（`Cephalopod.DeadManSwitch.Synthriada`，工坊 `3835512735`）的 Harmony + XML 侧挂补丁。1.0.0 整合原有的 `DMSSRStatPathPerfFix` 1.1.0、`DMSSRLegionCustomizationCompat` 1.0.0、`DMSSRNeuroglueFix` 1.0.0、`DMSSRScourgeDeathFix` 1.0.0 与停滞仓溶解尸体搬运修复；1.1.0 追加 12 项审计修复；1.1.1 增加觉醒机兵零带宽控制组支持。启用本包前请停用上述四个独立旧包。
+
+## 1.1.1 觉醒控制组
+
+- `CompDeadManSwitch.Wake` 保留监督关系、同一控制组、工作模式及充电上下限；立即清除带宽/废料包缓存并刷新机械师追踪器。命名、觉醒信件与互动组件保持上游行为。死亡时恢复常规带宽并再次刷新缓存。
+- `TryTriggerDMS` 的精确 IL 匹配仅移除 `woken = false`，保留潜伏标志清理、觉醒倒计时与出走逻辑；IL 漂移时拒绝安装本子系统。
+- `BandwidthCost` 使用可查看说明的 `StatPart` 归零。废料包的 `FinalizeValue` 和 DMSSR `LocalMesh.GetBandwidthMultiplier` 使用线程局部、异常安全的物理带宽作用域，保留原有带宽权重及参数调节倍率；作用域内绕过缓存，避免污染控制成本。
+- 受监督机兵跳过 FFF 独立觉醒行为分支，使用原版控制组的 Work、Recharge、SelfShutdown、Escort 及扩展模式。无组觉醒机兵的最低自动充电阈值为默认 5%，仍受 DMSSR `supply` 调整。
+- 可选检测 `DMSMechStorage.RequiresEnrollment`，使收纳释放重新征募觉醒机兵；使用类型名查找，不增加程序集依赖。
+- `OutgoingMech.Trigger` 保留 50% 攻击／25% 战利品／25% 无事件结构；规则、战利品生成器、敌对据点或基地地图缺失时跳过对应事件。结算通过 `removedCache` 在下一 tick 枚举前移除。
+
+已脱组的觉醒机兵可由任意机械师使用原生“控制机兵”重新接管，即使空余带宽为 0。接管后进入该机械师的默认控制组，需要时手动改为 Recharge。FFF 的无限命令范围及机械师倒地／离图时的觉醒征召能力继续生效。
 
 ## 1.0.0 五大子系统
 
@@ -36,7 +47,7 @@ Package ID: `whitegiver.dmssr.unifiedfix` · Assembly: `DMSSRUnifiedFix.dll`
 
 - 全模组仅注册 **1 个** `HediffSet.DirtyCache` Postfix，同步失效 `HediffFlagCache` 与 `MechBiogelCache` 并唤醒找药退避；1.1.0 的 Undying 护甲也复用同一快照，普通兵种查询护甲时不增加额外 hediff 扫描。
 - 每个子系统独立 `try/catch` 安装；单一子系统签名或 Def 缺失仅降级跳过该子系统并打印命名警告，不影响其余功能。远程控制、电力冲锋、Undying 护甲在没有对应 Def/属性时静默跳过，便于最小化测试夹具和其他内容组合。
-- 纯运行时 Harmony + XML Def 补丁，无自定义存档字段、无新增 Def（仅给原 Def 补 comp/移除错误默认值），可随时安全启用或移除。
+- Harmony 与 XML Def 补丁复用原有 Def：补齐 comp、移除错误默认值并接通原生机制。
 
 ## 构建与离线真实 DLL 验证
 
@@ -45,7 +56,7 @@ dotnet build .\Source\DMSSRUnifiedFix.csproj -c Release
 pwsh -NoProfile -File .\Validation\validate.ps1
 ```
 
-`Source` 与 `Validation` 均面向 `net10.0` 并开启 `TreatWarningsAsErrors=true`（0 警告 0 错误）。离线验证套件直接加载本机安装的 `Assembly-CSharp.dll`、`0Harmony.dll`、`DMS.dll`、`Fortified.dll`、`DMS_Legion.dll` 与 `DMSSR.dll`，分 **18** 个隔离进程阶段执行：
+`Source` 与 `Validation` 均面向 `net10.0` 并开启 `TreatWarningsAsErrors=true`（0 警告 0 错误）。离线验证套件直接加载安装的 `Assembly-CSharp.dll`、`0Harmony.dll`、`DMS.dll`、`Fortified.dll`、`DMS_Legion.dll`、`DMSSR.dll` 与 `DMSMechStorage.dll`，分 **21** 个隔离进程阶段执行：
 
 | 验证子集 | RED 断言 | GREEN 断言 |
 |---|---:|---:|
@@ -55,9 +66,10 @@ pwsh -NoProfile -File .\Validation\validate.ps1
 | 天灾与植入物死亡生命周期 | 54 | 88 |
 | 停滞仓尸体搬运、真实搬运与入仓溶解、排队与 `Job` Scribe 重读恢复 | 13 | 50 |
 | 1.1.0 十二项审计修复（真实 Def/Pawn/Map/JobDriver/StatWorker/Ability） | 69 | 80 |
-| **合计** | **898** | **1,283** |
+| 1.1.1 觉醒控制组、物理带宽隔离、充电、收纳及出走结算 | 52 | 104 |
+| **合计** | **950** | **1,387** |
 
-另含早启动换序（3 项）、死亡补丁先注册（88 项）、未安装军团环境（15 项）、五子系统联合运行（20 项，最小夹具下共 43 个受控方法）与单子系统签名缺失隔离降级（16 项）专项检查，正常 GREEN 阶段全程 `0 Error / 0 Warning`。
+另含早启动换序（3 项）、死亡补丁先注册（88 项）、未安装军团环境（15 项）、旧子系统联合运行（20 项，最小夹具下共 52 个受控方法）、觉醒与远程控制组合（108 项）及单子系统签名缺失隔离降级（16 项）专项检查。觉醒测试覆盖原控制组实例、零空余／零总带宽重新接管、死亡缓存恢复、DMSSR 参数倍率、异常与嵌套／跨线程作用域、真实收纳释放和 `GameComponentTick` 延迟移除。正常 GREEN 阶段全程 `0 Error / 0 Warning`。
 
 ### 依赖基线（2026-11-17）
 
@@ -70,7 +82,8 @@ pwsh -NoProfile -File .\Validation\validate.ps1
 | `Fortified.dll` | `9c135095c0a389ae63c08a514b2751b9b168bdc125aea9da8d303f81f8b0e952` |
 | `DMS_Legion.dll`（仅验证加载） | `00afec1d5f2b22210e7ccd2fc502d88bc97711155ac160d39fbc1034c85d51ea` |
 | `DMSSR.dll` | `19714ac9acd16d78d093fd7b973b5e5d05397794986e82abd89557f4a0fb1033` |
+| `DMSMechStorage.dll`（可选兼容验证） | `797fff30b8752cb52d6fe4849de71e64b8a588cba6ea96efd7b4355cb5c215d2` |
 
 ## 维护与退役条件
 
-上游或游戏本体更新后请重跑 `Validation\validate.ps1`：当某一子系统的 RED 前提不再复现（上游去重寻路钩子、原生放行 `DMSL_Mech_*`、补齐机兵受体凝胶结算与自动用药、保护死亡前 `RemoveHediff`、在 `CarryCorpseToStasisPod` 补齐 `job.count`，或 12 项审计问题任一项被上游修复）时，单独移除对应子系统；全部由上游实装后退役整个补丁包。四个历史独立补丁的原版发布 DLL 与验证套件保留于仓库 `archive/` 目录归档。
+上游或游戏本体更新后请重跑 `Validation\validate.ps1`：当某一子系统的 RED 前提不再复现（上游去重寻路钩子、原生放行 `DMSL_Mech_*`、补齐机兵受体凝胶结算与自动用药、保护死亡前 `RemoveHediff`、在 `CarryCorpseToStasisPod` 补齐 `job.count`，或审计问题被上游修复）时，单独移除对应子系统。觉醒子系统需核对 `Wake`、`TryTriggerDMS` 的唯一复位块、`Notify_Killed`、属性缓存与后处理、LocalMesh、充电阈值、收纳征募和出走列表移除契约；FFF 原生保留觉醒控制组并覆盖这些边界后退役本子系统。全部由上游实装后退役整个补丁包。四个历史独立补丁保留于 `archive/`。

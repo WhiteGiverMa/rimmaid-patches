@@ -3,7 +3,7 @@
   <name>失能机关：复乐园 综合修复与优化 / DMSSR Unified Fix</name>
   <author>WhiteGiverMa</author>
   <packageId>whitegiver.dmssr.unifiedfix</packageId>
-  <modVersion>1.1.0</modVersion>
+  <modVersion>1.1.1</modVersion>
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
@@ -36,8 +36,9 @@
 • 基因装配舱右键入舱会先写入排队对象，任务不再以 Incompletable 结束。
 • Hydra 渗透者与非玩家伪装不再获得玩家控制、征召按钮或机械征召权限；玩家 Facedancer 保持完整控制。
 • 修复 DMS_CascadeDock / DMS_Blackwater 的 Reactor 错误默认安装部位。
+• 觉醒机兵保留监督关系、原控制组和工作模式，控制带宽为 0；废料包产量与 LocalMesh 权重保持原值。已脱组机兵可在零空余带宽下重新接管，独立机兵使用 5% 充电阈值；兼容收纳释放征募，并修复出走结算的空规则与枚举删除异常。
 
-替代 DMSSRStatPathPerfFix、DMSSRLegionCustomizationCompat、DMSSRNeuroglueFix、DMSSRScourgeDeathFix，请停用四个旧包。军团为可选依赖。共用一个健康缓存失效钩子，各子系统独立安装。不新增存档字段，不修改工坊文件。
+替代 DMSSRStatPathPerfFix、DMSSRLegionCustomizationCompat、DMSSRNeuroglueFix、DMSSRScourgeDeathFix，请停用四个旧包。军团和 DMS Mech Storage 为可选兼容。共用一个健康缓存失效钩子，各子系统独立安装。
 
-Synthriada unified sidecar: the original five performance/legion/neuroglue/death/corpse-carry repairs plus twelve audited gameplay fixes for PR protocol stacking and caps, synthetic bionic limb restoration, remote-control mechanitor support, cascade leaf cleanup, Skylark charge safety, cephalopoda AI null guards, emergency tend quality, Undying armor stats and duration, mechanite recognition, gene-fitting pod entry, and Hydra facechange control flags. Replaces the four standalone DMSSR fixes listed above. Legion is optional. No custom saved state.</description>
+Synthriada unified sidecar: the original five repairs and twelve audited gameplay fixes, plus awakened mechanitor control at zero bandwidth. Keeps the existing control group and work mode, preserves wastepack and LocalMesh weights, supports zero-free-bandwidth re-control and optional storage re-enrollment, and safely resolves outgoing mech stories. Replaces the four standalone DMSSR fixes listed above. Legion and DMS Mech Storage are optional.</description>
 </ModMetaData>

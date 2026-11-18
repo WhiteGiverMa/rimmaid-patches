@@ -33,6 +33,8 @@ internal static class Program
                 ModAssembly("3819799478", "DMS"), ModAssembly("3835512735", "DMSSR") })
                 AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
             if (args[0] != "no-legion") AssemblyLoadContext.Default.LoadFromAssemblyPath(ModAssembly("3666117000", "DMS_Legion"));
+            if (args[0].StartsWith("awake-", StringComparison.Ordinal))
+                AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(GameRoot, "Mods", "DMSMechStorage", "Assemblies", "DMSMechStorage.dll"));
             Assembly patch = AssemblyLoadContext.Default.LoadFromAssemblyPath(PatchPath);
             if (Hash(patch.Location) != Hash(PatchPath)) throw new InvalidOperationException("Runtime patch bytes mismatch.");
             Console.WriteLine("RUNTIME SHA256=" + Hash(patch.Location));
@@ -61,6 +63,7 @@ internal static class Program
         }
         else if (mode.StartsWith("carry-", StringComparison.Ordinal)) StasisPodCorpse.Tests.Run(mode[6..]);
         else if (mode.StartsWith("audited-", StringComparison.Ordinal)) Audited.Tests.Run(mode[8..]);
+        else if (mode.StartsWith("awake-", StringComparison.Ordinal)) AwakenedControl.Tests.Run(mode[6..]);
         else if (mode == "no-legion") StasisPodCorpse.Tests.NoLegion();
         else if (mode == "composition") StasisPodCorpse.Tests.Composition();
         else if (mode == "isolation") StasisPodCorpse.Tests.Isolation();

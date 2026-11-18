@@ -69,6 +69,7 @@ public sealed class DMSSRUnifiedFixMod : Mod
         Install("mechanite recognition", () => MechaniteRecognitionFix.Apply(harmony));
         Install("gene fitting pod entry", () => GeneFittingPodFix.Apply(harmony));
         Install("facedancer control gate", () => FacedancerControlFix.Apply(harmony));
+        Install("awakened control group", () => AwakenedControlGroupFix.Apply(harmony));
 
         SafeLog.Message("installed: pathCostSingleClamp=" + PathCostPatches.SingleClampInstalled
             + " dirtyCacheHook=" + HediffCachePatches.Installed
@@ -85,7 +86,8 @@ public sealed class DMSSRUnifiedFixMod : Mod
             + " undyingArmor=" + UndyingArmorFix.Installed
             + " mechanite=" + MechaniteRecognitionFix.Installed
             + " genePod=" + GeneFittingPodFix.Installed
-            + " facedancer=" + FacedancerControlFix.Installed);
+            + " facedancer=" + FacedancerControlFix.Installed
+            + " awakenedControl=" + AwakenedControlGroupFix.Installed);
     }
 
     private static void Install(string subsystem, Action install)
