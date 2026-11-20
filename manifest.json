@@ -362,7 +362,7 @@
       "directory": "DMSSRUnifiedFix",
       "packageId": "whitegiver.dmssr.unifiedfix",
       "status": "game-qa-pending",
-      "source": "local canonical source; added 2026-11-16; 1.1.1 added 2026-11-17; retains the original seventeen fixes and adds awakened zero-bandwidth control groups, physical-bandwidth preservation, recharge routing, storage re-enrollment and outgoing-event safety; real-DLL 950 RED / 1,387 GREEN across 21 isolated phases plus startup-order, composition and isolation checks; game QA pending"
+      "source": "local canonical source; added 2026-11-16; 1.1.1 added 2026-11-17; 1.1.2 added 2026-11-19; 1.1.3 added 2026-11-20; 1.1.4 rebased 2026-11-20 onto updated DMSSR.dll and Fortified.dll, retiring PathCostPatches (upstream removed Patch_Ability_PathCost_Instance and added TerrainPenaltyStates + Patch_Ability_PathCost_HediffCache) and updating the neuroglue RED baseline after upstream added NeuroglueHigh while still skipping ChangeHediffLevel; retains the remaining stat/capacity/render, Legion, neuroglue, Scourge death, corpse carry, 12 audited fixes, awakened zero-bandwidth control groups, experimental Frame Shift recipe fixedIngredientFilter and guarded user removal; real-DLL 941 RED / 1,367 GREEN across 21 isolated phases plus startup-order, composition (52 owned methods) and isolation checks; game QA pending"
     },
     {
       "directory": "MechanitorBandwidthRelay",

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using DMSSR.Extensions;
 using DMSSR.Hediffs;
 using RimWorld;
 using Verse;
@@ -64,9 +63,6 @@ internal sealed class Fixture
     internal FleshTypeDef OrganicFlesh = null!;
     internal RoofDef Roof = null!;
     internal HediffDef NoiseDef = null!;
-    internal HediffDef IgnoreExtensionDef = null!;
-    internal HediffDef IgnoreCompDef = null!;
-    internal HediffDef IgnoreCompOnPlainHediffDef = null!;
     internal HediffDef MechCustomizationDef = null!;
     internal HediffDef SchizophreniaDef = null!;
     internal readonly Dictionary<string, PawnCapacityDef> Capacities = new();
@@ -151,31 +147,6 @@ internal sealed class Fixture
         pawn.health.hediffSet.DirtyCache();
     }
 
-    internal HediffWithComps AddIgnoreExtensionHediff(Pawn pawn)
-    {
-        HediffWithComps hediff = new() { def = IgnoreExtensionDef, pawn = pawn, comps = new List<HediffComp>() };
-        pawn.health.hediffSet.hediffs.Add(hediff);
-        pawn.health.hediffSet.DirtyCache();
-        return hediff;
-    }
-
-    internal HediffWithComps AddIgnoreCompHediff(Pawn pawn)
-    {
-        HediffWithComps hediff = new() { def = IgnoreCompDef, pawn = pawn, comps = new List<HediffComp> { new HediffComp_IgnoreTerrainMovePenalty() } };
-        pawn.health.hediffSet.hediffs.Add(hediff);
-        pawn.health.hediffSet.DirtyCache();
-        return hediff;
-    }
-
-    /// <summary>A plain Hediff (not HediffWithComps) whose def lists the comp: upstream can never see it.</summary>
-    internal Hediff AddPlainIgnoreCompHediff(Pawn pawn)
-    {
-        Hediff hediff = new() { def = IgnoreCompOnPlainHediffDef, pawn = pawn };
-        pawn.health.hediffSet.hediffs.Add(hediff);
-        pawn.health.hediffSet.DirtyCache();
-        return hediff;
-    }
-
     internal HediffComp_MechCustomization AddMechCustomization(Pawn pawn)
     {
         HediffWithComps hediff = new() { def = MechCustomizationDef, pawn = pawn, comps = new List<HediffComp>() };
@@ -253,26 +224,6 @@ internal sealed class Fixture
         MechDef = NewPawnDef("ValidationMech", MechFlesh, Intelligence.ToolUser);
 
         NoiseDef = NewHediffDef("ValidationNoise", typeof(HediffWithComps), null, null);
-
-        IgnoreExtensionDef = NewHediffDef(
-            "ValidationIgnoreTerrainExtension",
-            typeof(HediffWithComps),
-            null,
-            new List<DefModExtension> { new DefModExt_IgnoreTerrainMovePenalty { enabled = true } });
-
-        IgnoreCompDef = NewHediffDef(
-            "ValidationIgnoreTerrainComp",
-            typeof(HediffWithComps),
-            new List<HediffCompProperties> { new HediffCompProperties_IgnoreTerrainMovePenalty() },
-            null);
-
-        // Deliberately a plain Hediff: def.comps lists the comp, but a plain Hediff never builds comps,
-        // so upstream's TryGetComp returns null. The def-level cache must agree.
-        IgnoreCompOnPlainHediffDef = NewHediffDef(
-            "ValidationIgnoreTerrainCompOnPlainHediff",
-            typeof(Hediff),
-            new List<HediffCompProperties> { new HediffCompProperties_IgnoreTerrainMovePenalty() },
-            null);
 
         MechCustomizationDef = NewHediffDef("ValidationMechCustomization", typeof(HediffWithComps), null, null);
         SchizophreniaDef = NewHediffDef("ValidationLinked", typeof(HediffWithComps), null, null);

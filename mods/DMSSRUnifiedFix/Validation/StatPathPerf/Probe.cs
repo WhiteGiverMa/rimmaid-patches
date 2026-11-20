@@ -18,8 +18,6 @@ namespace DMSSRUnifiedFix.Validation.StatPathPerf;
 /// </summary>
 internal static class Probe
 {
-    internal static int ClampCalls;
-    internal static int HasIgnoreTerrainPenaltyCalls;
     internal static int MechCustomizationLookupCalls;
     internal static int MechCustomizationLookupScanLength;
     internal static int SchizophreniaLookupCalls;
@@ -38,14 +36,6 @@ internal static class Probe
         }
 
         harmony = new Harmony(Program.ValidationOwner);
-
-        harmony.Patch(
-            AccessTools.Method(typeof(AbilityPathCostUtility), "ClampPathCostForAbility")!,
-            postfix: new HarmonyMethod(AccessTools.Method(typeof(Probe), nameof(ClampPostfix))));
-
-        harmony.Patch(
-            AccessTools.Method(typeof(AbilityPathCostUtility), "HasIgnoreTerrainMovePenalty")!,
-            postfix: new HarmonyMethod(AccessTools.Method(typeof(Probe), nameof(HasIgnorePostfix))));
 
         harmony.Patch(
             AccessTools.Method(typeof(HediffSet), nameof(HediffSet.GetFirstHediffOfDef))!,
@@ -70,8 +60,6 @@ internal static class Probe
 
     internal static void Reset()
     {
-        ClampCalls = 0;
-        HasIgnoreTerrainPenaltyCalls = 0;
         MechCustomizationLookupCalls = 0;
         MechCustomizationLookupScanLength = 0;
         SchizophreniaLookupCalls = 0;
@@ -85,17 +73,6 @@ internal static class Probe
     {
         harmony?.UnpatchAll(Program.ValidationOwner);
         harmony = null;
-    }
-
-    private static void ClampPostfix()
-    {
-        ClampCalls++;
-    }
-
-    private static void HasIgnorePostfix(ref bool __result)
-    {
-        _ = __result;
-        HasIgnoreTerrainPenaltyCalls++;
     }
 
     private static void GetFirstHediffOfDefPrefix(HediffSet __instance, HediffDef def)

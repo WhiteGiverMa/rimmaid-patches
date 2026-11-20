@@ -71,7 +71,7 @@ internal static class Tests
         Harness.Patch(AccessTools.Method(typeof(DeathHediffRemoval),"Apply"), prefix:new HarmonyMethod(typeof(Tests),nameof(MissingDeathSignature)));
         LogCapture.ExpectedWarningFragments.Add("Scourge death installation failed; other subsystems continue.");
         DMSSRUnifiedFixMod.ApplyPatches();
-        Check(PathCostPatches.SingleClampInstalled && MechCustomizationPatches.IsSupportedPawnInstalled
+        Check(MechStatPatch.GateInstalled && HediffCachePatches.Installed && MechCustomizationPatches.IsSupportedPawnInstalled
             && UseNeurogluePatches.MakeNewToilsPatched && CorpseCarryPatches.Installed,"one missing subsystem leaves the other four installed");
         Check(!Harmony.GetAllPatchedMethods().Any(m=>Harmony.GetPatchInfo(m)!.Transpilers.Any(p=>p.owner==Program.Owner && p.PatchMethod.DeclaringType==typeof(DeathHediffRemoval))),"failed death subsystem leaves its upstream methods untouched");
         Scenario(true,true,true,false);

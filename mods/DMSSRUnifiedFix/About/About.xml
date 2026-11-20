@@ -3,7 +3,7 @@
   <name>失能机关：复乐园 综合修复与优化 / DMSSR Unified Fix</name>
   <author>WhiteGiverMa</author>
   <packageId>whitegiver.dmssr.unifiedfix</packageId>
-  <modVersion>1.1.1</modVersion>
+  <modVersion>1.1.4</modVersion>
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
@@ -19,7 +19,7 @@
     <li>Cephalopod.DeadManSwitch.Synthriada</li>
   </loadAfter>
   <description>《失能机关：复乐园》综合修复与优化：
-• 属性、寻路、能力及并行预绘制缓存；等待上游启动完成后移除重复地形代价扣减。
+• 属性、能力及并行预绘制缓存；保留静态属性门控与共享健康快照。
 • 可选军团 DMSL_Mech_* 参数调节与研究解锁兼容；排除无人机，保持 Terra 湿件白名单不变。
 • 受体凝胶完整药效与自动用药，允许满效率或无储槽的患病机兵治疗；距离预筛查找与 600 tick 寻路退避。
 • 天灾再次死亡及人形机械体移除植入物时的重入保护，保留复活、掉落与移除回调。
@@ -37,8 +37,10 @@
 • Hydra 渗透者与非玩家伪装不再获得玩家控制、征召按钮或机械征召权限；玩家 Facedancer 保持完整控制。
 • 修复 DMS_CascadeDock / DMS_Blackwater 的 Reactor 错误默认安装部位。
 • 觉醒机兵保留监督关系、原控制组和工作模式，控制带宽为 0；废料包产量与 LocalMesh 权重保持原值。已脱组机兵可在零空余带宽下重新接管，独立机兵使用 5% 充电阈值；兼容收纳释放征募，并修复出走结算的空规则与枚举删除异常。
+• 实验性虹移装置的订单此前永远提示缺少 1x 可用原料：该配方有两种水晶可选却没有配 fixedIngredientFilter。补全后纯通流水晶与含杂通流水晶都能正常投料。
+• 实验性虹移装置成功分支销毁使用者时，Milira 等模组给 Pawn.Destroy 挂的补丁链会抛异常，导致物品已消耗、研究已推进却没有成功信。该调用改为签名兼容的安全移除，失败时回退 Kill 并清除尸体。
 
 替代 DMSSRStatPathPerfFix、DMSSRLegionCustomizationCompat、DMSSRNeuroglueFix、DMSSRScourgeDeathFix，请停用四个旧包。军团和 DMS Mech Storage 为可选兼容。共用一个健康缓存失效钩子，各子系统独立安装。
 
-Synthriada unified sidecar: the original five repairs and twelve audited gameplay fixes, plus awakened mechanitor control at zero bandwidth. Keeps the existing control group and work mode, preserves wastepack and LocalMesh weights, supports zero-free-bandwidth re-control and optional storage re-enrollment, and safely resolves outgoing mech stories. Replaces the four standalone DMSSR fixes listed above. Legion and DMS Mech Storage are optional.</description>
+Synthriada unified sidecar: the original five repairs and twelve audited gameplay fixes, plus awakened mechanitor control at zero bandwidth. Keeps the existing control group and work mode, preserves wastepack and LocalMesh weights, supports zero-free-bandwidth re-control and optional storage re-enrollment, and safely resolves outgoing mech stories. Restores the missing fixedIngredientFilter that blocked every crystal on the experimental Frame Shift device recipe. Replaces the four standalone DMSSR fixes listed above. Legion and DMS Mech Storage are optional.</description>
 </ModMetaData>

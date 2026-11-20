@@ -1,11 +1,9 @@
 using WhiteGiver.DMSSRUnifiedFix;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using DMSSR;
-using DMSSR.Extensions;
 using DMSSR.Hediffs;
 using Verse;
 
@@ -14,37 +12,22 @@ namespace WhiteGiver.DMSSRUnifiedFix.StatPathPerf
     /// <summary>
     /// Per-pawn answers that DMSSR otherwise recomputes by walking every Hediff.
     ///
-    /// Upstream, on every path step, asks "does this pawn have any hediff that ignores terrain
-    /// move penalty?" by calling <c>Def.GetModExtension&lt;DefModExt_IgnoreTerrainMovePenalty&gt;</c>
-    /// and <c>HediffUtility.TryGetComp&lt;HediffComp_IgnoreTerrainMovePenalty&gt;</c> for every
-    /// hediff of every pawn, twice per step (see PathCostPatches). On every stat query it asks
-    /// "is there a DMS_MechCustomization hediff?" by linearly scanning the same list.
-    ///
-    /// The snapshot also holds the first schizophrenia-link hediff and dynamic capacity providers.
-    /// Membership only changes when the hediff set changes, and RimWorld funnels every hediff
-    /// add/remove through <see cref="HediffSet.DirtyCache"/>. So we cache the answers and drop
-    /// them on that signal.
+    /// On every stat query DMSSR asks "is there a DMS_MechCustomization hediff?" by linearly
+    /// scanning the hediff list. The snapshot holds that comp along with the first
+    /// schizophrenia-link hediff, undying armor comp, remote controller flag and dynamic capacity
+    /// providers. Membership only changes when the hediff set changes, and RimWorld funnels every
+    /// hediff add/remove through <see cref="HediffSet.DirtyCache"/>. So we cache the answers and
+    /// drop them on that signal.
     ///
     /// Correctness notes
     /// - A snapshot is only trusted while the generation, the HediffSet instance and the hediff
     ///   count all still match. Additions, removals and save loads all bump the generation.
-    /// - The per-definition "can this hediff def carry the flag?" answer is cached separately and
-    ///   keyed by HediffDef; it mirrors upstream exactly: <c>def.GetModExtension&lt;T&gt;()?.enabled</c>
-    ///   plus a compClass assignable to <c>HediffComp_IgnoreTerrainMovePenalty</c> on a
-    ///   HediffWithComps (a plain Hediff never builds comps, so it can never match upstream).
     /// - Fully constructed immutable snapshots are published with Volatile.Write/Read. Concurrent
     ///   readers may duplicate a rebuild; no mutable Dictionary or partially built array is shared.
     ///   As with upstream, hediff list mutation belongs to the main simulation phase, not pre-draw.
     /// </summary>
     internal static class HediffFlagCache
     {
-        private const byte FlagExtension = 1;
-        private const byte FlagComp = 2;
-        private const byte FlagAny = FlagExtension | FlagComp;
-
-        private static readonly ConcurrentDictionary<HediffDef, byte> DefFlags = new();
-        private static readonly Func<HediffDef, byte> ComputeDefFlagsFunc = ComputeDefFlags;
-
         private static readonly ConditionalWeakTable<Pawn, SnapshotHolder> Table = new();
 
         private static int generation;
@@ -62,11 +45,6 @@ namespace WhiteGiver.DMSSRUnifiedFix.StatPathPerf
         internal static int ScanCount => Volatile.Read(ref scans);
 
         internal static int Generation => Volatile.Read(ref generation);
-
-        internal static bool HasIgnoreTerrainMovePenalty(Pawn? pawn)
-        {
-            return Get(pawn).IgnoreTerrainPenalty;
-        }
 
         internal static HediffComp_MechCustomization? GetMechCustomization(Pawn? pawn)
         {
@@ -148,7 +126,6 @@ namespace WhiteGiver.DMSSRUnifiedFix.StatPathPerf
             Interlocked.Increment(ref scans);
 
             List<Hediff> hediffs = set.hediffs;
-            bool ignoreTerrainPenalty = false;
             bool mechCustomizationResolved = false;
             HediffComp_MechCustomization? mechCustomization = null;
             Hediff? schizophreniaLinked = null;
@@ -168,11 +145,6 @@ namespace WhiteGiver.DMSSRUnifiedFix.StatPathPerf
                 if (def == null)
                 {
                     continue;
-                }
-
-                if (!ignoreTerrainPenalty && IgnoresTerrainPenalty(def))
-                {
-                    ignoreTerrainPenalty = true;
                 }
 
                 if (!mechCustomizationResolved && ReferenceEquals(def, DMS_HediffDefOf.DMS_MechCustomization))
@@ -212,44 +184,9 @@ namespace WhiteGiver.DMSSRUnifiedFix.StatPathPerf
                 }
             }
 
-            return new Snapshot(set, hediffs.Count, currentGeneration, ignoreTerrainPenalty,
+            return new Snapshot(set, hediffs.Count, currentGeneration,
                 mechCustomization, schizophreniaLinked, undyingArmor, remoteController,
                 providers?.ToArray() ?? Array.Empty<IDynamicCapacityProvider>());
-        }
-
-        private static bool IgnoresTerrainPenalty(HediffDef def)
-        {
-            return (DefFlags.GetOrAdd(def, ComputeDefFlagsFunc) & FlagAny) != 0;
-        }
-
-        private static byte ComputeDefFlags(HediffDef def)
-        {
-            byte flags = 0;
-
-            if (def.GetModExtension<DefModExt_IgnoreTerrainMovePenalty>()?.enabled == true)
-            {
-                flags |= FlagExtension;
-            }
-
-            Type? hediffClass = def.hediffClass;
-            if (hediffClass != null && typeof(HediffWithComps).IsAssignableFrom(hediffClass))
-            {
-                List<HediffCompProperties>? comps = def.comps;
-                if (comps != null)
-                {
-                    for (int i = 0; i < comps.Count; i++)
-                    {
-                        Type? compClass = comps[i]?.compClass;
-                        if (compClass != null && typeof(HediffComp_IgnoreTerrainMovePenalty).IsAssignableFrom(compClass))
-                        {
-                            flags |= FlagComp;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return flags;
         }
 
         private sealed class SnapshotHolder
@@ -259,13 +196,12 @@ namespace WhiteGiver.DMSSRUnifiedFix.StatPathPerf
 
         private sealed class Snapshot
         {
-            internal static readonly Snapshot Empty = new(null, 0, int.MinValue, false, null, null, null, false,
+            internal static readonly Snapshot Empty = new(null, 0, int.MinValue, null, null, null, false,
                 Array.Empty<IDynamicCapacityProvider>());
 
             internal readonly HediffSet? Set;
             internal readonly int Count;
             internal readonly int Generation;
-            internal readonly bool IgnoreTerrainPenalty;
             internal readonly HediffComp_MechCustomization? MechCustomization;
             internal readonly Hediff? SchizophreniaLinked;
             internal readonly HediffComp_ArmorBoost? UndyingArmor;
@@ -276,7 +212,6 @@ namespace WhiteGiver.DMSSRUnifiedFix.StatPathPerf
                 HediffSet? set,
                 int count,
                 int snapshotGeneration,
-                bool ignoreTerrainPenalty,
                 HediffComp_MechCustomization? mechCustomization,
                 Hediff? schizophreniaLinked,
                 HediffComp_ArmorBoost? undyingArmor,
@@ -286,7 +221,6 @@ namespace WhiteGiver.DMSSRUnifiedFix.StatPathPerf
                 Set = set;
                 Count = count;
                 Generation = snapshotGeneration;
-                IgnoreTerrainPenalty = ignoreTerrainPenalty;
                 MechCustomization = mechCustomization;
                 SchizophreniaLinked = schizophreniaLinked;
                 UndyingArmor = undyingArmor;

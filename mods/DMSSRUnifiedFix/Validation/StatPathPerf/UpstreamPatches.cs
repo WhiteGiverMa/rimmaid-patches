@@ -31,8 +31,6 @@ internal static class UpstreamPatches
         internal System.Reflection.MethodInfo Postfix { get; }
     }
 
-    internal static PatchTarget InstanceMethod { get; private set; } = null!;
-
     internal static PatchTarget StaticMethod { get; private set; } = null!;
 
     internal static PatchTarget StatMethod { get; private set; } = null!;
@@ -41,7 +39,8 @@ internal static class UpstreamPatches
 
     internal static readonly Type[] HotspotTypes =
     {
-        typeof(Patch_Ability_PathCost_Instance), typeof(Patch_Ability_PathCost_Static),
+        typeof(Patch_Ability_PathCost_Static),
+        typeof(Patch_Ability_PathCost_Static).Assembly.GetType("DMSSR.Patches.Patch_Ability_PathCost_HediffCache", true)!,
         typeof(Patch_MechCustomization_ApplyStatPreFinalize),
         typeof(Patch_MechCustomization_ApplyCapacity), typeof(Patch_MechCustomization_BodySize),
         typeof(Patch_MechCustomization_MechEnergyMax), typeof(Patch_MechCustomization_MechEnergyThresholdMin),
@@ -88,9 +87,6 @@ internal static class UpstreamPatches
             return;
         }
 
-        InstanceMethod = new PatchTarget(
-            AccessTools.Method(typeof(Pawn_PathFollower), "CostToMoveIntoCell", new[] { typeof(IntVec3) })!,
-            AccessTools.Method(typeof(Patch_Ability_PathCost_Instance), "Postfix")!);
         StaticMethod = new PatchTarget(
             AccessTools.Method(typeof(Pawn_PathFollower), "CostToMoveIntoCell", new[] { typeof(Pawn), typeof(IntVec3) })!,
             AccessTools.Method(typeof(Patch_Ability_PathCost_Static), "Postfix")!);
@@ -100,7 +96,6 @@ internal static class UpstreamPatches
 
         if (metadataOnly) return;
         harmony = new Harmony("whitegiver.dmssr.unifiedfix.upstream-fixture");
-        harmony.Patch(InstanceMethod.Method, postfix: new HarmonyMethod(InstanceMethod.Postfix));
         harmony.Patch(StaticMethod.Method, postfix: new HarmonyMethod(StaticMethod.Postfix));
         harmony.Patch(StatMethod.Method, postfix: new HarmonyMethod(StatMethod.Postfix));
     }

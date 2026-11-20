@@ -46,12 +46,17 @@ internal static class Tests
 
         Check(!Harmony.HasAnyPatches(DMSSRUnifiedFixMod.HarmonyId), "RED must not have unified patches installed.");
 
-        // 1. Reproduce user's exact bug: mech at 62.98 fuel with 9 DegenerativeSyndrome parts uses 1 Neuroglue.
+        // 1. Reproduce remaining upstream bugs: mech at 62.98 fuel with 9 DegenerativeSyndrome parts and LV.2 BionicShock uses 1 Neuroglue.
         Pawn skylark = fx.SpawnColonyMech(new IntVec3(3, 0, 3));
         Hediff_BiogelReservoir reservoir = fx.EnsureReservoirWithFuel(skylark, 62.98f);
         fx.AddDegenerativeToParts(skylark, 9);
+        Hediff_Level shock = (Hediff_Level)HediffMaker.MakeHediff(fx.BionicShockDef, skylark, fx.Parts[0]);
+        shock.level = 2;
+        shock.Severity = 2f;
+        skylark.health.AddHediff(shock);
 
         Check(CountHediffs(skylark, fx.DegenerativeDef) == 9, "Fixture skylark should start with 9 degenerative lesions.");
+        Check(shock.level == 2, "Fixture skylark should start with LV.2 BionicShock.");
 
         ThingWithComps gel = fx.SpawnNeuroglue(new IntVec3(4, 0, 3), count: 5);
         Thing carried = fx.TakeOneToCarry(skylark, gel);
@@ -60,12 +65,13 @@ internal static class Tests
         finalToil.initAction();
         Fixture.TickHediffsOnce(skylark);
 
-        // Upstream refills 25 biogel (62.98 -> 87.98), matching user's screenshot!
+        // Upstream refills 25 biogel (62.98 -> 87.98) and now also applies NeuroglueHigh.
         Check(Math.Abs(reservoir.Fuel - 87.98f) < 0.05f, $"Expected upstream fuel ~87.98, got {reservoir.Fuel:F2}.");
-        // BUG 1: NeuroglueHigh was skipped, so ALL 9 degenerative lesions remain!
-        Check(!HasHediff(skylark, fx.NeuroglueHighDef), "Upstream unexpectedly applied NeuroglueHigh.");
-        Check(CountHediffs(skylark, fx.DegenerativeDef) == 9, "Upstream unexpectedly cured degenerative lesions.");
-        Console.WriteLine($"  [Reproduced] Fuel rose 62.98 -> {reservoir.Fuel:F2}, NeuroglueHigh=false, DegenerativeSyndrome stuck at 9/9.");
+        Check(HasHediff(skylark, fx.NeuroglueHighDef), "Upstream should apply NeuroglueHigh in current DMSSR.dll.");
+        Check(CountHediffs(skylark, fx.DegenerativeDef) == 0, "NeuroglueHigh should clear degenerative lesions.");
+        // BUG 1 (still present upstream): IngestionOutcomeDoer_ChangeHediffLevel is skipped, so BionicShock stays LV.2!
+        Check(shock.level == 2, $"Upstream unexpectedly stepped down BionicShock (expected LV.2, got LV.{shock.level}).");
+        Console.WriteLine($"  [Reproduced] Fuel rose 62.98 -> {reservoir.Fuel:F2}, NeuroglueHigh applied, but BionicShock stuck at LV.2.");
 
         // 2. Reproduce BUG 2: mech with 100 fuel (or no reservoir) + DegenerativeSyndrome is blocked by CanRefill.
         Pawn deathCheatMech = fx.SpawnColonyMech(new IntVec3(5, 0, 3));

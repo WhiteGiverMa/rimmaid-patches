@@ -36,11 +36,10 @@ public sealed class DMSSRUnifiedFixMod : Mod
         });
 
         Install("shared health invalidation", () => HediffCachePatches.Apply(harmony));
-        Install("stat/path performance", () =>
+        Install("stat/capacity performance", () =>
         {
             if (!upstreamReady || !HediffCachePatches.Installed)
                 throw new InvalidOperationException("Requires upstream startup and shared health invalidation.");
-            PathCostPatches.Apply(harmony);
             MechStatPatch.Apply(harmony);
             MechLookupPatches.Apply(harmony);
             CapacityPatches.Apply(harmony);
@@ -70,9 +69,9 @@ public sealed class DMSSRUnifiedFixMod : Mod
         Install("gene fitting pod entry", () => GeneFittingPodFix.Apply(harmony));
         Install("facedancer control gate", () => FacedancerControlFix.Apply(harmony));
         Install("awakened control group", () => AwakenedControlGroupFix.Apply(harmony));
+        Install("experimental warp", () => ExperimentalWarpFix.Apply(harmony));
 
-        SafeLog.Message("installed: pathCostSingleClamp=" + PathCostPatches.SingleClampInstalled
-            + " dirtyCacheHook=" + HediffCachePatches.Installed
+        SafeLog.Message("installed: dirtyCacheHook=" + HediffCachePatches.Installed
             + " legion=" + MechCustomizationPatches.IsSupportedPawnInstalled
             + " neuroglue=" + UseNeurogluePatches.MakeNewToilsPatched
             + " corpseCarry=" + CorpseCarryPatches.Installed
@@ -87,7 +86,8 @@ public sealed class DMSSRUnifiedFixMod : Mod
             + " mechanite=" + MechaniteRecognitionFix.Installed
             + " genePod=" + GeneFittingPodFix.Installed
             + " facedancer=" + FacedancerControlFix.Installed
-            + " awakenedControl=" + AwakenedControlGroupFix.Installed);
+            + " awakenedControl=" + AwakenedControlGroupFix.Installed
+            + " experimentalWarp=" + ExperimentalWarpFix.Installed);
     }
 
     private static void Install(string subsystem, Action install)

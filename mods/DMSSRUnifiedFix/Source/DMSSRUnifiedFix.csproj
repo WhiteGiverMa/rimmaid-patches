@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>1.1.1</Version>
+    <Version>1.1.4</Version>
     <AssemblyName>DMSSRUnifiedFix</AssemblyName>
     <RootNamespace>WhiteGiver.DMSSRUnifiedFix</RootNamespace>
     <GameRoot Condition="'$(GameRoot)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>

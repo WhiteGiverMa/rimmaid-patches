@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- The first ingredient offers two alternatives, so vanilla requires a
+       fixedIngredientFilter to decide which of them a bill may consume. Without it
+       every crystal is rejected and the bill reports a missing ingredient. -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/RecipeDef[defName="DMSSR_Make_ExperimentalWarp"]/fixedIngredientFilter</xpath>
+    <match Class="PatchOperationRemove">
+      <xpath>Defs/RecipeDef[defName="DMSSR_Make_ExperimentalWarp"]/fixedIngredientFilter</xpath>
+    </match>
+  </Operation>
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <li Class="PatchOperationTest">
+        <xpath>Defs/RecipeDef[defName="DMSSR_Make_ExperimentalWarp"]</xpath>
+      </li>
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/RecipeDef[defName="DMSSR_Make_ExperimentalWarp"]</xpath>
+        <value>
+          <fixedIngredientFilter>
+            <thingDefs>
+              <li>DMSSR_FlowCrystal</li>
+              <li>DMSSR_ImpureFlowCrystal</li>
+            </thingDefs>
+          </fixedIngredientFilter>
+        </value>
+      </li>
+    </operations>
+  </Operation>
+</Patch>

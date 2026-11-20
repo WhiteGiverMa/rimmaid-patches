@@ -69,7 +69,7 @@ internal static class Audit
         if (File.Exists(patchPath))
         {
             using AssemblyDefinition patch = AssemblyDefinition.ReadAssembly(patchPath);
-            Require(patch.Name.Version == new Version(1, 1, 1, 0), "sidecar assembly version 1.1.1.0");
+            Require(patch.Name.Version == new Version(1, 1, 4, 0), "sidecar assembly version 1.1.4.0");
             Require(!patch.MainModule.GetMemberReferences().Any(member => member.DeclaringType.FullName.StartsWith("Verse.Scribe_", StringComparison.Ordinal)), "sidecar has zero persistent Scribe_* references");
         }
     }

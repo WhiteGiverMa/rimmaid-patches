@@ -18,21 +18,10 @@ namespace DMSSRUnifiedFix.Validation.StatPathPerf;
 
 internal static class Tests
 {
-    private static readonly Func<Pawn_PathFollower, IntVec3, float> PathCost =
-        (Func<Pawn_PathFollower, IntVec3, float>)AccessTools
-            .Method(typeof(Pawn_PathFollower), "CostToMoveIntoCell", new[] { typeof(IntVec3) })!
-            .CreateDelegate(typeof(Func<Pawn_PathFollower, IntVec3, float>));
-
     private static readonly Func<StatWorker, StatRequest, bool, float> StatValue =
         (Func<StatWorker, StatRequest, bool, float>)AccessTools
             .Method(typeof(StatWorker), "GetValueUnfinalized", new[] { typeof(StatRequest), typeof(bool) })!
             .CreateDelegate(typeof(Func<StatWorker, StatRequest, bool, float>));
-
-    private static readonly MethodInfo TryGetCompFast =
-        AccessTools.Method(
-            typeof(Patch_MechCustomization_ApplyStatPreFinalize),
-            "TryGetCompFast",
-            new[] { typeof(Pawn), typeof(HediffComp_MechCustomization).MakeByRefType() })!;
 
     private static readonly MethodInfo UpstreamStatPostfix =
         AccessTools.Method(typeof(Patch_MechCustomization_ApplyStatPreFinalize), "Postfix")!;
@@ -42,7 +31,6 @@ internal static class Tests
     private static Fixture fixture = null!;
 
     private static readonly IntVec3 Start = new(2, 0, 2);
-    private static readonly IntVec3 Target = new(3, 0, 2);
 
     internal static void Run(string mode, Type modType)
     {
@@ -56,10 +44,13 @@ internal static class Tests
             Check(Activator.CreateInstance(modType, new object?[] { null }) != null, "Mod constructor failed.");
             Type startup = modType.Assembly.GetTypes().Single(t => t.GetCustomAttributes(typeof(StaticConstructorOnStartup), false).Length != 0);
             RuntimeHelpers.RunClassConstructor(startup.TypeHandle);
-            Check(PathCostPatches.SingleClampInstalled, "our startup before upstream startup failed");
+            Check(HediffCachePatches.Installed && MechStatPatch.GateInstalled && MechStatPatch.CompCacheInstalled
+                && CapacityPatches.Installed && RenderPatches.Installed && MechLookupPatches.HelperCount == 5,
+                "our startup before upstream startup failed");
             RuntimeHelpers.RunClassConstructor(typeof(DMSSR.LocalMeshHarmony).TypeHandle);
             RuntimeHelpers.RunClassConstructor(typeof(DMSSR.Misc.ModStartup).TypeHandle);
-            Check(PathCostPatches.SingleClampInstalled, "upstream startup undid repair");
+            Check(HediffCachePatches.Installed && MechStatPatch.GateInstalled && MechStatPatch.CompCacheInstalled,
+                "upstream startup undid repair");
             Console.WriteLine("PASS alternate cctor order: our startup forces real EnsurePatched first.");
         }
         else if (mode == "late-red")
@@ -92,46 +83,11 @@ internal static class Tests
         UpstreamPatches.Apply();
 
         Check(!AnyOwnerPatches(), "RED loaded a patch owned by the performance mod.");
-        Check(HasPatch(UpstreamPatches.InstanceMethod, prefix: false), "DMSSR's instance CostToMoveIntoCell postfix is missing.");
         Check(HasPatch(UpstreamPatches.StaticMethod, prefix: false), "DMSSR's static CostToMoveIntoCell postfix is missing.");
         Check(HasPatch(UpstreamPatches.StatMethod, prefix: false), "DMSSR's StatWorker postfix is missing.");
-        Console.WriteLine("       upstream patches: both CostToMoveIntoCell overloads + StatWorker.GetValueUnfinalized.");
+        Console.WriteLine("       upstream patches: static CostToMoveIntoCell (deduped upstream) + StatWorker.GetValueUnfinalized.");
 
-        MethodInfo delegates = AccessTools.Method(typeof(PathCostPatches), "InstanceOverloadDelegatesToStatic")!;
-        Check((bool)delegates.Invoke(null, null)!, "vanilla CoostToMoveIntoCell(IntVec3) does not delegate to the static overload.");
-        Console.WriteLine("       vanilla CostToMoveIntoCell(IntVec3) is a pure delegation to CostToMoveIntoCell(Pawn, IntVec3).");
-
-        // ---- bottleneck 1: the clamp runs twice per step and scans every hediff each time
-        Pawn plain = fx.NewPawn(fx.HumanDef, Start);
-        fx.AddNoiseHediffs(plain, 30);
-
-        Probe.Reset();
-        float plainCost = PathCost(plain.pather, Target);
-        Check(Probe.ClampCalls == 2, $"upstream ran ClampPathCostForAbility {Probe.ClampCalls} times per pather.CostToMoveIntoCell(c), expected 2.");
-        Check(Probe.HasIgnoreTerrainPenaltyCalls == 2, $"upstream ran the hediff scan {Probe.HasIgnoreTerrainPenaltyCalls} times per path step, expected 2.");
-        Check(plain.health.hediffSet.hediffs.Count == 30, "the fixture pawn does not have 30 hediffs.");
-        Check(plainCost.Equals(Fixture.RawCellCost), $"upstream path cost {plainCost} != vanilla raw cost {Fixture.RawCellCost} for a pawn without the flag.");
-        Console.WriteLine($"       30-hediff pawn: 2 clamps x 30 hediffs = 60 hediff visits per path step (was {plainCost}).");
-
-        // ---- the double subtraction: only visible when vanilla cost > moveTicks + terrain
-        Pawn flagged = fx.NewPawn(fx.HumanDef, Start);
-        fx.AddNoiseHediffs(flagged, 29);
-        fx.AddIgnoreCompHediff(flagged);
-
-        Probe.Reset();
-        float flaggedCost = PathCost(flagged.pather, Target);
-        Check(Probe.HasIgnoreTerrainPenaltyCalls == 2, "upstream did not scan the flagged pawn twice.");
-
-        float single = Clamp(flagged, Fixture.RawCellCost);
-        float doubled = Clamp(flagged, single);
-        Check(single.Equals(160f), $"single clamp should be 160, got {single}.");
-        Check(doubled.Equals(120f), $"double clamp should be 120, got {doubled}.");
-        Check(flaggedCost.Equals(doubled), $"upstream path cost {flaggedCost} != double-clamped {doubled}.");
-        Check(!doubled.Equals(single), "the double subtraction is not observable in this fixture.");
-        Console.WriteLine($"       flagged pawn: upstream returns {flaggedCost} (terrain penalty subtracted twice); one clamp gives {single}.");
-        Console.WriteLine($"       => this is also a behaviour bug: 160 ticks intended, {flaggedCost} ticks delivered.");
-
-        // ---- bottleneck 2: every stat query on every mechanoid walks the hediff list first
+        // ---- bottleneck: every stat query on every mechanoid walks the hediff list first
         (Pawn mech, HediffComp_MechCustomization comp) = NewMechWithCustomization(fx, out Pawn mechControl);
 
         Probe.Reset();
@@ -154,8 +110,7 @@ internal static class Tests
         RenderTests.Run(fx, fixedMode: false);
 
         Probe.Remove();
-        ReportPerfMatrix(plain, mech);
-        ReportHediffScaling(fx);
+        ReportPerfMatrix(mech);
         _ = comp;
         _ = mechControl;
     }
@@ -172,10 +127,7 @@ internal static class Tests
         UpstreamPatches.Apply(metadataOnly: true);
 
         Console.WriteLine(
-            $"       mod state: singleClamp={PathCostPatches.SingleClampInstalled}"
-            + $" cacheOnly={PathCostPatches.CacheOnlyFallbackInstalled}"
-            + $" delegation={PathCostPatches.DelegationVerified}"
-            + $" statGate={MechStatPatch.GateInstalled}"
+            $"       mod state: statGate={MechStatPatch.GateInstalled}"
             + $" compCache={MechStatPatch.CompCacheInstalled}"
             + $" dirtyCache={HediffCachePatches.Installed}");
         foreach (MethodBase patched in OwnedMethods())
@@ -187,13 +139,8 @@ internal static class Tests
         }
 
         // ---- patch wiring
-        Check(PathCostPatches.DelegationVerified, "the instance CostToMoveIntoCell overload no longer delegates to the static one.");
-        Check(PathCostPatches.SingleClampInstalled, "the single-clamp path was not installed.");
-        Check(!PathCostPatches.CacheOnlyFallbackInstalled, "the mod fell back to cache-only mode.");
-        Check(!HasPatch(UpstreamPatches.InstanceMethod, prefix: false), "DMSSR's duplicate instance postfix is still installed.");
-        Check(HasPatch(UpstreamPatches.StaticMethod, prefix: false), "DMSSR's static postfix was removed by accident.");
+        Check(HasPatch(UpstreamPatches.StaticMethod, prefix: false), "DMSSR's static path-cost postfix was removed by accident.");
         Check(HasPatch(UpstreamPatches.StatMethod, prefix: false), "DMSSR's StatWorker postfix should still be installed (it is gated, not replaced).");
-        Check(HasOwnerPatch(AccessTools.Method(typeof(AbilityPathCostUtility), "ClampPathCostForAbility")!, prefix: true), "the clamp prefix is missing.");
         Check(HasOwnerPatch(AccessTools.Method(typeof(HediffSet), nameof(HediffSet.DirtyCache), Type.EmptyTypes)!, prefix: false), "the DirtyCache postfix is missing.");
         Check(HasOwnerPatch(UpstreamPatches.StatMethod.Postfix, prefix: true), "the stat gate prefix is missing.");
         Check(MechStatPatch.GateInstalled, "the stat gate was not installed.");
@@ -201,11 +148,10 @@ internal static class Tests
         Check(HediffCachePatches.Installed, "the hediff cache invalidation hook was not installed.");
 
         HashSet<MethodBase> owned = OwnedMethods().Where(m => Harmony.GetPatchInfo(m)!.Prefixes.Concat(Harmony.GetPatchInfo(m)!.Postfixes).Concat(Harmony.GetPatchInfo(m)!.Transpilers).Any(p => p.owner == Program.Owner && (p.PatchMethod.DeclaringType?.Namespace == "WhiteGiver.DMSSRUnifiedFix.StatPathPerf" || p.PatchMethod.DeclaringType == typeof(HediffCachePatches)))).ToHashSet();
-        Check(owned.Count == 18, $"the mod patched {owned.Count} methods instead of 18: {string.Join(", ", owned.Select(Describe))}");
+        Check(owned.Count == 17, $"the mod patched {owned.Count} methods instead of 17: {string.Join(", ", owned.Select(Describe))}");
         Check(owned.All(m => m.Name != "IsSupportedPawn" && m.Name != "ApplyToSpawnedMechs"), "Legion compatibility hooks were touched.");
         var expected = new HashSet<MethodBase>
         {
-            AccessTools.Method(typeof(AbilityPathCostUtility), "ClampPathCostForAbility"),
             AccessTools.Method(typeof(HediffSet), nameof(HediffSet.DirtyCache), Type.EmptyTypes),
             AccessTools.Method(typeof(Patch_MechCustomization_ApplyStatPreFinalize), "Postfix"),
             AccessTools.Method(typeof(Patch_MechCustomization_ApplyStatPreFinalize), "TryGetCompFast"),
@@ -225,79 +171,12 @@ internal static class Tests
             AccessTools.Method(typeof(DMSSR.Mech.ModExtension_WingedMech).Assembly.GetType("DMSSR.Mech.HydraFlightRendering"), "TryGetTransform"),
         };
         Check(owned.SetEquals(expected), "Runtime patch target whitelist mismatch.");
-        Console.WriteLine("       patch wiring: 18 targets.");
+        Console.WriteLine("       patch wiring: 17 targets.");
 
         // ---- the stat set is read from DMSSR itself, not duplicated
         MechStatSetMayAffectProbe(fx);
 
-        // ---- bottleneck 1: one clamp, zero upstream scans, cached flag
-        Pawn plain = fx.NewPawn(fx.HumanDef, Start);
-        fx.AddNoiseHediffs(plain, 30);
-
-        HediffFlagCache.ResetForValidation();
-        Probe.Reset();
-        float plainCost = PathCost(plain.pather, Target);
-        Check(Probe.ClampCalls == 1, $"the clamp ran {Probe.ClampCalls} times per path step, expected exactly 1.");
-        Check(Probe.HasIgnoreTerrainPenaltyCalls == 0, "upstream's hediff scan still ran on the fixed path.");
-        Check(HediffFlagCache.ScanCount == 1, $"the cache scanned {HediffFlagCache.ScanCount} times for one pawn, expected 1.");
-        Check(plainCost.Equals(Fixture.RawCellCost), $"path cost changed for an unflagged pawn: {plainCost} != {Fixture.RawCellCost}.");
-        Console.WriteLine($"       unflagged 30-hediff pawn: 1 clamp, 0 hediff visits, cost {plainCost} (identical to upstream).");
-
-        Probe.Reset();
-        for (int i = 0; i < 10_000; i++)
-        {
-            _ = PathCost(plain.pather, Target);
-        }
-
-        Check(HediffFlagCache.ScanCount == 1, $"the pawn cache re-scanned {HediffFlagCache.ScanCount} times over 10k path steps.");
-        Check(Probe.HasIgnoreTerrainPenaltyCalls == 0, "upstream's scan ran during the 10k-step loop.");
-        Check(Probe.ClampCalls == 10_000, $"the clamp ran {Probe.ClampCalls} times over 10k steps, expected 10k.");
-        Console.WriteLine("       10,000 further path steps: 0 additional hediff scans.");
-
-        // ---- flagged pawn: single subtraction, exactly the intended value
-        Pawn flagged = fx.NewPawn(fx.HumanDef, Start);
-        fx.AddNoiseHediffs(flagged, 29);
-        fx.AddIgnoreCompHediff(flagged);
-        float flaggedCost = PathCost(flagged.pather, Target);
-        Check(flaggedCost.Equals(160f), $"flagged pawn path cost should be the single-clamp 160, got {flaggedCost}.");
-        Console.WriteLine($"       flagged pawn: {flaggedCost} ticks (single clamp; upstream delivered 120).");
-
-        // extension-based flag
-        Pawn ext = fx.NewPawn(fx.HumanDef, Start);
-        fx.AddNoiseHediffs(ext, 29);
-        fx.AddIgnoreExtensionHediff(ext);
-        Check(PathCost(ext.pather, Target).Equals(160f), "the DefModExtension flag is not honoured.");
-
-        // a plain Hediff whose def lists the comp must NOT count (upstream cannot see it either)
-        Pawn plainHediff = fx.NewPawn(fx.HumanDef, Start);
-        fx.AddNoiseHediffs(plainHediff, 29);
-        fx.AddPlainIgnoreCompHediff(plainHediff);
-        Check(!HediffFlagCache.HasIgnoreTerrainMovePenalty(plainHediff), "a plain Hediff was treated as if it carried the comp.");
-        Check(PathCost(plainHediff.pather, Target).Equals(Fixture.RawCellCost), "a plain Hediff changed the path cost.");
-        Console.WriteLine("       extension flag and comp flag both honoured; plain Hediff with compClass-only def correctly ignored.");
-
-        // ---- cache invalidation on hediff add/remove
-        Pawn dynamic = fx.NewPawn(fx.HumanDef, Start);
-        fx.AddNoiseHediffs(dynamic, 5);
-        Check(PathCost(dynamic.pather, Target).Equals(Fixture.RawCellCost), "dynamic pawn starts flagged.");
-
-        HediffWithComps added = fx.AddIgnoreCompHediff(dynamic);
-        float expectedFlagged = Clamp(dynamic, Fixture.RawCellCost);
-        float actualFlagged = PathCost(dynamic.pather, Target);
-        Check(actualFlagged.Equals(expectedFlagged), $"adding the hediff did not invalidate the cache: {actualFlagged} != {expectedFlagged}.");
-        Check(!actualFlagged.Equals(Fixture.RawCellCost), "the clamp did not engage after adding the hediff.");
-
-        fx.RemoveHediff(dynamic, added);
-        Check(PathCost(dynamic.pather, Target).Equals(Fixture.RawCellCost), "removing the hediff did not invalidate the cache.");
-
-        // a raw list mutation (no DirtyCache) must still be caught by the count check
-        HediffWithComps sneaky = new() { def = fx.IgnoreCompDef, pawn = dynamic, comps = new List<HediffComp> { new HediffComp_IgnoreTerrainMovePenalty() } };
-        dynamic.health.hediffSet.hediffs.Add(sneaky);
-        Check(HediffFlagCache.HasIgnoreTerrainMovePenalty(dynamic), "a hediff added without DirtyCache was not observed.");
-        dynamic.health.hediffSet.hediffs.Remove(sneaky);
-        Console.WriteLine("       invalidation: DirtyCache add/remove and direct list mutation all observed.");
-
-        // ---- bottleneck 2: O(1) skip for unrelated stats, cached lookup for relevant ones
+        // ---- bottleneck: O(1) skip for unrelated stats, cached lookup for relevant ones
         (Pawn mech, HediffComp_MechCustomization comp) = NewMechWithCustomization(fx, out Pawn mechControl);
 
         HediffFlagCache.ResetForValidation();
@@ -385,14 +264,12 @@ internal static class Tests
         // ---- other pawn types and edge cases are untouched
         Pawn animal = fx.NewPawn(fx.HumanDef, Start);
         fx.AddNoiseHediffs(animal, 3);
-        Check(PathCost(animal.pather, Target).Equals(Fixture.RawCellCost), "a pawn with a small hediff list changed cost.");
         Check(Stat(animal, "MoveSpeed").Equals(1f), "a non-mech stat was modified.");
         HotspotTests.Run(fx, fixedMode: true);
         RenderTests.Run(fx, fixedMode: true);
 
         Probe.Remove();
-        ReportPerfMatrix(plain, mech);
-        ReportHediffScaling(fx);
+        ReportPerfMatrix(mech);
         HotspotBenchmarks.Run(fx);
     }
 
@@ -408,12 +285,13 @@ internal static class Tests
         Check(!HasPatch(staticMethod, upstreamStatic, false), "Mod constructor prematurely ran DMSSR PatchAll.");
         UpstreamPatches.EnsurePatched();
         Check(HasPatch(staticMethod, upstreamStatic, false), "Real EnsurePatched did not install the static postfix.");
+        Check((Harmony.GetPatchInfo(instance)?.Postfixes.Count ?? 0) == 0, "Real EnsurePatched should leave instance CostToMoveIntoCell unpatched.");
         Type? startup = modType.Assembly.GetTypes().SingleOrDefault(t => t.GetCustomAttributes(typeof(StaticConstructorOnStartup), false).Length != 0);
         if (startup != null) RuntimeHelpers.RunClassConstructor(startup.TypeHandle);
-        Check(PathCostPatches.SingleClampInstalled == expectFixed, "Late startup single-clamp state is incorrect.");
-        Check(HasPatch(instance, AccessTools.Method(typeof(Patch_Ability_PathCost_Instance), "Postfix"), false) != expectFixed,
-            "Late startup duplicate postfix state is incorrect.");
-        Console.WriteLine($"PASS real load order: Mod ctor -> DMSSR.EnsurePatched -> startup repair; singleClamp={PathCostPatches.SingleClampInstalled}.");
+        Check(MechStatPatch.GateInstalled == expectFixed, "Late startup stat gate state is incorrect.");
+        Check(HasOwnerPatch(UpstreamStatPostfix, prefix: true) == expectFixed,
+            "Late startup stat gate prefix state is incorrect.");
+        Console.WriteLine($"PASS real load order: Mod ctor -> DMSSR.EnsurePatched -> startup repair; statGate={MechStatPatch.GateInstalled}.");
         if (expectFixed)
         {
             MethodInfo apply = AccessTools.Method(modType, "ApplyPatches");
@@ -421,8 +299,10 @@ internal static class Tests
             UpstreamPatches.EnsurePatched();
             RuntimeHelpers.RunClassConstructor(typeof(DMSSR.LocalMeshHarmony).TypeHandle);
             RuntimeHelpers.RunClassConstructor(typeof(DMSSR.Misc.ModStartup).TypeHandle);
-            Check(!HasPatch(instance, AccessTools.Method(typeof(Patch_Ability_PathCost_Instance), "Postfix"), false),
-                "Repeated upstream startup restored duplicate clamp.");
+            Check(MechStatPatch.GateInstalled && HediffCachePatches.Installed,
+                "Repeated upstream startup disrupted installed patches.");
+            Check((Harmony.GetPatchInfo(instance)?.Postfixes.Count ?? 0) == 0,
+                "Repeated upstream startup added an instance path-cost postfix.");
         }
     }
 
@@ -465,22 +345,10 @@ internal static class Tests
         return (float)args[3]!;
     }
 
-    private static float Clamp(Pawn pawn, float cost)
-    {
-        AbilityPathCostUtility.ClampPathCostForAbility(pawn, Tests.Target, ref cost);
-        return cost;
-    }
-
-    /// <summary>
-    /// Same-process A/B/C: vanilla, DMSSR only, DMSSR + this fix. The three states are measured in
-    /// interleaved rounds (A,B,C,A,B,C,A,B,C) and the best round per state is reported, so machine
-    /// drift (this runs next to a live RimWorld) cannot favour one state.
-    /// </summary>
-    private static void ReportPerfMatrix(Pawn plain, Pawn mech)
+    private static void ReportPerfMatrix(Pawn mech)
     {
         const int iterations = 500_000;
         string[] names = { "vanilla", "upstream", "fixed" };
-        double[] pathBest = { double.MaxValue, double.MaxValue, double.MaxValue };
         double[] statBest = { double.MaxValue, double.MaxValue, double.MaxValue };
         Harmony modHarmony = new(Program.Owner);
         StatWorker worker = fixture.Worker("ArmorRating_Sharp");
@@ -493,11 +361,9 @@ internal static class Tests
                 SetPerfState(state, modHarmony);
                 for (int i = 0; i < 2000; i++)
                 {
-                    _ = PathCost(plain.pather, Target);
                     _ = StatValue(worker, request, false);
                 }
 
-                pathBest[state] = Math.Min(pathBest[state], MeasurePath(plain, iterations));
                 statBest[state] = Math.Min(statBest[state], MeasureStat(worker, request, iterations));
             }
         }
@@ -506,54 +372,8 @@ internal static class Tests
         for (int i = 0; i < names.Length; i++)
         {
             Console.WriteLine(
-                $"       [perf] {names[i],-8} path step {pathBest[i] / iterations * 1000.0:F3} us"
-                + $" | unrelated stat {statBest[i] / iterations * 1000.0:F3} us");
+                $"       [perf] {names[i],-8} unrelated stat {statBest[i] / iterations * 1000.0:F3} us");
         }
-    }
-
-    /// <summary>Same measurement on a hediff-heavy pawn: the upstream scan is O(hediffs), the fix is not.</summary>
-    private static void ReportHediffScaling(Fixture fx)
-    {
-        const int iterations = 200_000;
-        Pawn heavy = fx.NewPawn(fx.HumanDef, Start);
-        for (int i = 0; i < 300; i++)
-        {
-            // Added directly (no DirtyCache) because the validation DirtyCache prefix has already been
-            // removed at this point; the cache's hediff-count guard picks the new list up.
-            heavy.health.hediffSet.hediffs.Add(new HediffWithComps
-            {
-                def = fx.NoiseDef,
-                pawn = heavy,
-                comps = new List<HediffComp>(),
-            });
-        }
-        Harmony modHarmony = new(Program.Owner);
-        double upstream = double.MaxValue;
-        double fixedCost = double.MaxValue;
-
-        for (int round = 0; round < 3; round++)
-        {
-            SetPerfState(1, modHarmony);
-            for (int i = 0; i < 500; i++)
-            {
-                _ = PathCost(heavy.pather, Target);
-            }
-
-            upstream = Math.Min(upstream, MeasurePath(heavy, iterations));
-
-            SetPerfState(2, modHarmony);
-            for (int i = 0; i < 500; i++)
-            {
-                _ = PathCost(heavy.pather, Target);
-            }
-
-            fixedCost = Math.Min(fixedCost, MeasurePath(heavy, iterations));
-        }
-
-        SetPerfState(2, modHarmony);
-        Console.WriteLine(
-            $"       [perf] 300-hediff pawn: upstream {upstream / iterations * 1000.0:F3} us/step"
-            + $" vs fixed {fixedCost / iterations * 1000.0:F3} us/step ({upstream / Math.Max(fixedCost, 0.001):F1}x).");
     }
 
     private static void SetPerfState(int state, Harmony modHarmony)
@@ -572,22 +392,7 @@ internal static class Tests
         }
 
         HediffCachePatches.Apply(modHarmony);
-        PathCostPatches.Apply(modHarmony);
         MechStatPatch.Apply(modHarmony);
-    }
-
-    private static double MeasurePath(Pawn pawn, int iterations)
-    {
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        float sink = 0f;
-        for (int i = 0; i < iterations; i++)
-        {
-            sink += PathCost(pawn.pather, Target);
-        }
-
-        stopwatch.Stop();
-        GC.KeepAlive(sink);
-        return stopwatch.Elapsed.TotalMilliseconds;
     }
 
     private static double MeasureStat(StatWorker worker, StatRequest request, int iterations)
