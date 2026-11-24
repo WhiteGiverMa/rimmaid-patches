@@ -1,3 +1,5 @@
+> **已退役（2026-11-24）**：上游「联合轻工家具拓展」（`KindSeal.UFLI`，工坊 `3651799915`，2026-11-22 更新的 `UFRecipes.dll` `66875363…`）已在 `MapComponent_UFAutoVirtualWorkerPool` 中自行实装修复：`CreateWorker()` 改用 `forceNoIdeo: true, forceNoBackstory: true` 并调用 `MakeWorkCapable` 清理禁用工作的基因/特性、替换无禁用工作童年/成年背景并刷新 `Notify_DisabledWorkTypesChanged()`，`Refresh` 已将所有技能的 `Level` 统一设为 `skillLevel`，同时移除了 `TryAcquire` 与 `Refresh` 原先冗余的 `SkillDef` 参数（触发本补丁预设的签名漂移退役自检）。已移入 `archive/` 留档，不建议继续安装。
+
 # 联合轻工虚拟工具人修复 / UFLI Virtual Worker Fix
 
 - **packageId**: `whitegiver.ufli.virtualworkerfix`
