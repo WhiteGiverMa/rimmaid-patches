@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>DMS - Tribute Collector Isolation / 征募代理隔离修复</name>
+  <author>WhiteGiver (local patch)</author>
+  <packageId>whitegiver.dms.tributecollectorfix</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <description>将 DMS 征募代理移出原版帝国专用的 TributeCollector 随机池，避免帝国征募事件抽到冲压零件交易清单。只修改 DMS 征募代理的分类；保留双方的物品、囚犯交易、声望数值、DMS 商队与呼叫许可。纯 XML，无需 Harmony。
+
+Separates the DMS recruitment agency from the Empire's TributeCollector event pool. Changes only its category; preserves both inventories, prisoner trading, honor values, DMS caravans and the recruitment-agency permit. XML only; no Harmony required.</description>
+  <modDependencies>
+    <li>
+      <packageId>ludeon.rimworld.royalty</packageId>
+      <displayName>Royalty</displayName>
+    </li>
+    <li>
+      <packageId>Aoba.DeadManSwitch.Core</packageId>
+      <displayName>The Dead Man's Switch II</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3819799478</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>ludeon.rimworld.royalty</li>
+    <li>Aoba.DeadManSwitch.Core</li>
+  </loadAfter>
+</ModMetaData>

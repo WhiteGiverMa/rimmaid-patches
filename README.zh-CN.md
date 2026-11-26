@@ -89,6 +89,7 @@
 | `DMSLCommanderPerfFix` | [军团指挥官与侦察性能修复](mods/DMSLCommanderPerfFix/README.md)，用 `ThingDef` 标记集与读线程安全的弱引用 comp 缓存取代指挥官自主性扫描，消除 Overseer 查找的嵌套闭包分配，并按 `Game` 缓存 AXF12 侦察管理器 | 2026-11-14 新增，真实 DLL 13 项 RED / 41 项 GREEN 检查与 16 线程 Waylith 预绘制压力测试通过，游戏内 QA 待做 |
 | `UnburnedDNAFPerfFix` | [Unburned 与 Do Not Avoid Fire 性能修复](mods/UnburnedDNAFPerfFix/README.md)，无火地图跳过 Unburned 的待命扫描、替换其强引用密封装备缓存，并修复 Do Not Avoid Fire 在 1.7 的寻路代价归属、危险成本、byref 转发与原生缓冲生命周期 | 2026-11-14 新增，31 项 RED / 60 项 GREEN、无 DNAF 29 项 GREEN、sidecar 先启动 60 项 GREEN 检查通过，游戏内 QA 待做 |
 | `MechanitorBandwidthRelay` | [带宽转接基站](mods/MechanitorBandwidthRelay/README.md)，复用原版生物技术频带节点外观；同图配对后可跨图划拨空余带宽 | 1.7.5013 离线验证通过，2026-11-26 用户确认游戏内验证通过 |
+| `DMSTributeCollectorFix` | [DMS 征募代理隔离修复](mods/DMSTributeCollectorFix/README.md)，将 `DMS_Caravan_TributeCollector` 的分类改离原版帝国专用 `TributeCollector` 事件随机池，保留 DMS 普通商队、呼叫许可与艾丽萨引用 | 2026-11-12 新增，纯 XML，88 项离线 RED/GREEN 检查通过，2026-11-26 用户确认游戏内验证通过 |
 
 完整的上游 mod 历史本地镜像被有意排除。`archive/` 保留给已退役的实验（如 [ConduitRoomStatsFix](archive/ConduitRoomStatsFix/README.zh-CN.md)、[MTOEWYHealthInheritanceFix](archive/MTOEWYHealthInheritanceFix/README.md)、[Fix_WRMegaCorp_QuestPartCSC](archive/Fix_WRMegaCorp_QuestPartCSC/README.md)、[DMSSRSolitonChargeDecay](archive/DMSSRSolitonChargeDecay/README.md)，后者于 2026-11-13 在上游修复及作者确认重型停火清零设计后退役）；`tools/` 保留给非玩法补丁的诊断工具（如 [GizmoDiag](tools/GizmoDiag/README.zh-CN.md)）。
 

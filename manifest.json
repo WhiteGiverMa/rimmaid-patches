@@ -363,6 +363,12 @@
       "packageId": "whitegiver.mechanitor.bandwidthrelay",
       "status": "verified-in-game",
       "source": "local canonical source; standalone Biotech/Harmony gameplay mod; 1.1.0 keeps locally established bandwidth links active across maps and caravans; real tracker and Scribe validation on 1.7.5013; in-game QA confirmed by user 2026-11-26"
+    },
+    {
+      "directory": "DMSTributeCollectorFix",
+      "packageId": "whitegiver.dms.tributecollectorfix",
+      "status": "verified-in-game",
+      "source": "local canonical source; XML-only sidecar isolating DMS_Caravan_TributeCollector from the Empire TributeCollector random event pool while preserving DMS caravans, permits and Elisa references; 88 offline RED/GREEN checks passed; in-game QA confirmed by user 2026-11-26"
     }
   ],
   "excluded": [

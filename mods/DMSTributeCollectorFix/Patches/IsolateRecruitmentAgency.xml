@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- The vanilla tribute incident selects this category globally and ignores faction.
+       DMS normal caravans and permits select the trader by defName, not this category. -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/TraderKindDef[defName="DMS_Caravan_TributeCollector" and faction="DMS_Army"]/category[text()="TributeCollector"]</xpath>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/TraderKindDef[defName="DMS_Caravan_TributeCollector" and faction="DMS_Army"]/category[text()="TributeCollector"]</xpath>
+      <value>
+        <category>DMS_TributeCollector</category>
+      </value>
+    </match>
+  </Operation>
+</Patch>
