@@ -361,8 +361,8 @@
     {
       "directory": "MechanitorBandwidthRelay",
       "packageId": "whitegiver.mechanitor.bandwidthrelay",
-      "status": "game-qa-pending",
-      "source": "local canonical source; standalone Biotech/Harmony gameplay mod for same-map bandwidth lending; real tracker and Scribe validation on 1.7.5013; game QA pending"
+      "status": "verified-in-game",
+      "source": "local canonical source; standalone Biotech/Harmony gameplay mod; 1.1.0 keeps locally established bandwidth links active across maps and caravans; real tracker and Scribe validation on 1.7.5013; in-game QA confirmed by user 2026-11-26"
     }
   ],
   "excluded": [

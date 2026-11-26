@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WGBandwidthRelay.Configure>Configure bandwidth</WGBandwidthRelay.Configure>
+  <WGBandwidthRelay.ConfigureDesc>Link two mechanitors on this map and choose how much spare bandwidth to lend. The link stays active when they leave. No mech or control group changes owner.</WGBandwidthRelay.ConfigureDesc>
+  <WGBandwidthRelay.Clear>Disconnect</WGBandwidthRelay.Clear>
+  <WGBandwidthRelay.Donor>Lender</WGBandwidthRelay.Donor>
+  <WGBandwidthRelay.Recipient>Receiver</WGBandwidthRelay.Recipient>
+  <WGBandwidthRelay.Select>Choose mechanitor</WGBandwidthRelay.Select>
+  <WGBandwidthRelay.Missing>Unavailable</WGBandwidthRelay.Missing>
+  <WGBandwidthRelay.Swap>Swap sides</WGBandwidthRelay.Swap>
+  <WGBandwidthRelay.NoCandidate>No other player mechanitor on this map</WGBandwidthRelay.NoCandidate>
+  <WGBandwidthRelay.Amount>Requested bandwidth</WGBandwidthRelay.Amount>
+  <WGBandwidthRelay.Max>Fill spare</WGBandwidthRelay.Max>
+  <WGBandwidthRelay.AmountInvalid>Enter a positive whole number of bandwidth units.</WGBandwidthRelay.AmountInvalid>
+  <WGBandwidthRelay.Available>Spare bandwidth available to this relay: {0}</WGBandwidthRelay.Available>
+  <WGBandwidthRelay.Route>{0} → {1}</WGBandwidthRelay.Route>
+  <WGBandwidthRelay.Flow>Bandwidth transferred: {0} / {1}</WGBandwidthRelay.Flow>
+  <WGBandwidthRelay.Upcoming>Bandwidth after applying: {0} / {1}</WGBandwidthRelay.Upcoming>
+  <WGBandwidthRelay.Unconfigured>No bandwidth link configured.</WGBandwidthRelay.Unconfigured>
+  <WGBandwidthRelay.NoPower>Paused: no power. The link will resume when power returns.</WGBandwidthRelay.NoPower>
+  <WGBandwidthRelay.Unavailable>Paused: one or both mechanitors are no longer eligible.</WGBandwidthRelay.Unavailable>
+  <WGBandwidthRelay.NoSpare>Paused: the lender has no spare bandwidth.</WGBandwidthRelay.NoSpare>
+  <WGBandwidthRelay.Limited>Limited by the lender's spare bandwidth.</WGBandwidthRelay.Limited>
+  <WGBandwidthRelay.InvalidSelection>Both player mechanitors must be on the relay's map to create or change a pairing.</WGBandwidthRelay.InvalidSelection>
+  <WGBandwidthRelay.InvalidBuilding>The bandwidth relay is no longer available.</WGBandwidthRelay.InvalidBuilding>
+  <WGBandwidthRelay.OverCapacity>{0}: {1} used, {2} capacity after this change.</WGBandwidthRelay.OverCapacity>
+  <WGBandwidthRelay.ConfirmLoss>This change leaves a mechanitor over bandwidth. The game may disconnect mechs if capacity is not restored in time.
+
+{0}
+
+Apply anyway?</WGBandwidthRelay.ConfirmLoss>
+</LanguageData>

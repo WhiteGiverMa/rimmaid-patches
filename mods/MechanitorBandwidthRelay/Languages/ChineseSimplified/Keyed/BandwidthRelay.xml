@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WGBandwidthRelay.Configure>设置带宽转接</WGBandwidthRelay.Configure>
+  <WGBandwidthRelay.ConfigureDesc>在本地图选择供给方和接收方，设置要转接的带宽。接通后，离开地图也能维持连接，不改变机兵或控制组的归属。</WGBandwidthRelay.ConfigureDesc>
+  <WGBandwidthRelay.Clear>解除转接</WGBandwidthRelay.Clear>
+  <WGBandwidthRelay.Donor>供给方</WGBandwidthRelay.Donor>
+  <WGBandwidthRelay.Recipient>接收方</WGBandwidthRelay.Recipient>
+  <WGBandwidthRelay.Select>选择机械师</WGBandwidthRelay.Select>
+  <WGBandwidthRelay.Missing>不可用</WGBandwidthRelay.Missing>
+  <WGBandwidthRelay.Swap>对调</WGBandwidthRelay.Swap>
+  <WGBandwidthRelay.NoCandidate>本地图没有其他己方机械师</WGBandwidthRelay.NoCandidate>
+  <WGBandwidthRelay.Amount>目标带宽</WGBandwidthRelay.Amount>
+  <WGBandwidthRelay.Max>填入可用量</WGBandwidthRelay.Max>
+  <WGBandwidthRelay.AmountInvalid>请输入大于零的整数带宽。</WGBandwidthRelay.AmountInvalid>
+  <WGBandwidthRelay.Available>本基站可从供给方划拨：{0}</WGBandwidthRelay.Available>
+  <WGBandwidthRelay.Route>{0} → {1}</WGBandwidthRelay.Route>
+  <WGBandwidthRelay.Flow>实际转接带宽：{0} / {1}</WGBandwidthRelay.Flow>
+  <WGBandwidthRelay.Upcoming>应用后转接带宽：{0} / {1}</WGBandwidthRelay.Upcoming>
+  <WGBandwidthRelay.Unconfigured>尚未设置带宽转接。</WGBandwidthRelay.Unconfigured>
+  <WGBandwidthRelay.NoPower>已暂停：未供电，恢复供电后自动重连。</WGBandwidthRelay.NoPower>
+  <WGBandwidthRelay.Unavailable>已暂停：至少一名机械师已不符合转接条件。</WGBandwidthRelay.Unavailable>
+  <WGBandwidthRelay.NoSpare>已暂停：供给方没有空余带宽。</WGBandwidthRelay.NoSpare>
+  <WGBandwidthRelay.Limited>当前转接量受供给方的空余带宽限制。</WGBandwidthRelay.Limited>
+  <WGBandwidthRelay.InvalidSelection>新建或更换连接时，两名不同的己方机械师都必须在基站所在地图。</WGBandwidthRelay.InvalidSelection>
+  <WGBandwidthRelay.InvalidBuilding>这座带宽转接基站已不可用。</WGBandwidthRelay.InvalidBuilding>
+  <WGBandwidthRelay.OverCapacity>{0}：已占用 {1}，变更后容量 {2}。</WGBandwidthRelay.OverCapacity>
+  <WGBandwidthRelay.ConfirmLoss>这项变更会让机械师的带宽超编。如果带宽未及时恢复，游戏可能会断开部分机兵。
+
+{0}
+
+仍要应用吗？</WGBandwidthRelay.ConfirmLoss>
+</LanguageData>

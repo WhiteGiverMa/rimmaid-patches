@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WhiteGiver_MechanitorBandwidthRelay.label>带宽转接基站</WhiteGiver_MechanitorBandwidthRelay.label>
+  <WhiteGiver_MechanitorBandwidthRelay.description>一座将一名机械师的空余带宽划给另一名机械师的基站。建立连接时两人必须在场，之后离开地图也不影响转接。不会转移机械体，也不会改变控制组的归属。</WhiteGiver_MechanitorBandwidthRelay.description>
+</LanguageData>
