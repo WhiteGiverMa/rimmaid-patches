@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WGMonolynFemaleGay.SettingsCategory>墨诺灵：全员女性与同性恋</WGMonolynFemaleGay.SettingsCategory>
+  <WGMonolynFemaleGay.EnabledLabel>墨诺灵全员女性与同性恋</WGMonolynFemaleGay.EnabledLabel>
+  <WGMonolynFemaleGay.EnabledTooltip>与遗传性禁欲互斥。保留绝育，但取消遗传性禁欲带来的恋爱惩罚。</WGMonolynFemaleGay.EnabledTooltip>
+  <WGMonolynFemaleGay.Explanation>本选项与墨诺灵常规设置中的同名选项同步。开启时自动关闭遗传性禁欲；在原模组重新开启遗传性禁欲则会关闭本选项。两者都关闭时保留普通性别和性取向，以及绝育。</WGMonolynFemaleGay.Explanation>
+  <WGMonolynFemaleGay.StatusFemaleGay>当前：女性／同性恋（绝育）</WGMonolynFemaleGay.StatusFemaleGay>
+  <WGMonolynFemaleGay.StatusAbstinence>当前：遗传性禁欲（无性别／无性恋）</WGMonolynFemaleGay.StatusAbstinence>
+  <WGMonolynFemaleGay.StatusSterile>当前：普通性别与性取向（绝育）</WGMonolynFemaleGay.StatusSterile>
+  <WGMonolynFemaleGay.Unavailable>无法启用：未能绑定墨诺灵补丁。请查看游戏日志中的契约检查错误。</WGMonolynFemaleGay.Unavailable>
+</LanguageData>

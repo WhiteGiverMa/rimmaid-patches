@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WGMonolynFemaleGay.SettingsCategory>Monolyn: All Female &amp; Gay</WGMonolynFemaleGay.SettingsCategory>
+  <WGMonolynFemaleGay.EnabledLabel>Make all Monolyn female and gay</WGMonolynFemaleGay.EnabledLabel>
+  <WGMonolynFemaleGay.EnabledTooltip>Replaces hereditary abstinence. Monolyn remain sterile but lose the hereditary abstinence romance penalty.</WGMonolynFemaleGay.EnabledTooltip>
+  <WGMonolynFemaleGay.Explanation>This is the same switch shown in Monolyn’s General settings. Turning it on turns hereditary abstinence off; turning hereditary abstinence back on turns this off. With both off, Monolyn retain ordinary gender and orientation, and remain sterile.</WGMonolynFemaleGay.Explanation>
+  <WGMonolynFemaleGay.StatusFemaleGay>Current mode: female and gay (sterile)</WGMonolynFemaleGay.StatusFemaleGay>
+  <WGMonolynFemaleGay.StatusAbstinence>Current mode: hereditary abstinence (genderless and asexual)</WGMonolynFemaleGay.StatusAbstinence>
+  <WGMonolynFemaleGay.StatusSterile>Current mode: ordinary gender and orientation (sterile)</WGMonolynFemaleGay.StatusSterile>
+  <WGMonolynFemaleGay.Unavailable>Unavailable: the Monolyn patch could not bind. Check the game log for a contract error.</WGMonolynFemaleGay.Unavailable>
+</LanguageData>

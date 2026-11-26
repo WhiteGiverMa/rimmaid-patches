@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <GeneDef>
+    <defName>WG_MonolynFemaleGay</defName>
+    <label>Monolyn sisterhood</label>
+    <description>Carriers of this gene are female and attracted to women. They cannot reproduce naturally.</description>
+    <geneClass>WhiteGiver.MonolynFemaleGay.Gene_MonolynFemaleGay</geneClass>
+    <displayCategory>Monolyn</displayCategory>
+    <displayOrderInCategory>80</displayOrderInCategory>
+    <iconPath>Icon/HereditaryAbstinence</iconPath>
+    <forcedTraits><li><def>Gay</def></li></forcedTraits>
+    <suppressedTraits><li><def>Asexual</def></li><li><def>Bisexual</def></li></suppressedTraits>
+    <statFactors><Fertility>0</Fertility></statFactors>
+    <sterilize>true</sterilize>
+    <biostatMet>1</biostatMet>
+    <canGenerateInGeneSet>false</canGenerateInGeneSet>
+    <customEffectDescriptions>
+      <li>Sets the carrier’s gender to female. If removed, the previous male gender is restored if recorded.</li>
+    </customEffectDescriptions>
+  </GeneDef>
+</Defs>

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>1.0.0</Version>
+    <GameRoot Condition="'$(GameRoot)' == ''">A:\SteamLibrary\steamapps\common\RimWorld</GameRoot>
+    <WorkshopRoot Condition="'$(WorkshopRoot)' == ''">A:\SteamLibrary\steamapps\workshop\content\294100</WorkshopRoot>
+    <HarmonyPath Condition="'$(HarmonyPath)' == ''">$(WorkshopRoot)\2009463077\1.7\Assemblies\0Harmony.dll</HarmonyPath>
+    <AselPath Condition="'$(AselPath)' == ''">$(WorkshopRoot)\3742031864\1.7\Assemblies\ASEL.dll</AselPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Validation" />
+    <Reference Include="Assembly-CSharp" HintPath="$(GameRoot)\Assembly-CSharp.dll" Private="false" />
+    <Reference Include="UnityStubs" HintPath="$(GameRoot)\UnityStubs.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(HarmonyPath)" Private="false" />
+    <Reference Include="ASEL" HintPath="$(AselPath)" Private="false" />
+  </ItemGroup>
+  <Target Name="CopyToModAssemblies" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)\..\1.7\Assemblies" />
+  </Target>
+</Project>

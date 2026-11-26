@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>墨诺灵全员女性同性恋 / Monolyn All Female &amp; Gay</name>
+  <author>WhiteGiverMa</author>
+  <packageId>whitegiver.monolyn.femalegay</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
+    <li><packageId>Ludeon.RimWorld.Biotech</packageId><displayName>Biotech</displayName></li>
+    <li><packageId>ASEL.MonolynRace</packageId><displayName>Monolyn Race</displayName><steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3742031864</steamWorkshopUrl></li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Ludeon.RimWorld.Biotech</li>
+    <li>erdelf.HumanoidAlienRaces</li>
+    <li>ASEL.MonolynRace</li>
+    <li>Jamesli.MonolynSamePawnBaptism</li>
+  </loadAfter>
+  <description>为墨诺灵增加一个默认开启的独立选项：女性、同性恋，保留绝育但取消遗传性禁欲的恋爱惩罚。在墨诺灵的常规设置或本补丁设置中均可切换。
+
+Adds an optional mode, enabled by default, that makes Monolyn female and gay. They remain sterile but no longer receive the hereditary abstinence romance penalty. Toggle it in Monolyn's General settings or this mod's settings.</description>
+</ModMetaData>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WG_MonolynFemaleGay.label>墨诺灵姊妹之契</WG_MonolynFemaleGay.label>
+  <WG_MonolynFemaleGay.description>此基因的携带者均为女性，且只对女性产生恋爱吸引。她们无法自然生育。</WG_MonolynFemaleGay.description>
+  <WG_MonolynFemaleGay.customEffectDescriptions.0>将携带者设为女性。若此前记下的性别为男性，移除本基因时将恢复为男性。</WG_MonolynFemaleGay.customEffectDescriptions.0>
+</LanguageData>
