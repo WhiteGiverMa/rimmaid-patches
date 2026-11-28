@@ -331,8 +331,8 @@
     {
       "directory": "DMSEMissileBaseFix",
       "packageId": "whitegiver.dmse.missilebasefix",
-      "status": "game-qa-pending",
-      "source": "local canonical source; added 2026-11-14; sets validLaunchTarget back to true on DMSE_MissileBase, DMSE_FieldLaunchSite and DMSE_EarlyLaunchSite only, keeping range, fuel, BVR risk prompts, live air defense and retreat re-entry cooldowns; applies campaign-style fog threat rules, stops permanently dry turrets from blocking caravan reform and routes safe CompMissileRackStorage contents through the real ground-loot, caravan and transporter paths; 57 RED and 87 GREEN real-DLL checks passed; game QA pending; not published to Workshop"
+      "status": "active",
+      "source": "local canonical source; added 2026-11-14, rebased to 1.1.0 on 2026-11-28 after DMSE migrated missile-base code into Fortified Features Framework (Fortified.*) and fixed validLaunchTarget=false upstream; applies campaign-style fog threat rules, stops permanently dry turrets from blocking caravan reform while preserving active SAM/CIWS/CE protection, and routes safe CompMissileRackStorage contents through real ground-loot, caravan and transporter paths across DMSE_MissileBase, DMSE_FieldLaunchSite, DMSE_BallisticLaunchSite and DMSE_SeaLaunchSite; 58 RED and 94 GREEN real-DLL checks passed; 1.1.0 startup error-free confirmed 2026-11-28; not published to Workshop"
     },
     {
       "directory": "VanillaFireModesPerfFix",

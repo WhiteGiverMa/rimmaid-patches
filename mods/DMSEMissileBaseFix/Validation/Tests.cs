@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using DMSE;
+using Fortified;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -23,7 +23,15 @@ internal static class Tests
     {
         "DMSE_MissileBase",
         "DMSE_FieldLaunchSite",
-        "DMSE_EarlyLaunchSite",
+        "DMSE_BallisticLaunchSite",
+        "DMSE_SeaLaunchSite",
+    };
+
+    private static readonly string[] LandSiteNames =
+    {
+        "DMSE_MissileBase",
+        "DMSE_FieldLaunchSite",
+        "DMSE_BallisticLaunchSite",
     };
 
     private static int checks;
@@ -61,27 +69,29 @@ internal static class Tests
     private static XDocument AuditRealXml(string dmseRoot, string modRoot)
     {
         Console.WriteLine("=== REAL XML / DLL AUDIT ===");
+        string fffRoot = Path.GetFullPath(Path.Combine(dmseRoot, @"..\..\3498575851\1.7"));
         string[] files =
         {
-            @"Defs\WorldObjects_MissileBase.xml",
-            @"Defs\WorldObjects_FieldLaunchSite.xml",
-            @"Defs\WorldObjects_EarlyLaunchSite.xml",
-            @"Defs\DMSE_BVRWorld.xml",
-            @"Defs\ThingDefs_Buildings\DMSE_Security.xml",
-            @"Defs\ThingDefs_Buildings\DMSE_GenerationPlatforms.xml",
-            @"Defs\ThingDefs_Buildings\DMSE_GenerationTurrets.xml",
-            @"Defs\ThingDefs_Buildings\DMSE_Gen_Decoration.xml",
-            @"Defs\ThingDefs_Buildings\DMSE_MissileRack.xml",
-            @"Defs\ThingDefs_Buildings\DMSE_LightMissileLauncher.xml",
-            @"Defs\ThingDefs_Buildings\DMSE_RotaryMissileLauncher.xml",
-            @"Defs\ThingDefs_Buildings\DMSE_Security_Missile.xml",
-            @"Defs\ThingDefs_Buildings\DMSE_LoiteringLauncher.xml",
+            Path.Combine(dmseRoot, @"Defs\WorldObjects_MissileBase.xml"),
+            Path.Combine(dmseRoot, @"Defs\WorldObjects_FieldLaunchSite.xml"),
+            Path.Combine(dmseRoot, @"Defs\WorldObjects_BallisticLaunchSite.xml"),
+            Path.Combine(dmseRoot, @"Defs\WorldObjects_SeaLaunchSite.xml"),
+            Path.Combine(fffRoot, @"Missiles\Defs\Missile\FFF_BVRWorld.xml"),
+            Path.Combine(dmseRoot, @"Defs\ThingDefs_Buildings\DMSE_Security.xml"),
+            Path.Combine(dmseRoot, @"Defs\ThingDefs_Buildings\DMSE_GenerationPlatforms.xml"),
+            Path.Combine(dmseRoot, @"Defs\ThingDefs_Buildings\DMSE_GenerationTurrets.xml"),
+            Path.Combine(dmseRoot, @"Defs\ThingDefs_Buildings\DMSE_Gen_Decoration.xml"),
+            Path.Combine(dmseRoot, @"Defs\ThingDefs_Buildings\DMSE_MissileRack.xml"),
+            Path.Combine(dmseRoot, @"Defs\ThingDefs_Buildings\DMSE_LightMissileLauncher.xml"),
+            Path.Combine(dmseRoot, @"Defs\ThingDefs_Buildings\DMSE_RotaryMissileLauncher.xml"),
+            Path.Combine(dmseRoot, @"Defs\ThingDefs_Buildings\DMSE_Security_Missile.xml"),
+            Path.Combine(dmseRoot, @"Defs\ThingDefs_Buildings\DMSE_LoiteringLauncher.xml"),
         };
 
         XDocument merged = new(new XElement("Defs"));
-        foreach (string relative in files)
+        foreach (string fullPath in files)
         {
-            XDocument doc = XDocument.Load(Path.Combine(dmseRoot, relative));
+            XDocument doc = XDocument.Load(fullPath);
             foreach (XElement element in doc.Root!.Elements())
             {
                 merged.Root!.Add(new XElement(element));
@@ -92,11 +102,17 @@ internal static class Tests
         {
             XElement def = merged.XPathSelectElement($"Defs/WorldObjectDef[defName='{siteName}']")!;
             Check(def.Element("worldObjectClass")!.Value == "RimWorld.Planet.Site", $"{siteName} uses real Site");
-            Check(def.Element("validLaunchTarget")!.Value == "false", $"RED XML: {siteName}.validLaunchTarget=false");
+            Check(def.Element("validLaunchTarget")?.Value != "false",
+                $"UPSTREAM FIXED XML: {siteName} no longer sets validLaunchTarget=false");
+            Check(def.XPathSelectElement("comps/li[@Class='Fortified.WorldObjectCompProperties_MissileBase']") != null,
+                $"{siteName} has Fortified.WorldObjectCompProperties_MissileBase");
+        }
+
+        foreach (string siteName in LandSiteNames)
+        {
+            XElement def = merged.XPathSelectElement($"Defs/WorldObjectDef[defName='{siteName}']")!;
             Check(def.XPathSelectElement("comps/li[@Class='WorldObjectCompProperties_FormCaravan']") != null,
                 $"{siteName} has the vanilla FormCaravan comp");
-            Check(def.XPathSelectElement("comps/li[@Class='DMSE.CompProperties_MissileBase']") != null,
-                $"{siteName} has DMSE's MissileBase comp");
         }
 
         XElement wing = merged.XPathSelectElement("Defs/ThingDef[defName='DMSE_Turret_Vulcan_WingBack']")!;
@@ -115,10 +131,10 @@ internal static class Tests
 
         XElement field = merged.XPathSelectElement("Defs/ThingDef[defName='DMSE_Building_FieldAirDefense']")!;
         Check(field.Element("thingClass")!.Value == "Building_TurretGun", "Field Air-Defense is a real automated Building_TurretGun");
-        Check(field.XPathSelectElement("comps/li[@Class='DMSE.CompProperties_MissileRackStorage']") != null,
-            "Field Air-Defense stores separate interceptor Things in CompMissileRackStorage");
-        Check(field.XPathSelectElement("comps/li[@Class='DMSE.CompProperties_MissileLauncher']") != null,
-            "Field Air-Defense has an independent interceptor launcher");
+        Check(field.XPathSelectElement("comps/li[@Class='Fortified.CompProperties_MissileRackStorage']") != null,
+            "Field Air-Defense stores separate interceptor Things in Fortified.CompMissileRackStorage");
+        Check(field.XPathSelectElement("comps/li[@Class='Fortified.CompProperties_MissileLauncher']") != null,
+            "Field Air-Defense has an independent Fortified interceptor launcher");
         Check(Float(field, "comps/li[@Class='CompProperties_Refuelable']/fuelCapacity") == 200f
             && Float(field, "comps/li[@Class='CompProperties_Refuelable']/initialFuelPercent") == 0.5f,
             "Field Air-Defense starts with 100 cannon rounds, not zero");
@@ -133,41 +149,35 @@ internal static class Tests
             "Real 1.7 mini-turret starts with 60/60 fuel and an absolute one-unit threshold");
 
         string mid = File.ReadAllText(Path.Combine(dmseRoot, @"Defs\Structures\LaunchSite_Mid.xml"));
-        string early = File.ReadAllText(Path.Combine(dmseRoot, @"Defs\Structures\LaunchSite_Early.xml"));
+        string ocean = File.ReadAllText(Path.Combine(dmseRoot, @"Defs\Structures\LaunchSite_Ocean.xml"));
         string missileBase = File.ReadAllText(Path.Combine(dmseRoot, @"Defs\WorldObjects_MissileBase.xml"));
         Check(missileBase.Contains("<def>DMSE_Turret_Vulcan_WingBack</def>", StringComparison.Ordinal),
             "MissileBase structure really spawns Wing-Back");
         Check(mid.Contains("<def>DMSE_Building_FieldAirDefense</def>", StringComparison.Ordinal)
             && mid.Contains("<def>Turret_MiniTurret</def>", StringComparison.Ordinal)
-            && mid.Contains("<def>DMSE_Turret_LegacyFlak</def>", StringComparison.Ordinal),
-            "Field structure set includes FieldAirDefense, MiniTurret and LegacyFlak");
-        Check(early.Contains("<def>DMSE_Turret_LegacyFlak</def>", StringComparison.Ordinal)
-            && early.Contains("<def>DMSE_LoiteringRack</def>", StringComparison.Ordinal),
-            "Early structure set includes manned LegacyFlak and lootable racks");
+            && mid.Contains("<def>DMSE_FieldStructure_AmmoStorage</def>", StringComparison.Ordinal),
+            "Field structure set includes FieldAirDefense, MiniTurret and AmmoStorage");
+        Check(ocean.Contains("<def>DMSE_FieldStructure_AmmoStorage</def>", StringComparison.Ordinal)
+            && ocean.Contains("<def>DMSE_Turret_Vulcan_WingBack</def>", StringComparison.Ordinal),
+            "Ocean launch site structure includes AmmoStorage and Wing-Back");
 
         Check(typeof(Building_MissileRack).GetInterfaces().Contains(typeof(IHaulSource)),
-            "REAL DMSE DLL: Building_MissileRack implements IHaulSource");
+            "REAL FFF DLL: Building_MissileRack implements IHaulSource");
         Check(typeof(CompMissileRackStorage).GetInterfaces().Contains(typeof(IThingHolder))
             && !typeof(CompMissileRackStorage).GetInterfaces().Contains(typeof(IHaulSource)),
-            "REAL DMSE DLL: CompMissileRackStorage is IThingHolder but not IHaulSource");
+            "REAL FFF DLL: CompMissileRackStorage is IThingHolder but not IHaulSource");
 
         XDocument patch = XDocument.Load(Path.Combine(modRoot, @"1.7\Patches\MissileBaseLaunchTargetPatch.xml"));
         string xpath = patch.XPathSelectElement("Patch/Operation/xpath")!.Value;
         List<XElement> matches = merged.XPathSelectElements(xpath).ToList();
-        Check(matches.Count == 3, "XML patch conditional sees exactly the three intended validLaunchTarget nodes");
-        foreach (XElement match in matches)
-        {
-            match.Value = "true";
-        }
-        Check(SiteNames.All(name => merged.XPathSelectElement($"Defs/WorldObjectDef[defName='{name}']/validLaunchTarget")!.Value == "true"),
-            "XML patch semantics enable all three targets");
-        Check(merged.XPathSelectElement("Defs/WorldObjectDef[defName='DMSE_Interceptor']/validLaunchTarget")?.Value == "false",
-            "XML patch leaves DMSE_Interceptor false");
+        Check(matches.Count == 0, "XML patch conditional is now a clean no-op because upstream removed validLaunchTarget=false");
+        Check(merged.XPathSelectElement("Defs/WorldObjectDef[defName='FFF_Interceptor']/validLaunchTarget")?.Value == "false",
+            "XML patch leaves FFF_Interceptor false");
 
         XDocument about = XDocument.Load(Path.Combine(modRoot, @"About\About.xml"));
         Check(about.XPathSelectElement("ModMetaData/packageId")!.Value == "whitegiver.dmse.missilebasefix",
             "About packageId is exact");
-        Check(about.XPathSelectElement("ModMetaData/modVersion")!.Value == "1.0.0", "About version=1.0.0");
+        Check(about.XPathSelectElement("ModMetaData/modVersion")!.Value == "1.1.0", "About version=1.1.0");
         string[] required = { "brrainz.harmony", "AOBA.Framework", "Aoba.DeadManSwitch.Core", "Aoba.DeadManSwitch.Expedition" };
         List<string> dependencies = about.XPathSelectElements("ModMetaData/modDependencies/li/packageId").Select(x => x.Value).ToList();
         List<string> loadAfter = about.XPathSelectElements("ModMetaData/loadAfter/li").Select(x => x.Value).ToList();
@@ -186,28 +196,10 @@ internal static class Tests
 
     private static void RunRed(XDocument defs)
     {
-        Console.WriteLine("=== RED: REPRODUCE UPSTREAM FAILURES ===");
-        RedShuttleGate();
+        Console.WriteLine("=== RED: REPRODUCE REMAINING UPSTREAM FAILURES ===");
         RedFoggedThreatGate();
         RedTurretGate();
         RedLootGate(defs);
-    }
-
-    private static void RedShuttleGate()
-    {
-        SiteFixture fixture = SiteFixture.Create();
-        Pawn pawn = fixture.Map.mapPawns.FreeColonistsSpawned[0];
-        CompTransporter transporter = fixture.AddTransporter();
-        transporter.innerContainer.TryAdd(pawn, canMergeWithExistingStacks: false);
-        int launches = 0;
-        bool accepted = CompLaunchable.ChoseWorldTarget(
-            fixture.Site,
-            fixture.Site.Tile,
-            new IThingHolder[] { transporter },
-            maxLaunchDistance: -1,
-            launchAction: (_, _) => launches++,
-            launchable: null);
-        Check(!accepted && launches == 0, "RED: real ChoseWorldTarget rejects the missile site before arrival menus");
     }
 
     private static void RedFoggedThreatGate()
@@ -303,14 +295,24 @@ internal static class Tests
         {
             DefDatabase<WorldObjectDef>.Add(fixture.Site.def);
         }
-        WorldObjectDef interceptorDef = new() { defName = "DMSE_Interceptor", validLaunchTarget = false };
+        WorldObjectDef legacyBlockedDef = new()
+        {
+            defName = "ValidationBlockedMissileSite",
+            validLaunchTarget = false,
+            comps = new List<WorldObjectCompProperties> { new WorldObjectCompProperties_MissileBase() },
+        };
+        DefDatabase<WorldObjectDef>.Add(legacyBlockedDef);
+        WorldObjectDef interceptorDef = new() { defName = "FFF_Interceptor", validLaunchTarget = false };
         DefDatabase<WorldObjectDef>.Add(interceptorDef);
 
         int enabled = DMSEMissileBaseFixMod.EnsureLaunchTargetsEnabled();
         int installed = DMSEMissileBaseFixMod.ApplyPatches();
-        Check(enabled == 3, "GREEN: startup fallback enables exactly three DMSE site defs");
+        Check(enabled == 1 || (legacyBlockedDef.validLaunchTarget && enabled == 0),
+            "GREEN: startup guard flips only a missile-base def still marked validLaunchTarget=false");
+        Check(legacyBlockedDef.validLaunchTarget, "GREEN: legacy blocked missile-base def was enabled");
         Check(installed == 3, $"GREEN: all three Harmony patches installed (got {installed}: {string.Join(", ", DMSEMissileBaseFixMod.InstalledPatches)})");
-        Check(launchFixtures.All(f => f.Site.def.validLaunchTarget), "GREEN: every target def accepts shuttles/pods");
+        Check(launchFixtures.All(f => f.Site.def.validLaunchTarget) && legacyBlockedDef.validLaunchTarget,
+            "GREEN: every missile-base def accepts shuttles/pods");
         Check(!interceptorDef.validLaunchTarget, "GREEN: unrelated interceptor target remains false");
 
         Harmony upstreamReentry = new("validation.upstream.dmse.reentry");
@@ -382,13 +384,13 @@ internal static class Tests
         fixture.AddWorldAirDefense();
         CompLaunchable launchable = fixture.AddLaunchable();
         SiteFixture.LastWindow = null;
-        bool runOriginal = DMSE.Patch_InterceptRisk_TryLaunch.Prefix(
+        bool runOriginal = Fortified.Patch_InterceptRisk_TryLaunch.Prefix(
             launchable,
             fixture.Site.Tile,
             arrivalAction: null,
             __runOriginal: true);
         Check(!runOriginal && SiteFixture.LastWindow is Dialog_MessageBox,
-            "GREEN: DMSE's real BVR prefix defers launch and opens its interception-risk confirmation");
+            "GREEN: Fortified's real BVR prefix defers launch and opens its interception-risk confirmation");
     }
 
     private static void GreenFoggedThreat()

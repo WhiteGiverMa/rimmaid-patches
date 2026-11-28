@@ -22,6 +22,10 @@
       <HintPath>$(WorkshopDir)\2009463077\1.7\Assemblies\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Fortified">
+      <HintPath>$(WorkshopDir)\3498575851\1.7\Assemblies\Fortified.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="DMSE">
       <HintPath>$(WorkshopDir)\3689879335\1.7\Assemblies\DMSE.dll</HintPath>
       <Private>false</Private>

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DMSE;
+using Fortified;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -13,6 +13,8 @@ internal static class MissileBaseSiteUtility
     {
         "DMSE_MissileBase",
         "DMSE_FieldLaunchSite",
+        "DMSE_BallisticLaunchSite",
+        "DMSE_SeaLaunchSite",
         "DMSE_EarlyLaunchSite",
     };
 
@@ -50,7 +52,7 @@ internal static class MissileBaseSiteUtility
         {
             for (int i = 0; i < comps.Count; i++)
             {
-                if (comps[i] is CompProperties_MissileBase)
+                if (comps[i] is WorldObjectCompProperties_MissileBase)
                 {
                     return true;
                 }
@@ -89,16 +91,19 @@ internal static class MissileBaseSiteUtility
                 continue;
             }
 
-            def.validLaunchTarget = true;
-            enabledCount++;
+            if (!def.validLaunchTarget)
+            {
+                def.validLaunchTarget = true;
+                enabledCount++;
+            }
         }
 
         return enabledCount;
     }
 
     /// <summary>
-    /// A dry ground cannon does not make a loaded, powered SAM launcher or a fueled CIWS safe to
-    /// dismantle remotely. This check deliberately uses DMSE's own operational predicates.
+    /// A dry ground cannon does not make a loaded, powered SAM launcher or a fueled/loaded CIWS safe to
+    /// dismantle remotely. This check deliberately uses Fortified's own operational predicates.
     /// </summary>
     internal static bool HasOperationalAirDefense(Building building)
     {
@@ -115,6 +120,17 @@ internal static class MissileBaseSiteUtility
         }
 
         CompRefuelable? refuelable = building.GetComp<CompRefuelable>();
-        return refuelable == null || refuelable.Fuel >= ciws.Props.fuelPerShot;
+        if (refuelable != null)
+        {
+            return refuelable.Fuel >= ciws.Props.fuelPerShot;
+        }
+
+        if (CombatCompat.HasMagazine(building))
+        {
+            int roundsPerShot = Math.Max(1, (int)Math.Ceiling(ciws.Props.fuelPerShot));
+            return CombatCompat.Active.LoadedRounds(building) >= roundsPerShot;
+        }
+
+        return true;
     }
 }

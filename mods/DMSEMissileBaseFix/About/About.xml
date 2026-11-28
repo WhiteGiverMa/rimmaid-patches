@@ -3,7 +3,7 @@
   <name>DMSE 导弹阵地穿梭机与重组远行队修复 / DMSE Missile Base Shuttle &amp; Reform Fix</name>
   <author>WhiteGiverMa</author>
   <packageId>whitegiver.dmse.missilebasefix</packageId>
-  <modVersion>1.0.0</modVersion>
+  <modVersion>1.1.0</modVersion>
   <supportedVersions>
     <li>1.7</li>
   </supportedVersions>
@@ -35,18 +35,20 @@
     <li>Aoba.DeadManSwitch.Core</li>
     <li>Aoba.DeadManSwitch.Expedition</li>
   </loadAfter>
-  <description>修复 DMSE 敌方导弹/防空阵地的两类站点交互问题：
+  <description>修复 DMSE / FFF 敌方导弹与防空阵地的站点交互问题（适配 2026-11-27 导弹系统迁入 Fortified Features Framework 后的新版结构；上游已修复 validLaunchTarget=false）：
 
-1. 仅将 DMSE_MissileBase、DMSE_FieldLaunchSite、DMSE_EarlyLaunchSite 的 validLaunchTarget 修正为 true，恢复穿梭机/运输舱进入，同时保留射程、燃料、BVR 防空风险确认、实际防空和撤退重入冷却。
-2. 修复清场后无法重组远行队及导弹战利品遗漏：为这三类 Site 采用临时营地式迷雾威胁规则；让真正无弹的炮塔不再永久阻塞；让安全的 CompMissileRackStorage 库存通过真实落地流程进入远行队和穿梭机装载。
+1. 修复清场后因迷雾内敌意阻塞重组远行队：为持有 Fortified.WorldObjectComp_MissileBase 的敌方导弹阵地（DMSE_MissileBase / DMSE_FieldLaunchSite / DMSE_BallisticLaunchSite / DMSE_SeaLaunchSite 等）采用临时营地式迷雾威胁规则（CanReformFoggedEnemies=true）。
+2. 修复打空燃料的炮塔永久阻塞重组：仅在导弹阵地地图上，让真正燃料不足一发且无有效 SAM/CIWS（含 CE 弹匣）的炮塔不再永久阻塞。
+3. 修复 CompMissileRackStorage 库存导弹无法被远行队/穿梭机直接搜刮：清场安全后，通过真实 ThingOwner.TryDrop 落地进入原版远行队与穿梭机装载流程。
+4. 保留启动兜底：若未来或第三方阵地仍误设 validLaunchTarget=false，会将其修正为 true（同时保留 BVR 防空风险确认、拦截与撤退重入冷却）。
 
-不会把仍有电且武装的炮塔当作安全目标，也不会远程清空活跃防空系统。Wing-Back 出生时其实有 300 个绝对燃料单位，可正常开火；本补丁处理的是实际耗尽后的状态。
+不会把仍有电且武装的炮塔当作安全目标，也不会远程清空活跃防空系统。不修改工坊原件，不写自定义存档字段，可安全增删。
 
-不修改工坊原件，不写自定义存档字段，可安全增删。
+Standalone DMSE / FFF missile-site interaction fix (rebased to Fortified Features Framework 1.7 after the 2026-11-27 missile migration; upstream already fixed validLaunchTarget=false):
+1. Fixes fogged-enemy reform deadlocks on Fortified.WorldObjectComp_MissileBase sites by enabling CanReformFoggedEnemies=true.
+2. Fixes genuinely dry turrets blocking caravan reform on missile-base maps while keeping powered/loaded SAMs and fueled/magazine-loaded CIWS protected.
+3. Makes safe CompMissileRackStorage contents genuinely collectible through vanilla ground-loot, caravan, and transporter paths via ThingOwner.TryDrop.
+4. Keeps a no-op startup guard in case a missile-base def still sets validLaunchTarget=false, while preserving BVR interception prompts, live air defense, and post-retreat re-entry cooldowns.
 
-Standalone DMSE site-interaction fix:
-1. Enables shuttle/pod entry only on the three enemy missile-base WorldObjectDefs while preserving fuel/range checks, BVR interception prompts, live air defense, and post-retreat re-entry cooldowns.
-2. Fixes fogged/dry-defense reform deadlocks and makes safe CompMissileRackStorage contents genuinely collectible through vanilla ground-loot, caravan, and transporter paths.
-
-Armed powered turrets and operational air defense remain protected. No Workshop edits, no custom save fields, safe to add or remove.</description>
+No Workshop edits, no custom save fields, safe to add or remove.</description>
 </ModMetaData>

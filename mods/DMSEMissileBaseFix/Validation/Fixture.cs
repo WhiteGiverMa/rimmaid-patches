@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using DMSE;
+using Fortified;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -158,13 +158,13 @@ internal sealed class SiteFixture
             description = "validation site",
             worldObjectClass = typeof(Site),
             canHaveFaction = true,
-            validLaunchTarget = false,
+            validLaunchTarget = true,
             mapGenerator = new MapGeneratorDef { defName = "ValidationSurfaceMap" },
             comps = new List<WorldObjectCompProperties> { new WorldObjectCompProperties_FormCaravan() },
         };
         if (missileBase)
         {
-            def.comps.Add(new CompProperties_MissileBase());
+            def.comps.Add(new WorldObjectCompProperties_MissileBase());
         }
 
         Site = (Site)WorldObjectMaker.MakeWorldObject(def);
@@ -685,7 +685,7 @@ internal sealed class SiteFixture
     internal void AddWorldAirDefense()
     {
         WorldObjectComp_AirDefense comp = new() { parent = Site };
-        comp.Initialize(new CompProperties_WorldAirDefense());
+        comp.Initialize(new WorldObjectCompProperties_AirDefense());
         Site.AllComps.Add(comp);
     }
 
