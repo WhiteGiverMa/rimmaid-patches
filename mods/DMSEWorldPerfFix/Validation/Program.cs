@@ -161,8 +161,8 @@ internal static class Program
         AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(gameRoot, "UnityStubs.dll"));
         AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(BoundDirectory, "Assembly-CSharp.dll"));
 
-        // Load in dependency order; DMSE needs Assembly-CSharp, DMS and Fortified.
-        foreach (string name in new[] { "DMS.dll", "Fortified.dll" })
+        // Load in dependency order; Fortified is needed before DMS and DMSE.
+        foreach (string name in new[] { "Fortified.dll", "DMS.dll" })
         {
             string candidate = Path.Combine(BoundDirectory, name);
             if (File.Exists(candidate))

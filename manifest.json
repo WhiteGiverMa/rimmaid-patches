@@ -326,7 +326,7 @@
       "directory": "DMSEWorldPerfFix",
       "packageId": "whitegiver.dmse.worldperffix",
       "status": "active",
-      "source": "local canonical source; added 2026-11-13; keeps StageOf/RadarWarm queries read-only, hibernates quiescent baseline air-defense sites in WorldComponentTick, caches MissileDoctrine.For and indexes active BVR scan nodes; 12 RED and 40 GREEN checks on 1,300-settlement real-DLL world passed; in-game QA confirmed by user 2026-11-13; not published to Workshop"
+      "source": "local canonical source; added 2026-11-13, rebased to 1.1.0 on 2026-11-28 after DMSE migrated shared missile/air-defense code into Fortified Features Framework (Fortified.*); keeps StageOf/RadarWarm queries read-only, hibernates quiescent baseline air-defense sites in WorldComponentTick, caches MissileDoctrine.For and indexes active BVR scan nodes; 12 RED and 40 GREEN checks on 1,300-settlement real-DLL world passed; 1.0.0 in-game QA confirmed 2026-11-13 and 1.1.0 startup error-free confirmed 2026-11-28; not published to Workshop"
     },
     {
       "directory": "DMSEMissileBaseFix",

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using DMSE;
+using Fortified;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -260,7 +260,8 @@ internal static class AirDefenseTickPatches
             return true;
         }
 
-        if (WorldComponent_SettlementDefense.PropsFor(parent.Faction) != null)
+        if (WorldComponent_SettlementDefense.IsSettlement(parent)
+            && WorldComponent_SettlementDefense.PropsFor(parent.Faction) != null)
         {
             return true;
         }

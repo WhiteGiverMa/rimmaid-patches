@@ -6,14 +6,15 @@ using Verse;
 namespace WhiteGiver.DMSEWorldPerfFix;
 
 /// <summary>
-/// Resolves DMSE types by name and installs the four independent fixes. Each fix is optional: if the
-/// upstream member is missing (DMSE update, other fork) that fix is skipped and the others still run.
+/// Resolves Fortified (FFF) missile/air-defense types by name and installs the four independent fixes.
+/// Each fix is optional: if the upstream member is missing or renamed that fix is skipped and the others
+/// still run.
 /// </summary>
 internal static class PatchInstaller
 {
-    private const string AlertTypeName = "DMSE.WorldComponent_FactionAirDefenseAlert";
-    private const string NetworkTypeName = "DMSE.WorldComponent_BVRNetwork";
-    private const string DoctrineTypeName = "DMSE.MissileDoctrine";
+    private const string AlertTypeName = "Fortified.WorldComponent_FactionAirDefenseAlert";
+    private const string NetworkTypeName = "Fortified.WorldComponent_AirDefenseNetwork";
+    private const string DoctrineTypeName = "Fortified.MissileDoctrine";
 
     private static bool applied;
     private static readonly List<string> installed = new();
@@ -45,7 +46,7 @@ internal static class PatchInstaller
 
         if (alertType == null)
         {
-            Log.Error($"{WorldPerfFixMod.LogPrefix} could not resolve {AlertTypeName}. Is The Dead Man's Switch - Expedition loaded?");
+            Log.Error($"{WorldPerfFixMod.LogPrefix} could not resolve {AlertTypeName}. Is Fortified Features Framework (1.7) loaded?");
             return 0;
         }
 

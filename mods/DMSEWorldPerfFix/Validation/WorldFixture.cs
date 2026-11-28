@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using DMSE;
+using Fortified;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -42,7 +42,7 @@ internal sealed class WorldFixture
 
     internal World World = null!;
     internal WorldComponent_FactionAirDefenseAlert Alert = null!;
-    internal WorldComponent_BVRNetwork Network = null!;
+    internal WorldComponent_AirDefenseNetwork Network = null!;
     internal WorldComponent_SettlementDefense SettlementDefense = null!;
 
     internal Faction PlayerFaction = null!;
@@ -162,6 +162,14 @@ internal sealed class WorldFixture
             techLevel = TechLevel.Industrial,
         };
         DefDatabase<ResearchProjectDef>.Add(radarProject);
+
+        AirDefenseTuningDef tuningDef = new()
+        {
+            defName = "FFF_BVRWorldTuning",
+            label = "validation tuning",
+            networkResearch = radarProject,
+        };
+        DefDatabase<AirDefenseTuningDef>.Add(tuningDef);
 
         AddDoctrine("DMSEWorldPerfFix_Validation_Tribal", TechLevel.Neolithic, TechLevel.Medieval, withDefense: false);
         AddDoctrine("DMSEWorldPerfFix_Validation_Industrial", TechLevel.Industrial, TechLevel.Industrial, withDefense: true);
@@ -299,7 +307,7 @@ internal sealed class WorldFixture
 
             if (i >= FirstMilitaryIndex && i < FirstPlayerIndex)
             {
-                CompProperties_WorldAirDefense props = new()
+                WorldObjectCompProperties_AirDefense props = new()
                 {
                     worldDetectionRange = 12f,
                     antiStealthLevel = 2,
@@ -333,7 +341,7 @@ internal sealed class WorldFixture
     {
         SettlementDefense = new WorldComponent_SettlementDefense(World);
         Alert = new WorldComponent_FactionAirDefenseAlert(World);
-        Network = new WorldComponent_BVRNetwork(World);
+        Network = new WorldComponent_AirDefenseNetwork(World);
 
         World.components.Add(SettlementDefense);
         World.components.Add(Alert);

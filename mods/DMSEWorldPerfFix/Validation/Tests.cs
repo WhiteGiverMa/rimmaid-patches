@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using DMSE;
+using Fortified;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -18,7 +18,7 @@ internal static class Tests
     private const string StubHarmonyId = "whitegiver.dmse.worldperffix.validation";
 
     private static readonly Type AlertType = typeof(WorldComponent_FactionAirDefenseAlert);
-    private static readonly Type NetworkType = typeof(WorldComponent_BVRNetwork);
+    private static readonly Type NetworkType = typeof(WorldComponent_AirDefenseNetwork);
 
     private static readonly FieldInfo SiteListField = AccessTools.DeclaredField(AlertType, "siteList")!;
     private static readonly FieldInfo SitesField = AccessTools.DeclaredField(AlertType, "sites")!;
@@ -30,7 +30,7 @@ internal static class Tests
         AccessTools.DeclaredMethod(AlertType, "StateFor", new[] { typeof(MapParent), typeof(bool) })!;
 
     private static readonly MethodInfo BuildNodesMethod =
-        AccessTools.DeclaredMethod(NetworkType, "BuildNodes", new[] { typeof(List<BVRNode>), typeof(bool) })!;
+        AccessTools.DeclaredMethod(NetworkType, "BuildNodes", new[] { typeof(List<AirDefenseNode>), typeof(bool) })!;
 
     private static int checks;
     private static int failures;
@@ -166,7 +166,7 @@ internal static class Tests
         Require(doctrineAllocated > 10_000, "RED: every doctrine lookup allocates a FirstOrDefault closure");
 
         fixture.SetTicks(250);
-        List<BVRNode> scanNodes = ScanNodes(fixture);
+        List<AirDefenseNode> scanNodes = ScanNodes(fixture);
         NodeActiveUntil(fixture).Clear();
         NodeActiveUntil(fixture)[fixture.Settlements[0].ID] = 10_000;
         NodeActiveUntil(fixture)[fixture.Settlements[1].ID] = 10_000;
@@ -526,7 +526,7 @@ internal static class Tests
             {
                 typeof(MapParent), typeof(AirDefenseSiteAlert), typeof(string), typeof(string), typeof(LetterDef),
             })
-            ?? throw new MissingMethodException("DMSE.WorldComponent_FactionAirDefenseAlert", "NotifyBlockade");
+            ?? throw new MissingMethodException("Fortified.WorldComponent_FactionAirDefenseAlert", "NotifyBlockade");
 
         MethodInfo languageWorker = AccessTools.PropertyGetter(typeof(Find), "ActiveLanguageWorker")
             ?? throw new MissingMethodException("Verse.Find", "get_ActiveLanguageWorker");
@@ -570,14 +570,14 @@ internal static class Tests
         return (Dictionary<int, int>)NodeActiveUntilField.GetValue(fixture.Network)!;
     }
 
-    private static List<BVRNode> ScanNodes(WorldFixture fixture)
+    private static List<AirDefenseNode> ScanNodes(WorldFixture fixture)
     {
-        return (List<BVRNode>)ScanNodesField.GetValue(fixture.Network)!;
+        return (List<AirDefenseNode>)ScanNodesField.GetValue(fixture.Network)!;
     }
 
     private static void BuildNodes(WorldFixture fixture, FieldInfo field, bool activeOnly)
     {
-        List<BVRNode> target = (List<BVRNode>)field.GetValue(fixture.Network)!;
+        List<AirDefenseNode> target = (List<AirDefenseNode>)field.GetValue(fixture.Network)!;
         BuildNodesMethod.Invoke(fixture.Network, new object[] { target, activeOnly });
     }
 
@@ -605,7 +605,7 @@ internal static class Tests
     {
         BuildNodes(fixture, ScanNodesField, activeOnly: true);
         List<string> result = new();
-        foreach (BVRNode node in ScanNodes(fixture))
+        foreach (AirDefenseNode node in ScanNodes(fixture))
         {
             string defense = node.defense?.GetType().Name ?? "<null>";
             string faction = node.faction?.def?.defName ?? "<null>";

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DMSE;
+using Fortified;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -10,7 +10,7 @@ using Verse;
 namespace WhiteGiver.DMSEWorldPerfFix;
 
 /// <summary>
-/// FIX 3b - make <c>WorldComponent_BVRNetwork.BuildNodes(nodes, activeOnly: true)</c> scale with the number of
+/// FIX 3b - make <c>WorldComponent_AirDefenseNetwork.BuildNodes(nodes, activeOnly: true)</c> scale with the number of
 /// <em>active</em> nodes instead of the number of world objects.
 ///
 /// Upstream <c>RebuildScanNodes</c> is called on every scan tick (15 ticks by default) whenever a missile or
@@ -37,29 +37,29 @@ internal static class BvrScanPatches
     private static readonly ParentIndex Index = new();
 
     private static FieldInfo? nodeActiveUntilField;
-    private static Action<List<BVRNode>>? applyAlertStages;
+    private static Action<List<AirDefenseNode>>? applyAlertStages;
 
     internal static void Install(Harmony harmony, Type networkType)
     {
         MethodInfo target = AccessTools.DeclaredMethod(
             networkType,
             "BuildNodes",
-            new[] { typeof(List<BVRNode>), typeof(bool) })
-            ?? throw new MissingMethodException(networkType.FullName, "BuildNodes(List<BVRNode>, bool)");
+            new[] { typeof(List<AirDefenseNode>), typeof(bool) })
+            ?? throw new MissingMethodException(networkType.FullName, "BuildNodes(List<AirDefenseNode>, bool)");
 
         nodeActiveUntilField = AccessTools.DeclaredField(networkType, "nodeActiveUntil")
             ?? throw new MissingFieldException(networkType.FullName, "nodeActiveUntil");
 
-        MethodInfo stages = AccessTools.DeclaredMethod(networkType, "ApplyAlertStages", new[] { typeof(List<BVRNode>) })
+        MethodInfo stages = AccessTools.DeclaredMethod(networkType, "ApplyAlertStages", new[] { typeof(List<AirDefenseNode>) })
             ?? throw new MissingMethodException(networkType.FullName, "ApplyAlertStages");
-        applyAlertStages = (Action<List<BVRNode>>)stages.CreateDelegate(typeof(Action<List<BVRNode>>));
+        applyAlertStages = (Action<List<AirDefenseNode>>)stages.CreateDelegate(typeof(Action<List<AirDefenseNode>>));
 
         harmony.Patch(
             target,
             prefix: new HarmonyMethod(typeof(BvrScanPatches), nameof(BuildNodesPrefix)));
     }
 
-    private static bool BuildNodesPrefix(WorldComponent_BVRNetwork __instance, List<BVRNode> nodes, bool activeOnly)
+    private static bool BuildNodesPrefix(WorldComponent_AirDefenseNetwork __instance, List<AirDefenseNode> nodes, bool activeOnly)
     {
         if (!activeOnly)
         {
@@ -69,22 +69,23 @@ internal static class BvrScanPatches
         int ticksGame = Find.TickManager.TicksGame;
         nodes.Clear();
 
-        // Identical to upstream: per-map BVR combat nodes first, factions in first-seen order.
+        // Identical to upstream: per-map air-defense nodes first, factions in first-seen order
+        // (AirSensors.On(map) followed by component.fireControlRadars).
         foreach (Map map in Find.Maps)
         {
-            MapComponent_BVRCombat? component = map.GetComponent<MapComponent_BVRCombat>();
+            MapComponent_AirDefense? component = map.GetComponent<MapComponent_AirDefense>();
             if (component == null)
             {
                 continue;
             }
 
             SeenFactions.Clear();
-            foreach (CompSearchRadar radar in component.searchRadars)
+            foreach (IAirSensor sensor in AirSensors.On(map))
             {
-                Faction? faction = radar.parent?.Faction;
+                Faction? faction = sensor.Source?.Faction;
                 if (faction != null && SeenFactions.Add(faction))
                 {
-                    nodes.Add(new BVRNode { parent = map.Parent, faction = faction, local = component });
+                    nodes.Add(new AirDefenseNode { parent = map.Parent, faction = faction, local = component });
                 }
             }
 
@@ -93,7 +94,7 @@ internal static class BvrScanPatches
                 Faction? faction = radar.parent?.Faction;
                 if (faction != null && SeenFactions.Add(faction))
                 {
-                    nodes.Add(new BVRNode { parent = map.Parent, faction = faction, local = component });
+                    nodes.Add(new AirDefenseNode { parent = map.Parent, faction = faction, local = component });
                 }
             }
         }
@@ -140,7 +141,7 @@ internal static class BvrScanPatches
 
             if (airDefense != null && airDefense.Available)
             {
-                nodes.Add(new BVRNode
+                nodes.Add(new AirDefenseNode
                 {
                     parent = parent,
                     faction = parent.Faction,
@@ -149,10 +150,10 @@ internal static class BvrScanPatches
                 continue;
             }
 
-            IBVRDefense? defense = WorldComponent_SettlementDefense.Current?.DefenseFor(parent);
+            IAirDefense? defense = WorldComponent_SettlementDefense.Current?.DefenseFor(parent);
             if (defense != null && defense.Available)
             {
-                nodes.Add(new BVRNode
+                nodes.Add(new AirDefenseNode
                 {
                     parent = parent,
                     faction = parent.Faction,
@@ -165,7 +166,7 @@ internal static class BvrScanPatches
         return false;
     }
 
-    private static void Finish(List<BVRNode> nodes)
+    private static void Finish(List<AirDefenseNode> nodes)
     {
         applyAlertStages!(nodes);
         for (int i = 0; i < nodes.Count; i++)
